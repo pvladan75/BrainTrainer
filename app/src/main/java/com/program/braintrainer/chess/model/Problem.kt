@@ -1,5 +1,8 @@
 package com.program.braintrainer.chess.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Problem(
     val id: String, // Jedinstveni ID zagonetke
     val module: Module, // Koji modul pripada ova zagonetka
