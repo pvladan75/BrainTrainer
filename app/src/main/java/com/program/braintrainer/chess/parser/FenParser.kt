@@ -4,110 +4,121 @@ import com.program.braintrainer.chess.model.Board
 import com.program.braintrainer.chess.model.Color
 import com.program.braintrainer.chess.model.Piece
 import com.program.braintrainer.chess.model.PieceType
-import com.program.braintrainer.chess.model.Square
+import com.program.braintrainer.chess.model.Square // Make sure this is imported
 
 object FenParser {
 
-    /**
-     * Parsira FEN string i popunjava Board objekat.
-     * Trenutno parsira samo raspored figura i čiji je red na potezu.
-     * Ostali delovi FEN-a (rokada, en passant, brojači) su ignorisani za potrebe ove metode.
-     */
     fun parseFenToBoard(fen: String): Pair<Board, Color> {
         val parts = fen.split(" ")
-        require(parts.size >= 2) { "Invalid FEN string: Too few parts." }
-
         val piecePlacement = parts[0]
         val activeColorChar = parts[1]
 
-        val board = Board()
+        var board = Board() // Start with an empty board
 
-        // 1. Parsiranje rasporeda figura
-        val ranks = piecePlacement.split("/")
-        require(ranks.size == 8) { "Invalid FEN string: Incorrect number of ranks." }
+        var rank = 7 // FEN starts from rank 8 (index 7)
+        var file = 0 // FEN starts from file 'a' (index 0)
 
-        for (y in 0..7) { // Iteriramo od ranka 8 (y=7) do ranka 1 (y=0)
-            val rankFen = ranks[7 - y] // FEN počinje od 8. ranka (gore), naša matrica od 0. (dole)
-            var x = 0 // file 'a' (x=0)
-
-            for (char in rankFen) {
-                if (char.isDigit()) {
-                    x += char.toString().toInt() // Prazna polja
-                } else {
-                    val piece = pieceFromFenChar(char)
-                    if (piece != null) {
-                        board.setPiece(x, y, piece)
+        for (char in piecePlacement) {
+            when {
+                char.isDigit() -> {
+                    file += char.toString().toInt()
+                }
+                char == '/' -> {
+                    rank--
+                    file = 0
+                }
+                else -> {
+                    val pieceColor = if (char.isUpperCase()) Color.WHITE else Color.BLACK
+                    val pieceType = when (char.lowercaseChar()) {
+                        'p' -> PieceType.PAWN
+                        'n' -> PieceType.KNIGHT
+                        'b' -> PieceType.BISHOP
+                        'r' -> PieceType.ROOK
+                        'q' -> PieceType.QUEEN
+                        'k' -> PieceType.KING
+                        else -> throw IllegalArgumentException("Unknown piece character: $char")
                     }
-                    x++
+                    val piece = Piece(pieceType, pieceColor)
+
+                    // CORRECTED LINE: Create a Square object
+                    val square = Square.fromCoordinates(file, rank)
+                    board = board.setPiece(square, piece) // CORRECTED: Pass Square object and Piece
+                    file++
                 }
             }
         }
 
-        // 2. Parsiranje čiji je red na potezu
-        val activeColor = when (activeColorChar.lowercase()) {
-            "w" -> Color.WHITE
-            "b" -> Color.BLACK
-            else -> throw IllegalArgumentException("Invalid FEN string: Unknown active color '$activeColorChar'.")
-        }
+        val activeColor = if (activeColorChar == "w") Color.WHITE else Color.BLACK
 
         return Pair(board, activeColor)
     }
 
-    /**
-     * Pomoćna funkcija za pretvaranje FEN karaktera u Piece objekat.
-     */
-    private fun pieceFromFenChar(fenChar: Char): Piece? {
-        val color = if (fenChar.isUpperCase()) Color.WHITE else Color.BLACK
-        val type = when (fenChar.lowercaseChar()) {
-            'p' -> PieceType.PAWN
-            'n' -> PieceType.KNIGHT
-            'b' -> PieceType.BISHOP
-            'r' -> PieceType.ROOK
-            'q' -> PieceType.QUEEN
-            'k' -> PieceType.KING
-            else -> null // Nepoznat karakter
+    fun toFenString(board: Board, activeColor: Color): String {
+        val stringBuilder = StringBuilder()
+
+        for (rank in 7 downTo 0) { // Iterate from rank 8 down to 1
+            var emptySquares = 0
+            for (file in 0..7) { // Iterate from file 'a' to 'h'
+                // CORRECTED LINE: Create a Square object
+                val square = Square.fromCoordinates(file, rank)
+                val piece = board.getPiece(square) // CORRECTED: Pass Square object
+
+                if (piece == null) {
+                    emptySquares++
+                } else {
+                    if (emptySquares > 0) {
+                        stringBuilder.append(emptySquares)
+                        emptySquares = 0
+                    }
+                    val pieceChar = when (piece.type) {
+                        PieceType.PAWN -> 'p'
+                        PieceType.KNIGHT -> 'n'
+                        PieceType.BISHOP -> 'b'
+                        PieceType.ROOK -> 'r'
+                        PieceType.QUEEN -> 'q'
+                        PieceType.KING -> 'k'
+                    }
+                    stringBuilder.append(if (piece.color == Color.WHITE) pieceChar.uppercaseChar() else pieceChar)
+                }
+            }
+            if (emptySquares > 0) {
+                stringBuilder.append(emptySquares)
+            }
+            if (rank > 0) {
+                stringBuilder.append("/")
+            }
         }
-        return if (type != null) Piece(type, color) else null
+
+        stringBuilder.append(" ")
+        stringBuilder.append(if (activeColor == Color.WHITE) "w" else "b")
+        stringBuilder.append(" KQkq - 0 1") // Simplified castling, en passant, halfmove, fullmove
+
+        return stringBuilder.toString()
     }
 
     /**
-     * Konvertuje trenutno stanje Board objekta i aktivnu boju u FEN string.
-     * Generiše samo deo FEN-a koji se odnosi na raspored figura i aktivnu boju.
-     * Ostali delovi (rokada, en passant, brojači) su postavljeni na podrazumevane vrednosti.
+     * Parsira potez u algebarskoj notaciji (npr. "e2e4") u par Square objekata.
+     * @return Pair<Square, Square> - Prvi element je početno polje, drugi je krajnje polje.
+     * @throws IllegalArgumentException ako notacija nije validna.
      */
-    fun boardToFen(board: Board, activeColor: Color): String {
-        val piecePlacementBuilder = StringBuilder()
-
-        for (y in 7 downTo 0) { // Iteriramo od ranka 8 (y=7) do ranka 1 (y=0)
-            var emptyCount = 0
-            for (x in 0..7) { // Iteriramo kroz fajlove a-h
-                val piece = board.getPiece(x, y)
-                if (piece == null) {
-                    emptyCount++
-                } else {
-                    if (emptyCount > 0) {
-                        piecePlacementBuilder.append(emptyCount)
-                        emptyCount = 0
-                    }
-                    piecePlacementBuilder.append(piece.toFenChar())
-                }
-            }
-            if (emptyCount > 0) {
-                piecePlacementBuilder.append(emptyCount)
-            }
-            if (y > 0) {
-                piecePlacementBuilder.append("/")
-            }
+    fun parseMove(move: String): Pair<Square, Square> {
+        if (move.length != 4) {
+            throw IllegalArgumentException("Nevažeća dužina poteza: $move. Očekivano 4 karaktera (npr. e2e4).")
         }
+        val startFileChar = move[0]
+        val startRankChar = move[1]
+        val endFileChar = move[2]
+        val endRankChar = move[3]
 
-        val activeColorChar = if (activeColor == Color.WHITE) "w" else "b"
+        val startFile = startFileChar - 'a'
+        val startRank = startRankChar.toString().toInt() - 1
 
-        // Za sada, ostali FEN delovi su defaultni
-        val castlingRights = "-" // Nema rokada (za zagonetke ti možda ovo i ne treba)
-        val enPassantTarget = "-" // Nema en passant (za zagonetke ti možda ovo i ne treba)
-        val halfmoveClock = "0" // Brojač pola poteza
-        val fullmoveNumber = "1" // Broj punih poteza
+        val endFile = endFileChar - 'a'
+        val endRank = endRankChar.toString().toInt() - 1
 
-        return "${piecePlacementBuilder.toString()} $activeColorChar $castlingRights $enPassantTarget $halfmoveClock $fullmoveNumber"
+        val startSquare = Square.fromCoordinates(startFile, startRank)
+        val endSquare = Square.fromCoordinates(endFile, endRank)
+
+        return Pair(startSquare, endSquare)
     }
 }
