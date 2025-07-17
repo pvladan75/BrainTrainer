@@ -1,5 +1,6 @@
 package com.program.braintrainer.ui.screens
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -38,8 +39,10 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
+import androidx.compose.material3.ExperimentalMaterial3Api
 
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun ChessScreen(
     module: Module,
@@ -56,8 +59,9 @@ fun ChessScreen(
     var currentProblemIndex by remember { mutableStateOf(0) }
     var currentProblem by remember { mutableStateOf<com.program.braintrainer.chess.model.Problem?>(null) }
     var currentBoard by remember { mutableStateOf(Board()) }
-    val activePlayerColor = ChessColor.WHITE // Beli je uvek na potezu
+    val activePlayerColor = ChessColor.WHITE // Beli je uvek na potezu, prema novim pravilima
 
+    // Ključna promena za trajnu selekciju
     var selectedSquare by remember { mutableStateOf<Square?>(null) }
     var showSolutionPath by remember { mutableStateOf(false) } // Kontroliše vidljivost dugmića za rešenje
 
@@ -78,7 +82,9 @@ fun ChessScreen(
             currentProblem = problem
             val (board, _) = FenParser.parseFenToBoard(problem.fen)
             currentBoard = board
-            selectedSquare = null // Resetuj selekciju pri učitavanju nove zagonetke
+            // Odmah selektuj prvu belu figuru ako postoji, za trajno selektovanje
+            selectedSquare = board.pieces.entries.firstOrNull { it.value.color == ChessColor.WHITE }?.key
+
             showSolutionPath = false // Uvek počni sa skrivenim dugmićima za rešenje
             solutionMoveIndex = -1 // Resetuj indeks poteza rešenja
             isPlayingSolution = false // Resetuj play mod
@@ -103,31 +109,32 @@ fun ChessScreen(
         if (isPlayingSolution) {
             val solutionMoves = currentProblem?.solution?.moves
             if (solutionMoves != null && solutionMoves.isNotEmpty()) {
-                // Ako je tek pokrenut play, kreni od trenutnog solutionMoveIndex-a
-                // ili od 0 ako je -1 (početna pozicija)
                 val startFromIndex = if (solutionMoveIndex == -1) 0 else solutionMoveIndex
 
                 for (i in startFromIndex until solutionMoves.size) {
-                    // Proveri da li je play i dalje aktivan i da li smo na dobrom indeksu
+                    // Dodata provera isPlayingSolution u petlji i provera da li je indeks i dalje isti
                     if (!isPlayingSolution || i != solutionMoveIndex) {
                         break
                     }
                     val move = solutionMoves[i]
-                    val (start, end) = FenParser.parseMove(move)
+                    val parsedMove = FenParser.parseMove(move)
+                    val start = parsedMove.first
+                    val end = parsedMove.second
                     val newBoard = currentBoard.applyMove(start, end)
                     if (newBoard != null) {
                         currentBoard = newBoard
-                        solutionMoveIndex = i + 1 // Pomeri na sledeći indeks za prikaz
+                        solutionMoveIndex = i + 1 // Povećaj indeks za sledeći potez rešenja
+                        selectedSquare = end // Selekcija prelazi na novo polje figure
                     }
-                    delay(1000L) // Pauza od 1 sekunde između poteza
+                    delay(1000L) // Pauza između poteza
                 }
-                isPlayingSolution = false // Zaustavi play kada se završi
-                // Postavi solutionMoveIndex na poslednji potez rešenja ako je Play završio
+                isPlayingSolution = false // Zaustavi puštanje kada se završi
+                // Postavi solutionMoveIndex na poslednji potez rešenja
                 if (solutionMoveIndex > 0 && solutionMoveIndex == solutionMoves.size) {
-                    solutionMoveIndex = solutionMoves.size -1
+                    solutionMoveIndex = solutionMoves.size - 1
                 }
             } else {
-                isPlayingSolution = false // Nema rešenja, zaustavi play
+                isPlayingSolution = false
             }
         }
     }
@@ -139,24 +146,53 @@ fun ChessScreen(
     val currentSessionProblemIndex = currentProblemIndex % problemsInSession.size
 
     fun checkGameStatus() {
-        if (module == Module.Module1) {
-            if (!currentBoard.hasBlackPiecesRemaining()) {
-                // SVE CRNE FIGURE POJEDENE - POBEDA U MODULU 1
-                gameResultMessage = "Čestitamo! Sve crne figure su pojedene. Zagonetka rešena!"
-                if (usedSolution) {
-                    gameResultMessage += "\n(Niste osvojili poene jer ste koristili rešenje.)"
+        when (module) {
+            Module.Module1 -> { // Modul 1: Pojesti sve crne figure, svaki potez mora biti uzimanje
+                if (!currentBoard.hasBlackPiecesRemaining()) {
+                    gameResultMessage = "Čestitamo! Sve crne figure su pojedene. Zagonetka rešena!"
+                    if (usedSolution) {
+                        gameResultMessage += "\n(Niste osvojili poene jer ste koristili rešenje.)"
+                    }
+                    showGameResultDialog = true
+                } else if (!currentBoard.hasAnyLegalCaptureMove(activePlayerColor)) {
+                    // Ovo je kompleksnije jer hasAnyLegalCaptureMove sada proverava i šah.
+                    // Za modul 1, ovo je validno stanje neuspeha.
+                    gameResultMessage = "Promašaj! Nema više legalnih poteza uzimanja, a ostale su crne figure."
+                    gameResultMessage += "\n(Niste osvojili poene jer zagonetka nije rešena.)"
+                    showGameResultDialog = true
                 }
-                showGameResultDialog = true
-            } else if (!currentBoard.hasAnyLegalCaptureMove(activePlayerColor)) {
-                // IMA CRNIH FIGURA, A NEMA MOGUĆNOSTI UZIMANJA - PROMAŠAJ
-                gameResultMessage = "Promašaj! Nema više legalnih poteza uzimanja, a ostale su crne figure."
-                gameResultMessage += "\n(Niste osvojili poene jer zagonetka nije rešena.)" // Nije bitno da li je korišteno rešenje, jer nije rešeno
-                showGameResultDialog = true
+            }
+            Module.Module2 -> { // Modul 2: Pojesti sve crne figure (bez obzira na put, ne mora biti uzimanje)
+                if (!currentBoard.hasBlackPiecesRemaining()) {
+                    gameResultMessage = "Čestitamo! Sve crne figure su pojedene. Zagonetka rešena!"
+                    if (usedSolution) {
+                        gameResultMessage += "\n(Niste osvojili poene jer ste koristili rešenje.)"
+                    }
+                    showGameResultDialog = true
+                } else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) {
+                    gameResultMessage = "Promašaj! Nema više legalnih poteza za belog, a ostale su crne figure."
+                    gameResultMessage += "\n(Niste osvojili poene jer zagonetka nije rešena.)"
+                    showGameResultDialog = true
+                }
+            }
+            Module.Module3 -> { // Modul 3: Pojesti crnog kralja
+                val blackKingExists = currentBoard.pieces.any { it.value == Piece(PieceType.KING, ChessColor.BLACK) }
+
+                if (!blackKingExists) {
+                    gameResultMessage = "Čestitamo! Crni kralj je pojeden. Zagonetka rešena!"
+                    if (usedSolution) {
+                        gameResultMessage += "\n(Niste osvojili poene jer ste koristili rešenje.)"
+                    }
+                    showGameResultDialog = true
+                } else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) { // Nema više poteza za belog, a kralj nije pojeden
+                    gameResultMessage = "Promašaj! Nema više legalnih poteza za belog, a crni kralj nije pojeden."
+                    gameResultMessage += "\n(Niste osvojili poene jer zagonetka nije rešena.)"
+                    showGameResultDialog = true
+                }
             }
         }
-        // Za ostale module (2 i 3) nema specifičnih uslova pobede/poraza na osnovu uzimanja
-        // Njihova logika pobede/poraza će biti definisana kasnije (npr. mat, osvojen broj poena itd.)
     }
+
 
     Column(
         modifier = Modifier
@@ -185,7 +221,7 @@ fun ChessScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Vreme: 00:00",
+                text = "Vreme: 00:00", // Ova logika za vreme nije implementirana u ovom fajlu
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -197,7 +233,7 @@ fun ChessScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Na potezu: Beli",
+                text = "Na potezu: Beli", // Uvek Beli, po novim pravilima
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -214,9 +250,9 @@ fun ChessScreen(
         ChessBoardComposable(
             board = currentBoard,
             selectedSquare = selectedSquare,
-            solutionPath = if (showSolutionPath) currentProblem?.solution?.moves else null, // I dalje šaljemo putanju za highlight
+            // Prosleđujemo putanju rešenja samo ako je showSolutionPath true
+            solutionPath = if (showSolutionPath) currentProblem?.solution?.moves else null,
             onSquareClick = { clickedSquare ->
-                // Ako je prikaz rešenja aktivan, onemogući interakciju igrača sa tablom
                 if (showSolutionPath) {
                     coroutineScope.launch { snackbarHostState.showSnackbar("Prikaz rešenja je aktivan. Pritisnite 'Sakrij rešenje' za igranje.") }
                     return@ChessBoardComposable
@@ -224,66 +260,96 @@ fun ChessScreen(
 
                 val pieceOnClickedSquare = currentBoard.getPiece(clickedSquare)
 
+                // Logika za selekciju figure
                 if (selectedSquare == null) {
-                    // Prvi klik: Selektujemo belu figuru (ako postoji)
+                    // Ako nema selektovane figure (samo na početku ili nakon reseta)
                     if (pieceOnClickedSquare != null && pieceOnClickedSquare.color == activePlayerColor) {
                         selectedSquare = clickedSquare
+                    } else {
+                        coroutineScope.launch { snackbarHostState.showSnackbar("Selektujte belu figuru za početak.") }
+                    }
+                    return@ChessBoardComposable // Vrati se nakon selekcije ili neuspešne selekcije
+                }
+
+                val startSquare = selectedSquare!!
+                val endSquare = clickedSquare
+
+                // Ako je kliknuto na istu selektovanu figuru ili drugu belu figuru, promeni selekciju
+                if (startSquare == endSquare || (pieceOnClickedSquare != null && pieceOnClickedSquare.color == activePlayerColor)) {
+                    selectedSquare = clickedSquare
+                    return@ChessBoardComposable // Vrati se nakon promene selekcije
+                }
+
+                // Ako smo došli dovde, korisnik pokušava da odigra potez sa selektovane figure na 'clickedSquare'
+                val isCapture = pieceOnClickedSquare != null && pieceOnClickedSquare.color != activePlayerColor
+
+                // Modul 1: Svaki potez mora biti uzimanje
+                if (module == Module.Module1 && !isCapture) {
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("U modulu 'Čišćenje table' svaki potez mora biti uzimanje!")
+                    }
+                    usedSolution = true // Računaj kao grešku
+                    // selectedSquare NE MENJAJ! Ostaje selektovan na originalnoj poziciji figure!
+                    return@ChessBoardComposable
+                }
+
+                // Modul 2 i 3: Ciljno polje ne sme biti prazno i pod napadom crnih figura
+                if (module == Module.Module2 || module == Module.Module3) {
+                    val attackedByBlack = currentBoard.getAttackedSquares(ChessColor.BLACK)
+                    // Ako je polje pod napadom crnih, i NIJE uzimanje (tj. polje je prazno)
+                    if (attackedByBlack.contains(endSquare) && !isCapture) {
+                        // Potez se ipak odigra, ali je zagonetka neuspešna
+                        val tempBoardAfterMove = currentBoard.applyMove(startSquare, endSquare)
+                        if (tempBoardAfterMove != null) {
+                            currentBoard = tempBoardAfterMove
+                            usedSolution = true // Označi kao neuspešno rešenje
+                            gameResultMessage = "Pogrešan potez! Pomerili ste figuru na polje koje je pod napadom crnih figura, a na njemu nije bilo figure. Zagonetka je neuspešno rešena."
+                            showGameResultDialog = true // Prikaži dijalog
+                            selectedSquare = null // Poništi selekciju nakon što je zagonetka neuspešna
+                            return@ChessBoardComposable
+                        } else {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Greška pri izvršavanju poteza (nevaljan potez za figuru).")
+                            }
+                            // selectedSquare NE MENJAJ! Ostaje selektovan na originalnoj poziciji figure!
+                            return@ChessBoardComposable
+                        }
+                    }
+                }
+
+                // Standardna provera legalnosti poteza (po kretanju figure, bez šaha/mata)
+                val isMoveLegalByPieceRules = currentBoard.isValidMove(startSquare, endSquare)
+
+                if (isMoveLegalByPieceRules) {
+                    val newBoard = currentBoard.applyMove(startSquare, endSquare)
+                    if (newBoard != null) {
+                        currentBoard = newBoard
+                        println("Potez ${startSquare.toNotation()}${endSquare.toNotation()} odigran.")
+                        selectedSquare = endSquare // KLJUČNA PROMENA: Selekcija se premešta na KRAJNJE POLJE POTEZA
+
+                        // Provera statusa igre nakon svakog validnog poteza (uključujući uzimanja)
+                        // Za Modul 3: Pojeli smo kralja
+                        if (module == Module.Module3 && !newBoard.pieces.any { it.value == Piece(PieceType.KING, ChessColor.BLACK) }) {
+                            gameResultMessage = "Čestitamo! Crni kralj je pojeden. Zagonetka rešena!"
+                            showGameResultDialog = true
+                        } else {
+                            // Za module 1 i 2, pozovi checkGameStatus nakon validnog poteza
+                            checkGameStatus()
+                        }
+
+                    } else {
+                        println("Nevažeći potez (applyMove vratio null) ili nepoznat razlog).")
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Greška pri izvršavanju poteza.")
+                        }
+                        // selectedSquare NE MENJAJ! Ostaje selektovan na originalnoj poziciji figure!
                     }
                 } else {
-                    // Drugi klik: Povezujemo sa prethodno selektovanom figurom
-                    val startSquare = selectedSquare!!
-                    val endSquare = clickedSquare
-
-                    // Slučaj 1: Klik na istu belu figuru (ništa se ne menja, ostaje selektovana)
-                    if (startSquare == endSquare) {
-                        // selectedSquare ostaje nepromenjen
-                        return@ChessBoardComposable
+                    println("Nevažeći potez (prema pravilima kretanja figure).")
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("Ne možete pomeriti figuru tako! Nelegalno kretanje za tu figuru.")
                     }
-
-                    // Slučaj 2: Klik na drugu belu figuru (prebacujemo selekciju)
-                    if (pieceOnClickedSquare != null && pieceOnClickedSquare.color == activePlayerColor) {
-                        selectedSquare = clickedSquare
-                        return@ChessBoardComposable
-                    }
-
-                    // Slučaj 3: Pokušaj poteza (na prazno polje ili na protivničku figuru)
-                    val isCapture = pieceOnClickedSquare != null && pieceOnClickedSquare.color != activePlayerColor
-
-                    // Pravilo specifično za Modul 1: Potez mora biti uzimanje
-                    if (module == Module.Module1 && !isCapture) {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("U modulu 'Čišćenje table' svaki potez mora biti uzimanje!")
-                        }
-                        // selectedSquare ostaje selektovan jer potez nije validan za ovaj modul
-                        return@ChessBoardComposable
-                    }
-
-                    // Provera da li je potez legalan po pravilima kretanja figura
-                    if (currentBoard.isValidMove(startSquare, endSquare)) {
-                        val newBoard = currentBoard.applyMove(startSquare, endSquare)
-                        if (newBoard != null) {
-                            currentBoard = newBoard
-                            println("Potez ${startSquare.toString()}${endSquare.toString()} odigran.")
-                            selectedSquare = endSquare // Figura ostaje selektovana na novoj poziciji
-
-                            // Proveri status igre nakon poteza
-                            checkGameStatus()
-
-                        } else {
-                            // Ovo bi se trebalo retko desiti ako je isValidMove istinit
-                            println("Nevažeći potez (applyMove vratio null) ili nepoznat razlog).")
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar("Greška pri izvršavanju poteza.")
-                            }
-                            // selectedSquare ostaje selektovan jer potez nije uspešno primenjen
-                        }
-                    } else {
-                        println("Nevažeći potez (prema pravilima kretanja figure).")
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Ne možete pomeriti figuru tako!")
-                        }
-                        // selectedSquare ostaje selektovan jer potez nije validan po pravilima šaha
-                    }
+                    // selectedSquare NE MENJAJ! Ostaje selektovan na originalnoj poziciji figure!
                 }
             }
         )
@@ -299,50 +365,43 @@ fun ChessScreen(
             Button(
                 onClick = {
                     showSolutionPath = !showSolutionPath
-                    // Kada se prikaže rešenje
-                    if (showSolutionPath) {
-                        usedSolution = true // Postavi zastavicu da je rešenje korišćeno
-                        currentProblem?.let {
-                            val (initialBoard, _) = FenParser.parseFenToBoard(it.fen)
-                            currentBoard = initialBoard
-                            selectedSquare = null
-                            solutionMoveIndex = -1 // Postavi na početnu poziciju rešenja
-                            isPlayingSolution = false // Zaustavi play mod
-                        }
-                    } else {
-                        // Kada se sakrije rešenje
-                        // Resetuj na početnu poziciju zagonetke
-                        currentProblem?.let {
-                            val (initialBoard, _) = FenParser.parseFenToBoard(it.fen)
-                            currentBoard = initialBoard
-                            selectedSquare = null
-                            solutionMoveIndex = -1
-                            isPlayingSolution = false
-                        }
+                    isPlayingSolution = false // Zaustavi automatsko puštanje ako se prebacuje prikaz rešenja
+                    // Resetuj stanje table na početnu poziciju kada se prebacuje prikaz rešenja
+                    currentProblem?.let {
+                        val (initialBoard, _) = FenParser.parseFenToBoard(it.fen)
+                        currentBoard = initialBoard
+                        // Nakon reseta, ponovo selektuj prvu belu figuru
+                        selectedSquare = initialBoard.pieces.entries.firstOrNull { it.value.color == ChessColor.WHITE }?.key
+                        solutionMoveIndex = -1 // Postavi na početak rešenja
+                        usedSolution = true // Korišćenje rešenja
                     }
                 },
-                modifier = Modifier.weight(1f).padding(end = 8.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp)
             ) {
                 Text(if (showSolutionPath) "Sakrij rešenje" else "Prikaži rešenje")
             }
 
             Button(
                 onClick = {
-                    // Logika za prelazak na sledeću zagonetku
-                    if (problems.isNotEmpty() && currentProblemIndex < problems.size - 1 && currentSessionProblemIndex < problemsInSession.size - 1) {
+                    if (problemsInSession.isNotEmpty() && currentProblemIndex + 1 < problems.size && currentSessionProblemIndex + 1 < problemsInSession.size) {
                         currentProblemIndex++
                     } else {
                         onGameFinished() // Završi sesiju ako nema više zagonetki
                     }
                 },
-                enabled = problemsInSession.isNotEmpty() && currentSessionProblemIndex < problemsInSession.size - 1,
-                modifier = Modifier.weight(1f).padding(start = 8.dp)
+                // Omogućeno samo ako ima sledećih zagonetki u sesiji
+                enabled = problemsInSession.isNotEmpty() && currentSessionProblemIndex + 1 < problemsInSession.size,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp)
             ) {
                 Text("Sledeća zagonetka")
             }
         }
 
-        // DRUGI RED DUGMIĆA (vidljiv samo kada je showSolutionPath == true)
+        // DRUGI RED DUGMIĆA (vidljiv i omogućen samo kada je showSolutionPath == true)
         if (showSolutionPath) {
             Row(
                 modifier = Modifier
@@ -353,102 +412,115 @@ fun ChessScreen(
             ) {
                 Button(
                     onClick = {
-                        isPlayingSolution = false // Zaustavi play mod
+                        isPlayingSolution = false // Zaustavi automatsko puštanje
                         val solutionMoves = currentProblem?.solution?.moves
-                        if (solutionMoves != null && solutionMoveIndex > 0) { // Promenjeno na > 0 da ostane na -1
-                            solutionMoveIndex-- // Idi na prethodni potez
-                            // Rekonstruiši tablu do ovog poteza
-                            val (initialBoard, _) = FenParser.parseFenToBoard(currentProblem!!.fen)
-                            var tempBoard = initialBoard
-                            for (i in 0 until solutionMoveIndex) { // Petlja ide do solutionMoveIndex - 1
-                                val move = solutionMoves[i]
-                                val (start, end) = FenParser.parseMove(move)
-                                tempBoard = tempBoard.applyMove(start, end) ?: tempBoard
+                        if (solutionMoves != null) {
+                            if (solutionMoveIndex > 0) {
+                                solutionMoveIndex--
+                                // Rekonstruiši tablu do trenutnog poteza rešenja
+                                val (initialBoard, _) = FenParser.parseFenToBoard(currentProblem!!.fen)
+                                var tempBoard = initialBoard
+                                for (i in 0 until solutionMoveIndex) { // Iteriraj samo do novog solutionMoveIndex
+                                    val move = solutionMoves[i]
+                                    val parsedMove = FenParser.parseMove(move)
+                                    val start = parsedMove.first
+                                    val end = parsedMove.second
+                                    tempBoard = tempBoard.applyMove(start, end) ?: tempBoard
+                                }
+                                currentBoard = tempBoard
+                                // Nakon rekonstrukcije, selekcija se vraća na figuru koja je odigrala poslednji potez
+                                // Ako je solutionMoveIndex -1 (početak), tada selektuj prvu belu
+                                selectedSquare = if (solutionMoveIndex == -1) {
+                                    initialBoard.pieces.entries.firstOrNull { it.value.color == ChessColor.WHITE }?.key
+                                } else {
+                                    // Pronađi krajnje polje poteza sa trenutnim solutionMoveIndex
+                                    val lastMoveEndSquare = FenParser.parseMove(solutionMoves[solutionMoveIndex]).second
+                                    lastMoveEndSquare
+                                }
+
+                            } else if (solutionMoveIndex == 0) { // Ako smo na prvom potezu, vrati se na početak zagonetke
+                                val (initialBoard, _) = FenParser.parseFenToBoard(currentProblem!!.fen)
+                                currentBoard = initialBoard
+                                selectedSquare = initialBoard.pieces.entries.firstOrNull { it.value.color == ChessColor.WHITE }?.key
+                                solutionMoveIndex = -1 // Pokaži da smo pre početka rešenja
                             }
-                            currentBoard = tempBoard
-                        } else if (solutionMoveIndex == 0) { // Ako je na prvom potezu, vrati na -1 (početna pozicija)
-                            val (initialBoard, _) = FenParser.parseFenToBoard(currentProblem!!.fen)
-                            currentBoard = initialBoard
-                            selectedSquare = null
-                            solutionMoveIndex = -1
                         }
                     },
-                    // Omogući samo ako postoji rešenje i nismo već na početnoj poziciji
+                    // Omogućeno ako ima prethodnog poteza rešenja za prikaz (ako nismo na početnoj poziciji)
                     enabled = currentProblem != null && currentProblem?.solution?.moves?.isNotEmpty() == true && solutionMoveIndex > -1,
-                    modifier = Modifier.weight(1f).padding(end = 4.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 4.dp)
                 ) {
                     Text("Prethodni potez")
                 }
 
                 Button(
                     onClick = {
-                        isPlayingSolution = !isPlayingSolution // Prebacivanje play/pauza
-                        // Ako se pokreće play i nismo na početku, postavi index na početak rešenja
+                        isPlayingSolution = !isPlayingSolution
+                        // Ako počinjemo play i nismo još odigrali ni jedan potez rešenja
                         if (isPlayingSolution && solutionMoveIndex == -1) {
                             currentProblem?.let {
                                 val (initialBoard, _) = FenParser.parseFenToBoard(it.fen)
                                 currentBoard = initialBoard
-                                selectedSquare = null
-                                solutionMoveIndex = 0 // Kreni od prvog poteza
+                                // Ponovo selektuj prvu belu figuru
+                                selectedSquare = initialBoard.pieces.entries.firstOrNull { it.value.color == ChessColor.WHITE }?.key
+                                solutionMoveIndex = 0 // Postavi na prvi potez za play
                             }
                         }
                     },
-                    // Omogući samo ako postoji rešenje i nismo na kraju rešenja
+                    // Omogućeno ako postoji rešenje i nismo na poslednjem potezu
                     enabled = currentProblem != null && currentProblem?.solution?.moves?.isNotEmpty() == true && solutionMoveIndex < (currentProblem?.solution?.moves?.size ?: 0),
-                    modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 4.dp)
                 ) {
                     Text(if (isPlayingSolution) "Pauza" else "Play")
                 }
 
                 Button(
                     onClick = {
-                        isPlayingSolution = false // Zaustavi play mod
+                        isPlayingSolution = false // Zaustavi automatsko puštanje
                         val solutionMoves = currentProblem?.solution?.moves
-                        if (solutionMoves != null) {
-                            // Ako smo na početnoj poziciji (-1), kreni od 0
-                            if (solutionMoveIndex == -1 && solutionMoves.isNotEmpty()) {
-                                solutionMoveIndex = 0
-                                val move = solutionMoves[0]
-                                val (start, end) = FenParser.parseMove(move)
-                                val newBoard = currentBoard.applyMove(start, end)
-                                if (newBoard != null) {
-                                    currentBoard = newBoard
-                                }
-                                solutionMoveIndex++ // Priprema za sledeći klik
-                            } else if (solutionMoveIndex < solutionMoves.size) {
-                                val move = solutionMoves[solutionMoveIndex]
-                                val (start, end) = FenParser.parseMove(move)
-                                val newBoard = currentBoard.applyMove(start, end)
-                                if (newBoard != null) {
-                                    currentBoard = newBoard
-                                    solutionMoveIndex++ // Idi na sledeći potez
-                                }
+                        if (solutionMoves != null && solutionMoveIndex < solutionMoves.size) {
+                            // Ako je -1, to znači da smo na početku, odigraj prvi potez (koji će biti indeks 0)
+                            val nextMoveIndex = if (solutionMoveIndex == -1) 0 else solutionMoveIndex
+                            val move = solutionMoves[nextMoveIndex]
+                            val parsedMove = FenParser.parseMove(move)
+                            val start = parsedMove.first
+                            val end = parsedMove.second
+                            val newBoard = currentBoard.applyMove(start, end)
+                            if (newBoard != null) {
+                                currentBoard = newBoard
+                                solutionMoveIndex = nextMoveIndex + 1 // Povećaj indeks za sledeći potez
+                                // Nakon odigranog poteza, selekcija prelazi na novo polje figure
+                                selectedSquare = end
                             }
                         }
                     },
-                    // Omogući samo ako postoji rešenje i nismo na kraju rešenja
+                    // Omogućeno ako postoji rešenje i nismo na poslednjem potezu
                     enabled = currentProblem != null && currentProblem?.solution?.moves?.isNotEmpty() == true && solutionMoveIndex < (currentProblem?.solution?.moves?.size ?: 0),
-                    modifier = Modifier.weight(1f).padding(start = 4.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 4.dp)
                 ) {
                     Text("Sledeći potez")
                 }
             }
         }
 
-        // Dugme za predaju (pozicionirano ispod drugog reda ili prvog ako drugi nije vidljiv)
         Button(
             onClick = {
-                gameResultMessage = "Predali ste se. Pokušajte ponovo!"
+                gameResultMessage = "Predali ste se. Zagonetka nije rešena."
                 showGameResultDialog = true
                 usedSolution = true // Predaja se računa kao korišćenje rešenja
-                showSolutionPath = true // Automatski prikaži rešenje kada se preda
-                isPlayingSolution = false // Zaustavi play mod
-                // Resetuj na početnu poziciju rešenja
+                isPlayingSolution = false // Zaustavi play
                 currentProblem?.let {
                     val (initialBoard, _) = FenParser.parseFenToBoard(it.fen)
                     currentBoard = initialBoard
-                    selectedSquare = null
-                    solutionMoveIndex = -1
+                    // Nakon reseta, ponovo selektuj prvu belu figuru
+                    selectedSquare = initialBoard.pieces.entries.firstOrNull { it.value.color == ChessColor.WHITE }?.key
+                    solutionMoveIndex = -1 // Resetuj indeks za rešenje
                 }
             },
             modifier = Modifier
@@ -471,8 +543,18 @@ fun ChessScreen(
                 confirmButton = {
                     TextButton(onClick = {
                         showGameResultDialog = false
+                        // Resetuj selekciju i stanje rešenja kada se završi dijalog
+                        // SelectedSquare se ovde postavlja na null samo ako zagonetka ZAVRŠAVA.
+                        // Ako se samo prikazuje greška (Modul 2/3 branjeno polje) ali zagonetka nastavlja,
+                        // onda se ne resetuje.
+                        // Po tvojoj logici, neuspeh znači kraj zagonetke.
+                        selectedSquare = null // Poništi selekciju kada se zagonetka završi
+                        showSolutionPath = false
+                        solutionMoveIndex = -1
+                        isPlayingSolution = false
+
                         // Pređi na sledeću zagonetku ili završi sesiju
-                        if (problems.isNotEmpty() && currentProblemIndex < problems.size - 1 && currentSessionProblemIndex < problemsInSession.size - 1) {
+                        if (problemsInSession.isNotEmpty() && currentProblemIndex + 1 < problems.size && currentSessionProblemIndex + 1 < problemsInSession.size) {
                             currentProblemIndex++
                         } else {
                             onGameFinished()
@@ -490,10 +572,10 @@ fun ChessScreen(
 fun ChessBoardComposable(
     board: Board,
     selectedSquare: Square?,
-    solutionPath: List<String>?,
+    solutionPath: List<String>?, // Sada prima listu stringova poteza
     onSquareClick: (Square) -> Unit
 ) {
-    val squareSize = 40.dp
+    val squareSize = 40.dp // Povećao sam veličinu polja radi bolje vidljivosti
     val boardSize = squareSize * 8
 
     Column(
@@ -501,26 +583,25 @@ fun ChessBoardComposable(
             .size(boardSize)
             .background(Color.DarkGray)
     ) {
-        for (rank in 7 downTo 0) {
+        for (rank in 7 downTo 0) { // Odbrojavamo unazad za ispravan prikaz table
             Row(modifier = Modifier.fillMaxWidth()) {
                 for (file in 0..7) {
                     val square = Square.fromCoordinates(file, rank)
                     val piece = board.getPiece(square)
 
                     val backgroundColor = if ((file + rank) % 2 == 0) {
-                        Color(0xFFEEEED2)
+                        Color(0xFFEEEED2) // Svetlo polje
                     } else {
-                        Color(0xFF769656)
+                        Color(0xFF769656) // Tamno polje
                     }
 
                     val squareModifier = Modifier
                         .size(squareSize)
                         .background(
                             when {
-                                square == selectedSquare -> Color.Yellow.copy(alpha = 0.5f)
-                                // Obojite samo početno i krajnje polje sledećeg poteza rešenja
-                                solutionPath != null && isSquareInSolutionPath(square, solutionPath) -> Color.Red.copy(alpha = 0.5f)
-                                else -> backgroundColor
+                                square == selectedSquare -> Color.Yellow.copy(alpha = 0.5f) // Selektovano polje
+                                !solutionPath.isNullOrEmpty() && isSquareInSolutionPath(square, solutionPath) -> Color.Blue.copy(alpha = 0.5f) // Polje u putanji rešenja
+                                else -> backgroundColor // Podrazumevana boja polja
                             }
                         )
                         .clickable { onSquareClick(square) }
@@ -544,13 +625,12 @@ fun ChessBoardComposable(
     }
 }
 
+// Ova funkcija proverava da li je dato polje deo bilo kog poteza u listi poteza rešenja
 fun isSquareInSolutionPath(square: Square, solutionMoves: List<String>): Boolean {
-    // Ova funkcija će sada označavati SVE poteze rešenja na tabli,
-    // što može biti konfuzno ako želimo samo trenutni potez.
-    // Za highlight trenutnog poteza trebaće nam dodatna logika.
-    // Za sada, neka ostane ovako ako je cilj da se svi potezi rešenja markiraju.
     for (move in solutionMoves) {
-        val (start, end) = FenParser.parseMove(move)
+        val parsedMove = FenParser.parseMove(move)
+        val start = parsedMove.first
+        val end = parsedMove.second
         if (square == start || square == end) {
             return true
         }

@@ -13,4 +13,9 @@ data class Piece(val type: PieceType, val color: Color) {
         }
         return if (color == Color.WHITE) char.uppercaseChar() else char
     }
+
+    // Dodata funkcija za dobijanje suprotne boje
+    fun opposite(): Color {
+        return if (color == Color.WHITE) Color.BLACK else Color.WHITE
+    }
 }
