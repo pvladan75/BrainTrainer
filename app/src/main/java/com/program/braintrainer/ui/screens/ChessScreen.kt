@@ -22,9 +22,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource // Za učitavanje drawable resursa
 import com.program.braintrainer.R
+import com.program.braintrainer.chess.model.Difficulty // Uvozimo Difficulty
+import com.program.braintrainer.chess.model.Module // Uvozimo Module
 
 @Composable
-fun ChessScreen() {
+fun ChessScreen(
+    module: Module, // PRIMA ODABRANI MODUL
+    difficulty: Difficulty, // PRIMA ODABRANU TEŽINU
+    onGameFinished: () -> Unit // PRIMA LAMBDA FUNKCIJU ZA NAVIGACIJU NAZAD
+) {
     // Ovo će biti privremena pozicija za prikaz
     val initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     val (board, activeColor) = FenParser.parseFenToBoard(initialFen)
@@ -44,6 +50,18 @@ fun ChessScreen() {
                 .padding(bottom = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = "Mod: ${module.title}", // Prikazujemo odabrani mod
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = "Težina: ${difficulty.label}", // Prikazujemo odabranu težinu
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
             Text(
                 text = "Vreme: 00:00",
                 style = MaterialTheme.typography.headlineMedium,
@@ -80,8 +98,8 @@ fun ChessScreen() {
             Button(onClick = { /* TODO: Logika za prikaz rešenja */ }) {
                 Text("Prikaži rešenje")
             }
-            Button(onClick = { /* TODO: Logika za predaju */ }) {
-                Text("Predajem se")
+            Button(onClick = { onGameFinished() }) { // POZIVAMO LAMBDA FUNKCIJU ZA NAVIGACIJU NAZAD
+                Text("Završi igru")
             }
         }
     }
@@ -115,13 +133,12 @@ fun ChessBoardComposable(board: Board) {
                             .background(backgroundColor),
                         contentAlignment = Alignment.Center
                     ) {
-                        // OVDE MENJAMO: Umesto Text, sada koristimo Image
                         piece?.let {
                             val drawableResId = getPieceDrawableResId(it)
                             Image(
                                 painter = painterResource(id = drawableResId),
                                 contentDescription = "${it.color} ${it.type}",
-                                modifier = Modifier.fillMaxSize() // Slika će popuniti celo polje
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
                     }
@@ -131,11 +148,6 @@ fun ChessBoardComposable(board: Board) {
     }
 }
 
-/**
- * Pomoćna funkcija koja na osnovu Piece objekta vraća odgovarajući drawable resurs ID.
- * Ova funkcija pretpostavlja da su nazivi tvojih drawable fajlova standardizovani:
- * npr. 'wp.png' za belog pešaka, 'bn.png' za crnog skakača.
- */
 @Composable
 fun getPieceDrawableResId(piece: Piece): Int {
     val colorPrefix = if (piece.color == ChessColor.WHITE) "w" else "b"
@@ -147,8 +159,6 @@ fun getPieceDrawableResId(piece: Piece): Int {
         PieceType.QUEEN -> "q"
         PieceType.KING -> "k"
     }
-    // Koristimo Androidov resursni sistem za dohvaćanje ID-a drawable-a
-    // Naziv resursa mora odgovarati tvom imenu datoteke (bez .png ekstenzije)
     val resourceName = "$colorPrefix$typeSuffix"
     return LocalContext.current.resources.getIdentifier(resourceName, "drawable", LocalContext.current.packageName)
 }
@@ -158,6 +168,7 @@ fun getPieceDrawableResId(piece: Piece): Int {
 @Composable
 fun PreviewChessScreen() {
     BrainTrainerTheme {
-        ChessScreen()
+        // U Preview-u moramo da prosledimo neke podrazumevane vrednosti
+        ChessScreen(module = Module.Module1, difficulty = Difficulty.EASY, onGameFinished = {})
     }
 }
