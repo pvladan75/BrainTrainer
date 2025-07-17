@@ -61,7 +61,60 @@ data class Board(private val pieces: Map<Square, Piece> = emptyMap()) {
         }
     }
 
-    // --- Pomoćne funkcije za validaciju kretanja figura ---
+    /**
+     * Vraća listu svih legalnih polja na koja data figura može da se pomeri.
+     * Ne proverava da li je potez uzimanje ili ne.
+     */
+    fun getLegalMoves(start: Square): List<Square> {
+        val piece = getPiece(start) ?: return emptyList()
+        val possibleMoves = mutableListOf<Square>()
+
+        // Iteriramo kroz sva polja na tabli i proveravamo da li je potez validan za tu figuru
+        for (x in 0..7) {
+            for (y in 0..7) {
+                val end = Square.fromCoordinates(x, y)
+                if (start == end) continue // Ne može se pomeriti na isto polje
+
+                // Ako je potez validan prema pravilima kretanja figure i nema sopstvene figure na kraju
+                if (isValidMove(start, end)) {
+                    possibleMoves.add(end)
+                }
+            }
+        }
+        return possibleMoves
+    }
+
+    /**
+     * Proverava da li bilo koja figura date boje ima legalan potez koji rezultira uzimanjem.
+     */
+    fun hasAnyLegalCaptureMove(color: Color): Boolean {
+        for (startSquareEntry in pieces) {
+            val start = startSquareEntry.key
+            val piece = startSquareEntry.value
+
+            if (piece.color == color) {
+                // Proveri sva moguća legalna odredišta za ovu figuru
+                for (end in getLegalMoves(start)) {
+                    val targetPiece = getPiece(end)
+                    // Ako na odredištu postoji protivnička figura, to je potez uzimanja
+                    if (targetPiece != null && targetPiece.color != color) {
+                        return true // Pronašli smo bar jedan potez uzimanja
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+    /**
+     * Proverava da li na tabli postoje crne figure.
+     */
+    fun hasBlackPiecesRemaining(): Boolean {
+        return pieces.any { it.value.color == Color.BLACK }
+    }
+
+
+    // --- Pomoćne funkcije za validaciju kretanja figura (nepromenjene) ---
 
     private fun isValidPawnMove(start: Square, end: Square, color: Color, isCapture: Boolean): Boolean {
         val deltaX = end.x - start.x
@@ -69,7 +122,7 @@ data class Board(private val pieces: Map<Square, Piece> = emptyMap()) {
 
         val direction = if (color == Color.WHITE) 1 else -1 // Beli ide gore (+Y), Crni ide dole (-Y)
 
-        // Pešak ne može da se kreće horizontalno
+        // Pešak ne može da se kreće horizontalno osim kod uzimanja
         if (deltaX != 0 && !isCapture) {
             return false
         }
