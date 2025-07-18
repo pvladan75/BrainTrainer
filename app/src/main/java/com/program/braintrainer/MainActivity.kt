@@ -40,21 +40,21 @@ class MainActivity : ComponentActivity() {
                 title = "Ukloni sve crne figure",
                 description = "Svaki potez - uklanja crnu figuru, bez straha da će te pojesti",
                 color = Color(0xFFE57373), // Crvenkasta
-                icon = R.drawable.ic_timer
+                icon = R.drawable.ic_module1_target
             ),
             GameModeInfo(
                 type = Module.Module2,
                 title = "Ukloni sve crne figure bezbedno",
                 description = "Ne smeš da staneš na polje koje crne figure napadaju",
                 color = Color(0xFF64B5F6), // Plavkasta
-                icon = R.drawable.ic_trap
+                icon = R.drawable.ic_module2_shield
             ),
             GameModeInfo(
                 type = Module.Module3,
                 title = "Pojedi crnog kralja",
                 description = "Pazi da ne staneš na polje koje crne figure napadaju",
                 color = Color(0xFF81C784), // Zelenkasta
-                icon = R.drawable.ic_analysis
+                icon = R.drawable.ic_module3_king
             )
         )
 
