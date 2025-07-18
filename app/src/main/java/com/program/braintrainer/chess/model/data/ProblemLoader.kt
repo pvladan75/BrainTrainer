@@ -1,11 +1,10 @@
-package com.program.braintrainer.chess.data
+package com.program.braintrainer.chess.model.data
 
 import android.content.Context
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.chess.model.Problem
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
 import java.io.IOException
 
 class ProblemLoader(private val context: Context) {

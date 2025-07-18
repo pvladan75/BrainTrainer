@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -27,6 +28,8 @@ import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.GameModeInfo
 import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.ui.screens.ChessScreen
+// **DODAT IMPORT**
+import com.program.braintrainer.ui.screens.HighScoresScreen
 import com.program.braintrainer.ui.theme.BrainTrainerTheme
 
 
@@ -37,22 +40,22 @@ class MainActivity : ComponentActivity() {
         val gameModes = listOf(
             GameModeInfo(
                 type = Module.Module1,
-                title = "Ukloni sve crne figure",
-                description = "Svaki potez - uklanja crnu figuru, bez straha da će te pojesti",
+                title = Module.Module1.title,
+                description = "Crne figure spavaju, ali u svakom potezu - ukloni je bez straha da će te pojesti",
                 color = Color(0xFFE57373), // Crvenkasta
                 icon = R.drawable.ic_module1_target
             ),
             GameModeInfo(
                 type = Module.Module2,
-                title = "Ukloni sve crne figure bezbedno",
-                description = "Ne smeš da staneš na polje koje crne figure napadaju",
+                title = Module.Module2.title,
+                description = "Crne figure vrebaju- izbegavaj polja koje crne figure napadaju",
                 color = Color(0xFF64B5F6), // Plavkasta
                 icon = R.drawable.ic_module2_shield
             ),
             GameModeInfo(
                 type = Module.Module3,
-                title = "Pojedi crnog kralja",
-                description = "Pazi da ne staneš na polje koje crne figure napadaju",
+                title = Module.Module1.title,
+                description = "Ukloni sve branioce crnog kralja, pa i njega ukloni. Pazi, crne figure vrebaju ",
                 color = Color(0xFF81C784), // Zelenkasta
                 icon = R.drawable.ic_module3_king
             )
@@ -64,6 +67,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = "main_screen") {
                     composable("main_screen") {
                         MainScreen(
+                            navController = navController, // Prosleđujemo NavController
                             gameModes = gameModes,
                             onModeAndDifficultySelected = { selectedMode, selectedDifficulty ->
                                 navController.navigate("chess_screen/${selectedMode.type.name}/${selectedDifficulty.name}")
@@ -85,6 +89,10 @@ class MainActivity : ComponentActivity() {
                             Text("Greška: Nevažeći parametri igre.")
                         }
                     }
+                    // **DODATA NOVA RUTA ZA REZULTATE**
+                    composable("high_scores") {
+                        HighScoresScreen(navController = navController)
+                    }
                 }
             }
         }
@@ -93,6 +101,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(
+    navController: NavController, // **DODAT NAVCONTROLLER**
     gameModes: List<GameModeInfo>,
     onModeAndDifficultySelected: (GameModeInfo, Difficulty) -> Unit
 ) {
@@ -100,27 +109,26 @@ fun MainScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        // --- PROVERA ORIJENTACIJE ---
         val configuration = LocalConfiguration.current
 
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier.fillMaxSize().padding(vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             WelcomeHeader()
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // --- KONDICIONALNI PRIKAZ NA OSNOVU ORIJENTACIJE ---
+            // Zadržana postojeća logika za prikaz modova
             if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                // LANDSCAPE: Horizontalni slajder
                 LazyRow(
+                    modifier = Modifier.weight(1f), // Omogućava da zauzme dostupan prostor
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     items(gameModes) { mode ->
                         GameModeCard(
-                            modifier = Modifier.width(320.dp), // Fiksna širina za landscape
+                            modifier = Modifier.width(320.dp),
                             gameMode = mode,
                             onDifficultySelected = { difficulty ->
                                 onModeAndDifficultySelected(mode, difficulty)
@@ -129,16 +137,15 @@ fun MainScreen(
                     }
                 }
             } else {
-                // PORTRAIT: Vertikalna lista
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.weight(1f), // Omogućava da zauzme dostupan prostor
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(gameModes) { mode ->
                         GameModeCard(
-                            modifier = Modifier.fillMaxWidth(), // Puna širina za portrait
+                            modifier = Modifier.fillMaxWidth(),
                             gameMode = mode,
                             onDifficultySelected = { difficulty ->
                                 onModeAndDifficultySelected(mode, difficulty)
@@ -147,9 +154,22 @@ fun MainScreen(
                     }
                 }
             }
+
+            // **DODATO DUGME ZA NAJBOLJE REZULTATE**
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = { navController.navigate("high_scores") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+            ) {
+                Text(text = "🏆 Najbolji Rezultati")
+            }
         }
     }
 }
+
+// Funkcije WelcomeHeader i GameModeCard ostaju nepromenjene
 
 @Composable
 fun WelcomeHeader() {
@@ -176,12 +196,12 @@ fun WelcomeHeader() {
 
 @Composable
 fun GameModeCard(
-    modifier: Modifier = Modifier, // Modifikator se sada prosleđuje
+    modifier: Modifier = Modifier,
     gameMode: GameModeInfo,
     onDifficultySelected: (Difficulty) -> Unit
 ) {
     Card(
-        modifier = modifier, // Koristi se prosleđeni modifikator
+        modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
@@ -189,7 +209,6 @@ fun GameModeCard(
             modifier = Modifier.padding(16.dp).fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Gornji deo sa informacijama
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
@@ -212,8 +231,6 @@ fun GameModeCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
-            // Donji deo sa dugmićima za težinu
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Divider(modifier = Modifier.padding(vertical = 12.dp))
                 Text(
@@ -226,7 +243,7 @@ fun GameModeCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Difficulty.entries.forEach { difficulty ->
+                    Difficulty.values().forEach { difficulty ->
                         OutlinedButton(onClick = { onDifficultySelected(difficulty) }) {
                             Text(text = difficulty.label)
                         }
@@ -237,13 +254,17 @@ fun GameModeCard(
     }
 }
 
+
+// Preview funkcije su ažurirane da proslede NavController
 @Preview(showBackground = true, widthDp = 360, heightDp = 780, name = "Portrait")
 @Composable
 fun MainScreenPreviewPortrait() {
+    val navController = rememberNavController()
     BrainTrainerTheme {
         MainScreen(
+            navController = navController,
             gameModes = listOf(
-                GameModeInfo(Module.Module1, "Modul 1", "Opis 1", Color.Red, R.drawable.ic_timer)
+                GameModeInfo(Module.Module1, "Modul 1", "Opis 1", Color.Red, R.drawable.ic_module1_target)
             ),
             onModeAndDifficultySelected = { _, _ -> }
         )
@@ -253,10 +274,13 @@ fun MainScreenPreviewPortrait() {
 @Preview(showBackground = true, widthDp = 800, heightDp = 480, name = "Landscape")
 @Composable
 fun MainScreenPreviewLandscape() {
+    val navController = rememberNavController()
     BrainTrainerTheme {
         MainScreen(
+            navController = navController,
             gameModes = listOf(
-                GameModeInfo(Module.Module1, "Modul 1", "Opis 1", Color.Red, R.drawable.ic_timer)
+                GameModeInfo(Module.Module1, "Modul 1", "Opis 1", Color.Red, R.drawable.ic_module1_target),
+                GameModeInfo(Module.Module2, "Modul 2", "Opis 2", Color.Blue, R.drawable.ic_module2_shield)
             ),
             onModeAndDifficultySelected = { _, _ -> }
         )
