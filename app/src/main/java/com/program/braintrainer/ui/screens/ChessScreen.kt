@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,12 +15,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.program.braintrainer.R
-import com.program.braintrainer.chess.data.ProblemLoader
+import com.program.braintrainer.chess.data.ProblemLoader // Pretpostavka da je ovo ispravna putanja
 import com.program.braintrainer.chess.model.Board
-import com.program.braintrainer.chess.model.Color as ChessColor
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.chess.model.Piece
@@ -30,6 +32,8 @@ import com.program.braintrainer.chess.parser.FenParser
 import com.program.braintrainer.ui.theme.BrainTrainerTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.program.braintrainer.chess.model.Color as ChessColor
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
@@ -39,10 +43,12 @@ fun ChessScreen(
     onGameFinished: () -> Unit
 ) {
     val context = LocalContext.current
+    // Pretpostavka je da ste ProblemLoader uspešno prebacili u klasu
     val problemLoader = remember { ProblemLoader(context) }
 
+    // Učitavanje i mešanje zagonetki
     val problems = remember(module, difficulty) {
-        problemLoader.loadProblemsForModuleAndDifficulty(module, difficulty)
+        problemLoader.loadProblemsForModuleAndDifficulty(module, difficulty).shuffled()
     }
 
     var currentProblemIndex by remember { mutableStateOf(0) }
@@ -62,6 +68,11 @@ fun ChessScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
+    // **NOVO**: Stanje za prikaz dijaloga za branjeno polje
+    var showDefendedSquareDialog by remember { mutableStateOf(false) }
+    // **NOVO**: Stanje za čuvanje table sa pogrešnim potezom
+    var boardForDialog by remember { mutableStateOf<Board?>(null) }
+
 
     LaunchedEffect(currentProblemIndex, problems) {
         if (problems.isNotEmpty() && currentProblemIndex < problems.size) {
@@ -77,6 +88,10 @@ fun ChessScreen(
             showGameResultDialog = false
             gameResultMessage = ""
         } else {
+            // Ako nema više problema, završi igru
+            if (problems.isNotEmpty()) {
+                onGameFinished()
+            }
             currentProblem = null
             currentBoard = Board()
             selectedSquare = null
@@ -175,18 +190,18 @@ fun ChessScreen(
 
         if (module == Module.Module1 && !isCapture) {
             coroutineScope.launch { snackbarHostState.showSnackbar("U ovom modulu svaki potez mora biti uzimanje!") }
-            usedSolution = true
+            // Možemo smatrati da je korišćenje pomoći ako ne prate pravila
         } else if (currentBoard.isValidMove(startSquare, endSquare)) {
             val newBoard = currentBoard.applyMove(startSquare, endSquare)
             if (newBoard != null) {
                 if (module == Module.Module2 || module == Module.Module3) {
                     val attackedByBlackOnNewBoard = newBoard.getAttackedSquares(ChessColor.BLACK)
                     if (attackedByBlackOnNewBoard.contains(endSquare)) {
-                        currentBoard = newBoard
-                        usedSolution = true
-                        gameResultMessage = "Pogrešan potez! Pomerili ste figuru na polje koje je pod napadom. Zagonetka je neuspešno rešena."
-                        showGameResultDialog = true
-                        selectedSquare = null
+                        // **IZMENJENO**: Prikazujemo novi dijalog umesto da završimo igru
+                        boardForDialog = newBoard // Sačuvaj pogrešnu poziciju za prikaz
+                        showDefendedSquareDialog = true // Pokaži dijalog
+                        // Ne ažuriramo `currentBoard` jer potez nije validan
+                        selectedSquare = startSquare // Vrati selekciju na početno polje
                         return@click
                     }
                 }
@@ -202,9 +217,8 @@ fun ChessScreen(
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         val configuration = LocalConfiguration.current
 
-        // --- DEFINICIJE AKCIJA SA ISPRAVNIM TIPOVIMA ---
         val onNextPuzzle: () -> Unit = {
-            if (currentProblemIndex + 1 < problems.size) {
+            if (currentProblemIndex + 1 < problemsInSession.size) {
                 currentProblemIndex++
             } else {
                 onGameFinished()
@@ -275,8 +289,6 @@ fun ChessScreen(
             isPlayingSolution = !isPlayingSolution
         }
 
-        // --- Kraj definicija akcija
-
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Row(
                 modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -286,9 +298,7 @@ fun ChessScreen(
                 GameInfoPanel(
                     module, difficulty, currentProblem, problemsInSession, currentSessionProblemIndex, Modifier.weight(1f)
                 )
-
                 ChessBoardComposable(currentBoard, selectedSquare, onSquareClick)
-
                 GameControlsPanel(
                     showSolutionPath = showSolutionPath,
                     isPlayingSolution = isPlayingSolution,
@@ -314,9 +324,7 @@ fun ChessScreen(
                 GameInfoPanel(
                     module, difficulty, currentProblem, problemsInSession, currentSessionProblemIndex
                 )
-
                 ChessBoardComposable(currentBoard, selectedSquare, onSquareClick)
-
                 GameControlsPanel(
                     showSolutionPath = showSolutionPath,
                     isPlayingSolution = isPlayingSolution,
@@ -339,6 +347,7 @@ fun ChessScreen(
             modifier = Modifier.align(Alignment.BottomCenter)
         )
 
+        // Dijalog za kraj igre
         if (showGameResultDialog) {
             AlertDialog(
                 onDismissRequest = { /* Ne dozvoli zatvaranje */ },
@@ -349,13 +358,23 @@ fun ChessScreen(
                         showGameResultDialog = false
                         onNextPuzzle()
                     }) {
-                        Text("OK")
+                        Text("Sledeća zagonetka")
                     }
                 }
             )
         }
+
+        // **NOVO**: Prikaz dijaloga za branjeno polje
+        if (showDefendedSquareDialog && boardForDialog != null) {
+            DefendedSquareDialog(
+                board = boardForDialog!!,
+                onDismiss = { showDefendedSquareDialog = false }
+            )
+        }
     }
 }
+
+// --- Bez izmena u ostalim Composable funkcijama ispod, osim u DefendedSquareDialog ---
 
 @Composable
 fun GameInfoPanel(
@@ -374,6 +393,7 @@ fun GameInfoPanel(
         Text(text = "Mod: ${module.title}", style = MaterialTheme.typography.titleLarge)
         Text(text = "Težina: ${difficulty.label}", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(16.dp))
+        // Implementacija tajmera bi išla ovde
         Text(text = "Vreme: 00:00", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -386,6 +406,7 @@ fun GameInfoPanel(
             Text(
                 text = "Cilj: ${it.description}",
                 style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
@@ -432,7 +453,8 @@ fun GameControlsPanel(
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = onPreviousMoveClick, enabled = solutionMoveIndex > -1) {
                     Text("<<")
@@ -452,7 +474,7 @@ fun GameControlsPanel(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onSurrenderClick) {
+        Button(onClick = onSurrenderClick, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) {
             Text("Predajem se")
         }
     }
@@ -464,7 +486,7 @@ fun ChessBoardComposable(
     selectedSquare: Square?,
     onSquareClick: (Square) -> Unit
 ) {
-    val squareSize = 40.dp
+    val squareSize = LocalConfiguration.current.screenWidthDp.dp / 10 // Prilagodljiva veličina
     val boardSize = squareSize * 8
 
     Column(
@@ -479,23 +501,21 @@ fun ChessBoardComposable(
                     val piece = board.getPiece(square)
 
                     val backgroundColor = if ((file + rank) % 2 == 0) {
-                        Color(0xFFEEEED2)
+                        Color(0xFFEEEED2) // Svetlo polje
                     } else {
-                        Color(0xFF769656)
+                        Color(0xFF769656) // Tamno polje
                     }
 
-                    val squareModifier = Modifier
-                        .size(squareSize)
-                        .background(
-                            when {
-                                square == selectedSquare -> Color.Yellow.copy(alpha = 0.5f)
-                                else -> backgroundColor
-                            }
-                        )
-                        .clickable { onSquareClick(square) }
-
                     Box(
-                        modifier = squareModifier,
+                        modifier = Modifier
+                            .size(squareSize)
+                            .background(
+                                when {
+                                    square == selectedSquare -> Color.Yellow.copy(alpha = 0.6f)
+                                    else -> backgroundColor
+                                }
+                            )
+                            .clickable { onSquareClick(square) },
                         contentAlignment = Alignment.Center
                     ) {
                         piece?.let {
@@ -503,7 +523,7 @@ fun ChessBoardComposable(
                             Image(
                                 painter = painterResource(id = drawableResId),
                                 contentDescription = "${it.color} ${it.type}",
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(0.9f) // Figura je malo manja od polja
                             )
                         }
                     }
@@ -513,8 +533,62 @@ fun ChessBoardComposable(
     }
 }
 
+// **ISPRAVLJENA FUNKCIJA**
+@Composable
+fun DefendedSquareDialog(
+    board: Board, // Prosleđujemo tablu sa pogrešnim potezom
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Branjeno Polje!",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Ne možete stati na polje koje napada protivnička figura. Pogledajte poziciju da vidite grešku.",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                // **ISPRAVKA**: Koristimo ChessBoardComposable umesto nepostojećeg BoardView
+                ChessBoardComposable(
+                    board = board,
+                    onSquareClick = {}, // Tabla u dijalogu je samo za prikaz, bez interakcije
+                    selectedSquare = null
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = onDismiss,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Pokušaj ponovo")
+                }
+            }
+        }
+    }
+}
+
+
 @Composable
 fun getPieceDrawableResId(piece: Piece): Int {
+    val context = LocalContext.current
     val colorPrefix = if (piece.color == ChessColor.WHITE) "w" else "b"
     val typeSuffix = when (piece.type) {
         PieceType.PAWN -> "p"
@@ -524,12 +598,13 @@ fun getPieceDrawableResId(piece: Piece): Int {
         PieceType.QUEEN -> "q"
         PieceType.KING -> "k"
     }
-    val resourceName = "$colorPrefix$typeSuffix"
-    return LocalContext.current.resources.getIdentifier(resourceName, "drawable", LocalContext.current.packageName)
+    val resourceName = "${colorPrefix}${typeSuffix}"
+    // Koristimo context.resources za pristup resursima
+    return context.resources.getIdentifier(resourceName, "drawable", context.packageName)
 }
 
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 720, name = "Portrait Preview")
+@Preview(showBackground = true, widthDp = 360, heightDp = 740, name = "Portrait Preview")
 @Composable
 fun PreviewChessScreenPortrait() {
     BrainTrainerTheme {

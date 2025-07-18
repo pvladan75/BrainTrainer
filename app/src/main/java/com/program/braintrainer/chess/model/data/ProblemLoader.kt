@@ -27,7 +27,7 @@ class ProblemLoader(private val context: Context) {
         return try {
             val jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
             // Sada parsiramo kao LISTU Problem objekata
-            json.decodeFromString<List<Problem>>(jsonString)
+            json.decodeFromString<List<Problem>>(jsonString).shuffled()
         } catch (ioException: IOException) {
             println("ERROR: Could not load file $fileName. Does it exist in assets and is named correctly? ${ioException.message}")
             ioException.printStackTrace()
