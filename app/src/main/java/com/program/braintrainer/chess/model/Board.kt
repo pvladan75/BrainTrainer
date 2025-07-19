@@ -2,7 +2,63 @@ package com.program.braintrainer.chess.model
 
 import kotlin.math.abs
 
+// Potrebno je dodati ovu funkciju u vašu Piece.kt datoteku
+fun Piece.getChar(): Char {
+    val char = when (type) {
+        PieceType.PAWN -> 'p'
+        PieceType.KNIGHT -> 'n'
+        PieceType.BISHOP -> 'b'
+        PieceType.ROOK -> 'r'
+        PieceType.QUEEN -> 'q'
+        PieceType.KING -> 'k'
+    }
+    return if (color == Color.WHITE) char.uppercaseChar() else char
+}
+
+
+data class Move(val start: Square, val end: Square) {
+    override fun toString(): String {
+        return "${start}-${end}"
+    }
+}
+
 data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
+
+    /**
+     * NOVO: Generiše FEN (Forsyth-Edwards Notation) string za trenutno stanje table.
+     * Ovo je ključno za solver da bi mogao da prati posećene pozicije.
+     */
+    fun toFEN(): String {
+        val fenBuilder = StringBuilder()
+        for (rank in 7 downTo 0) {
+            var emptySquares = 0
+            for (file in 0..7) {
+                val square = Square.fromCoordinates(file, rank)
+                val piece = getPiece(square)
+                if (piece == null) {
+                    emptySquares++
+                } else {
+                    if (emptySquares > 0) {
+                        fenBuilder.append(emptySquares)
+                        emptySquares = 0
+                    }
+                    fenBuilder.append(piece.getChar())
+                }
+            }
+            if (emptySquares > 0) {
+                fenBuilder.append(emptySquares)
+            }
+            if (rank > 0) {
+                fenBuilder.append('/')
+            }
+        }
+        // Za potrebe solvera, samo nam je bitan raspored figura.
+        // Ostatak FEN stringa (ko je na potezu, rokade, itd.) nije neophodan.
+        fenBuilder.append(" w - - 0 1")
+        return fenBuilder.toString()
+    }
+
+
     /**
      * Vraća figuru na datom polju, ili null ako nema figure.
      */
@@ -149,8 +205,6 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
                 // (bez obzira na to da li je na meti prijateljska figura)
                 val potentialTargets = when (piece.type) {
                     PieceType.PAWN -> getPawnAttackTargets(square, attackingColor)
-                    // Knights don't have color-specific attack targets in terms of movement,
-                    // but we pass attackingColor to getAttackedSquares for consistency.
                     PieceType.KNIGHT -> getKnightAttackTargets(square)
                     PieceType.BISHOP -> getSlidingAttackTargets(square, BishopDirections)
                     PieceType.ROOK -> getSlidingAttackTargets(square, RookDirections)
@@ -175,22 +229,19 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
     }
 
     // --- Pomoćne funkcije za generisanje POTENCIJALNIH meta napada (za getAttackedSquares) ---
-    // OVE FUNKCIJE SU DOBIJE GLAVNE IZMENE!
     private fun getPawnAttackTargets(start: Square, color: Color): List<Square> {
         val targets = mutableListOf<Square>()
         val direction = if (color == Color.WHITE) 1 else -1
 
-        // Levi dijagonalni napad
         val targetXLeft = start.x - 1
         val targetYLeft = start.y + direction
-        if (targetXLeft in 0..7 && targetYLeft in 0..7) { // PROVERA GRANICA
+        if (targetXLeft in 0..7 && targetYLeft in 0..7) {
             targets.add(Square.fromCoordinates(targetXLeft, targetYLeft))
         }
 
-        // Desni dijagonalni napad
         val targetXRight = start.x + 1
         val targetYRight = start.y + direction
-        if (targetXRight in 0..7 && targetYRight in 0..7) { // PROVERA GRANICA
+        if (targetXRight in 0..7 && targetYRight in 0..7) {
             targets.add(Square.fromCoordinates(targetXRight, targetYRight))
         }
         return targets
@@ -205,7 +256,7 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
         for ((dx, dy) in knightMoves) {
             val targetX = start.x + dx
             val targetY = start.y + dy
-            if (targetX in 0..7 && targetY in 0..7) { // PROVERA GRANICA
+            if (targetX in 0..7 && targetY in 0..7) {
                 targets.add(Square.fromCoordinates(targetX, targetY))
             }
         }
@@ -216,10 +267,10 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
         val targets = mutableListOf<Square>()
         for (dx in -1..1) {
             for (dy in -1..1) {
-                if (dx == 0 && dy == 0) continue // Kralj se ne kreće na isto polje
+                if (dx == 0 && dy == 0) continue
                 val targetX = start.x + dx
                 val targetY = start.y + dy
-                if (targetX in 0..7 && targetY in 0..7) { // PROVERA GRANICA
+                if (targetX in 0..7 && targetY in 0..7) {
                     targets.add(Square.fromCoordinates(targetX, targetY))
                 }
             }
@@ -227,7 +278,6 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
         return targets
     }
 
-    // Pomoćne varijable za smerove kretanja klizećih figura
     private val BishopDirections = listOf(Pair(1, 1), Pair(1, -1), Pair(-1, 1), Pair(-1, -1))
     private val RookDirections = listOf(Pair(0, 1), Pair(0, -1), Pair(1, 0), Pair(-1, 0))
     private val QueenDirections = BishopDirections + RookDirections
@@ -240,83 +290,49 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
             while (true) {
                 currentX += dx
                 currentY += dy
-                if (currentX !in 0..7 || currentY !in 0..7) break // PROVERA GRANICA
+                if (currentX !in 0..7 || currentY !in 0..7) break
 
                 val currentSquare = Square.fromCoordinates(currentX, currentY)
                 targets.add(currentSquare)
-                // Ako naiđemo na figuru (bilo koju), zaustavljamo se jer blokira liniju napada
                 if (getPiece(currentSquare) != null) break
             }
         }
         return targets
     }
 
-    // --- Postojeće pomoćne funkcije za validaciju kretanja figura (nepromenjene u logici kretanja) ---
-    // (Ove funkcije su ostale iste, samo je isValidMove sada koristi i za proveru šaha)
-
+    // --- Postojeće pomoćne funkcije za validaciju kretanja figura ---
     private fun isValidPawnMove(start: Square, end: Square, color: Color, isCapture: Boolean): Boolean {
         val deltaX = end.x - start.x
         val deltaY = end.y - start.y
+        val direction = if (color == Color.WHITE) 1 else -1
 
-        val direction = if (color == Color.WHITE) 1 else -1 // Beli ide gore (+Y), Crni ide dole (-Y)
-
-        // Pešak ne može da se kreće horizontalno osim kod uzimanja
-        if (deltaX != 0 && !isCapture) {
-            return false
-        }
-
-        // Normalan potez napred za jedno polje
         if (deltaX == 0 && deltaY == direction && !isCapture) {
-            return getPiece(end) == null // Polje mora biti prazno
+            return getPiece(end) == null
         }
-
-        // Početni dvostruki potez
         if (deltaX == 0 && deltaY == 2 * direction && ((color == Color.WHITE && start.y == 1) || (color == Color.BLACK && start.y == 6))) {
-            // Proveri da li su oba polja ispred pešaka prazna
-            val intermediateX = start.x
-            val intermediateY = start.y + direction
-            // Dodata provera granica za intermediateSquare, iako bi trebalo da bude unutar granica
-            // s obzirom na start.y uslove (1 i 6). Ipak, radi robusnosti.
-            if (intermediateX !in 0..7 || intermediateY !in 0..7) return false // Ovo bi trebalo da bude redundantno, ali za svaki slučaj
-            val intermediateSquare = Square.fromCoordinates(intermediateX, intermediateY)
+            val intermediateSquare = Square.fromCoordinates(start.x, start.y + direction)
             return getPiece(end) == null && getPiece(intermediateSquare) == null
         }
-
-        // Hvatanje dijagonalno
         if (abs(deltaX) == 1 && deltaY == direction && isCapture) {
-            return getPiece(end) != null && getPiece(end)!!.color != color // Mora postojati protivnička figura
+            return getPiece(end) != null && getPiece(end)!!.color != color
         }
         return false
     }
 
     private fun isValidRookMove(start: Square, end: Square): Boolean {
-        // Mora se kretati samo horizontalno ili vertikalno
-        if (start.x != end.x && start.y != end.y) {
-            return false
-        }
-
-        // Proveri blokade
-        if (start.x == end.x) { // Vertikalno kretanje
+        if (start.x != end.x && start.y != end.y) return false
+        if (start.x == end.x) {
             val stepY = if (start.y < end.y) 1 else -1
             var currentY = start.y + stepY
             while (currentY != end.y) {
-                // Dodata provera granica, iako bi fromCoordinates to već uhvatio.
-                // Ali ovo je bolje jer izbegava bacanje izuzetka.
-                if (start.x !in 0..7 || currentY !in 0..7) return false
-                if (getPiece(Square.fromCoordinates(start.x, currentY)) != null) {
-                    return false // Blokirano
-                }
+                if (getPiece(Square.fromCoordinates(start.x, currentY)) != null) return false
                 currentY += stepY
             }
-        } else { // Horizontalno kretanje (start.y == end.y)
+        } else {
             val stepX = if (start.x < end.x) 1 else -1
             var currentX = start.x + stepX
             while (currentX != end.x) {
-                // Dodata provera granica
-                if (currentX !in 0..7 || start.y !in 0..7) return false
-                if (getPiece(Square.fromCoordinates(currentX, start.y)) != null) {
-                    return false // Blokirano
-                }
+                if (getPiece(Square.fromCoordinates(currentX, start.y)) != null) return false
                 currentX += stepX
             }
         }
@@ -326,30 +342,17 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
     private fun isValidKnightMove(start: Square, end: Square): Boolean {
         val deltaX = abs(end.x - start.x)
         val deltaY = abs(end.y - start.y)
-        // L-oblik kretanja (2x1 ili 1x2)
         return (deltaX == 1 && deltaY == 2) || (deltaX == 2 && deltaY == 1)
     }
 
     private fun isValidBishopMove(start: Square, end: Square): Boolean {
-        // Mora se kretati samo dijagonalno
-        if (abs(end.x - start.x) != abs(end.y - start.y)) {
-            return false
-        }
-
-        // Proveri blokade
+        if (abs(end.x - start.x) != abs(end.y - start.y)) return false
         val stepX = if (end.x > start.x) 1 else -1
         val stepY = if (end.y > start.y) 1 else -1
-
         var currentX = start.x + stepX
         var currentY = start.y + stepY
-
-        // Loop dok ne dođemo do krajnjeg polja
         while (currentX != end.x && currentY != end.y) {
-            // Dodata provera granica
-            if (currentX !in 0..7 || currentY !in 0..7) return false
-            if (getPiece(Square.fromCoordinates(currentX, currentY)) != null) {
-                return false // Blokirano
-            }
+            if (getPiece(Square.fromCoordinates(currentX, currentY)) != null) return false
             currentX += stepX
             currentY += stepY
         }
@@ -357,14 +360,12 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
     }
 
     private fun isValidQueenMove(start: Square, end: Square): Boolean {
-        // Kraljica je kombinacija topa i lovca
         return isValidRookMove(start, end) || isValidBishopMove(start, end)
     }
 
     private fun isValidKingMove(start: Square, end: Square): Boolean {
         val deltaX = abs(end.x - start.x)
         val deltaY = abs(end.y - start.y)
-        // Kralj se kreće samo jedno polje u bilo kom smeru
         return deltaX <= 1 && deltaY <= 1
     }
 }
