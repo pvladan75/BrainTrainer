@@ -33,8 +33,35 @@ import com.program.braintrainer.score.ScoreManager
 import com.program.braintrainer.ui.theme.BrainTrainerTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.max
 import com.program.braintrainer.chess.model.Color as ChessColor
 
+// ===================================================================
+// ===         CENTRALNO MESTO ZA PODEŠAVANJE BODOVANJA            ===
+// ===================================================================
+data class ScoringParams(
+    // Osnovni poeni po težini
+    val basePointsEasy: Int = 10,
+    val basePointsMedium: Int = 20,
+    val basePointsHard: Int = 30,
+
+    // Vremenski bonus (maksimalni broj sekundi za koje se dobija bonus)
+    val maxTimeForBonusEasy: Int = 30,
+    val maxTimeForBonusMedium: Int = 60,
+    val maxTimeForBonusHard: Int = 90,
+
+    // Kazna za stajanje na branjeno polje (oduzima se poena po grešci)
+    val penaltyPerMistake: Int = 5,
+
+    // Kazna za neefikasnost (oduzima se poena za svaki potez preko optimalnog)
+    val penaltyPerExtraMove: Int = 2,
+
+    // Bonus za niz tačnih odgovora (progresivno raste)
+    val streakBonusEasy: Int = 5,  // Bonus po uzastopnom tačnom odgovoru
+    val streakBonusMedium: Int = 10,
+    val streakBonusHard: Int = 15
+)
+// ===================================================================
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
@@ -45,6 +72,8 @@ fun ChessScreen(
 ) {
     val context = LocalContext.current
     val problemLoader = remember { ProblemLoader(context) }
+    // Instanca parametara za bodovanje
+    val scoringParams = remember { ScoringParams() }
 
     val problems: List<Problem> = remember(module, difficulty) {
         problemLoader.loadProblemsForModuleAndDifficulty(module, difficulty)
@@ -78,6 +107,11 @@ fun ChessScreen(
     var elapsedTimeInSeconds by remember { mutableStateOf(0) }
     var isTimerRunning by remember { mutableStateOf(false) }
 
+    // --- Stanja za napredno bodovanje ---
+    var defendedSquareMistakes by remember { mutableStateOf(0) }
+    var playerMoveCount by remember { mutableStateOf(0) }
+    var correctStreak by remember { mutableStateOf(0) }
+
     fun stopTimer() {
         isTimerRunning = false
     }
@@ -85,6 +119,8 @@ fun ChessScreen(
     LaunchedEffect(currentProblemIndex) {
         elapsedTimeInSeconds = 0
         isTimerRunning = true
+        defendedSquareMistakes = 0
+        playerMoveCount = 0
     }
 
     LaunchedEffect(isTimerRunning) {
@@ -138,67 +174,72 @@ fun ChessScreen(
     }
     val currentSessionProblemIndex = if (problemsInSession.isNotEmpty()) currentProblemIndex % problemsInSession.size else 0
 
-    fun checkGameStatus() {
-        fun addPoints() {
-            if (!usedSolution) {
-                val basePoints = when (difficulty) {
-                    Difficulty.EASY -> 10
-                    Difficulty.MEDIUM -> 20
-                    Difficulty.HARD -> 30
-                }
-                val maxTimeForBonus = when (difficulty) {
-                    Difficulty.EASY -> 30
-                    Difficulty.MEDIUM -> 60
-                    Difficulty.HARD -> 90
-                }
-                val timeBonus = maxOf(0, maxTimeForBonus - elapsedTimeInSeconds)
-                val totalPoints = basePoints + timeBonus
-                currentSessionScore += totalPoints
-                gameResultMessage += "\n\n🏆 Osvojili ste $totalPoints poena ($basePoints osnovnih + $timeBonus bonus za vreme)."
-            } else {
-                gameResultMessage += "\n\n(Niste osvojili poene jer ste koristili rešenje.)"
+    fun checkGameStatus(isSuccess: Boolean) {
+        stopTimer()
+
+        if (!isSuccess) {
+            correctStreak = 0
+            gameResultMessage = when (module) {
+                Module.Module1 -> "Promašaj! Nema više legalnih poteza uzimanja."
+                else -> "Promašaj! Nema više legalnih poteza."
             }
+            showGameResultDialog = true
+            return
         }
 
-        when (module) {
-            Module.Module1 -> {
-                if (!currentBoard.hasBlackPiecesRemaining()) {
-                    stopTimer()
-                    gameResultMessage = "Sve crne figure su pojedene. Zagonetka rešena!"
-                    addPoints()
-                    showGameResultDialog = true
-                } else if (!currentBoard.hasAnyLegalCaptureMove(activePlayerColor)) {
-                    stopTimer()
-                    gameResultMessage = "Promašaj! Nema više legalnih poteza uzimanja."
-                    showGameResultDialog = true
-                }
+        var detailedMessage = "Zagonetka rešena!\n\n"
+        var finalPoints = 0
+
+        if (!usedSolution) {
+            val basePoints = when (difficulty) {
+                Difficulty.EASY -> scoringParams.basePointsEasy
+                Difficulty.MEDIUM -> scoringParams.basePointsMedium
+                Difficulty.HARD -> scoringParams.basePointsHard
             }
-            Module.Module2 -> {
-                if (!currentBoard.hasBlackPiecesRemaining()) {
-                    stopTimer()
-                    gameResultMessage = "Sve crne figure su pojedene. Zagonetka rešena!"
-                    addPoints()
-                    showGameResultDialog = true
-                } else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) {
-                    stopTimer()
-                    gameResultMessage = "Promašaj! Nema više legalnih poteza."
-                    showGameResultDialog = true
-                }
+            detailedMessage += "✅ Osnovni poeni: +$basePoints\n"
+
+            val maxTimeForBonus = when (difficulty) {
+                Difficulty.EASY -> scoringParams.maxTimeForBonusEasy
+                Difficulty.MEDIUM -> scoringParams.maxTimeForBonusMedium
+                Difficulty.HARD -> scoringParams.maxTimeForBonusHard
             }
-            Module.Module3 -> {
-                val blackKingExists = currentBoard.pieces.any { it.value == Piece(PieceType.KING, ChessColor.BLACK) }
-                if (!blackKingExists) {
-                    stopTimer()
-                    gameResultMessage = "Crni kralj je pojeden. Zagonetka rešena!"
-                    addPoints()
-                    showGameResultDialog = true
-                } else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) {
-                    stopTimer()
-                    gameResultMessage = "Promašaj! Nema više legalnih poteza."
-                    showGameResultDialog = true
+            val timeBonus = max(0, maxTimeForBonus - elapsedTimeInSeconds)
+            detailedMessage += "🕒 Bonus za vreme: +$timeBonus\n"
+
+            val optimalMoves = currentProblem?.solution?.moves?.size ?: playerMoveCount
+            val extraMoves = max(0, playerMoveCount - optimalMoves)
+            val efficiencyPenalty = extraMoves * scoringParams.penaltyPerExtraMove
+            detailedMessage += "🔻 Kazna za poteze: -$efficiencyPenalty ($extraMoves poteza viška)\n"
+
+            val mistakePenalty = defendedSquareMistakes * scoringParams.penaltyPerMistake
+            detailedMessage += "🔻 Kazna za greške: -$mistakePenalty ($defendedSquareMistakes grešaka)\n"
+
+            val streakBonus = if (defendedSquareMistakes == 0 && extraMoves == 0) {
+                correctStreak++
+                val bonusPerStreak = when(difficulty) {
+                    Difficulty.EASY -> scoringParams.streakBonusEasy
+                    Difficulty.MEDIUM -> scoringParams.streakBonusMedium
+                    Difficulty.HARD -> scoringParams.streakBonusHard
                 }
+                val totalBonus = correctStreak * bonusPerStreak
+                detailedMessage += "🔥 Bonus za niz: +$totalBonus ($correctStreak zagonetki zaredom)\n"
+                totalBonus
+            } else {
+                correctStreak = 0
+                detailedMessage += "🔥 Bonus za niz: +0 (bilo je grešaka)\n"
+                0
             }
+
+            finalPoints = max(0, basePoints + timeBonus + streakBonus - efficiencyPenalty - mistakePenalty)
+            currentSessionScore += finalPoints
+            detailedMessage += "\n🏆 Ukupno poena: $finalPoints"
+        } else {
+            correctStreak = 0
+            detailedMessage = "Zagonetka rešena uz pomoć.\n\n(Niste osvojili poene jer ste koristili rešenje.)"
         }
+
+        gameResultMessage = detailedMessage
+        showGameResultDialog = true
     }
 
     val onSquareClick: (Square) -> Unit = click@{ clickedSquare ->
@@ -221,6 +262,7 @@ fun ChessScreen(
                 coroutineScope.launch { snackbarHostState.showSnackbar("U ovom modulu svaki potez mora biti uzimanje!") }
                 return@click
             }
+
             val newBoard = currentBoard.applyMove(startSquare, endSquare)
             if (newBoard != null) {
                 if (module == Module.Module2 || module == Module.Module3) {
@@ -229,12 +271,24 @@ fun ChessScreen(
                         boardForDialog = newBoard
                         showDefendedSquareDialog = true
                         selectedSquare = startSquare
+                        defendedSquareMistakes++
                         return@click
                     }
                 }
                 currentBoard = newBoard
                 selectedSquare = endSquare
-                checkGameStatus()
+                playerMoveCount++
+
+                when(module) {
+                    Module.Module1, Module.Module2 -> {
+                        if (!currentBoard.hasBlackPiecesRemaining()) checkGameStatus(isSuccess = true)
+                        else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) checkGameStatus(isSuccess = false)
+                    }
+                    Module.Module3 -> {
+                        if (!currentBoard.pieces.any { it.value == Piece(PieceType.KING, ChessColor.BLACK) }) checkGameStatus(isSuccess = true)
+                        else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) checkGameStatus(isSuccess = false)
+                    }
+                }
             }
         } else {
             coroutineScope.launch { snackbarHostState.showSnackbar("Ne možete pomeriti figuru tako!") }
@@ -256,6 +310,7 @@ fun ChessScreen(
         if (!showSolutionPath) {
             stopTimer()
             usedSolution = true
+            correctStreak = 0
         }
         showSolutionPath = !showSolutionPath
         isPlayingSolution = false
@@ -311,6 +366,7 @@ fun ChessScreen(
     val onSurrender: () -> Unit = {
         stopTimer()
         usedSolution = true
+        correctStreak = 0
         gameResultMessage = "Predali ste se. Zagonetka nije rešena."
         showGameResultDialog = true
     }
@@ -348,8 +404,6 @@ fun ChessScreen(
         }
     }
 }
-
-// Ostatak fajla ostaje uglavnom isti, sa ključnim izmenama u ChessBoardComposable i DefendedSquareDialog
 
 @Composable
 fun GameInfoPanel(
@@ -411,23 +465,19 @@ fun GameControlsPanel(
     }
 }
 
-
-// *** KLJUČNA IZMENA #1 ***
 @Composable
 fun ChessBoardComposable(
     board: Board,
     selectedSquare: Square?,
     onSquareClick: (Square) -> Unit,
-    modifier: Modifier = Modifier // Dodat modifikator
+    modifier: Modifier = Modifier
 ) {
-    // Koristimo BoxWithConstraints da dobijemo raspoloživu širinu i na osnovu nje izračunamo veličinu polja
     BoxWithConstraints(
         modifier = modifier
             .background(Color.DarkGray)
-            .aspectRatio(1f) // Održavamo tablu kvadratnom
+            .aspectRatio(1f)
     ) {
-        val squareSize = this.maxWidth / 8 // Veličina polja se sada bazira na širini kontejnera
-
+        val squareSize = this.maxWidth / 8
         Column {
             for (rank in 7 downTo 0) {
                 Row {
@@ -437,7 +487,7 @@ fun ChessBoardComposable(
                         val backgroundColor = if ((file + rank) % 2 == 0) Color(0xFFEEEED2) else Color(0xFF769656)
                         Box(
                             modifier = Modifier
-                                .size(squareSize) // Koristimo izračunatu veličinu
+                                .size(squareSize)
                                 .background(if (square == selectedSquare) Color.Yellow.copy(alpha = 0.6f) else backgroundColor)
                                 .clickable { onSquareClick(square) },
                             contentAlignment = Alignment.Center
@@ -454,7 +504,6 @@ fun ChessBoardComposable(
     }
 }
 
-// *** KLJUČNA IZMENA #2 ***
 @Composable
 fun DefendedSquareDialog(board: Board, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
@@ -462,15 +511,12 @@ fun DefendedSquareDialog(board: Board, onDismiss: () -> Unit) {
             Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 Text("Branjeno Polje!", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(bottom = 8.dp))
                 Text("Ne možete stati na polje koje napada protivnička figura.", textAlign = TextAlign.Center, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(bottom = 16.dp))
-
-                // Prosleđujemo modifikator da ograničimo veličinu table unutar dijaloga
                 ChessBoardComposable(
                     board = board,
                     onSquareClick = {},
                     selectedSquare = null,
-                    modifier = Modifier.fillMaxWidth() // Tabla će se raširiti do ivica kartice
+                    modifier = Modifier.fillMaxWidth()
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text("Pokušaj ponovo") }
             }
