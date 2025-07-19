@@ -46,10 +46,10 @@
       android:strokeColor="#030000"
       android:fillAlpha="0.7002288"/>
   <path
-      android:pathData="m91.4,46.67a16.07,12.54 0,0 1,4.28 -17.04,16.07 12.54,0 0,1 22,2.64 16.07,12.54 0,0 1,-2.47 17.26,16.07 12.54,0 0,1 -22.2,-1.21"
-      android:strokeAlpha="0.8077803"
-      android:strokeWidth="3.153"
-      android:fillColor="#fafdff"
+      android:pathData="M90.47,44.89A17.99,18.31 0,0 1,95.26 20.01,17.99 18.31,0 0,1 119.89,23.86 17.99,18.31 0,0 1,117.13 49.06,17.99 18.31,0 0,1 92.27,47.29"
+      android:strokeAlpha="0.80778"
+      android:strokeWidth="4.03034"
+      android:fillColor="#000000"
       android:strokeColor="#030000"
-      android:fillAlpha="0.7002288"/>
+      android:fillAlpha="0.947368"/>
 </vector>

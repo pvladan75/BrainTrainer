@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
             ),
             GameModeInfo(
                 type = Module.Module3,
-                title = Module.Module1.title,
+                title = Module.Module3.title,
                 description = "Ukloni sve branioce crnog kralja, pa i njega ukloni. Pazi, crne figure vrebaju ",
                 color = Color(0xFF81C784), // Zelenkasta
                 icon = R.drawable.ic_module3_king

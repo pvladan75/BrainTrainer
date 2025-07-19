@@ -94,6 +94,7 @@ fun ChessScreen(
 
     // --- Stanja za dijaloge i poruke ---
     var showGameResultDialog by remember { mutableStateOf(false) }
+    var showNoMoreMovesDialog by remember { mutableStateOf(false) } // NOVO
     var gameResultMessage by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -144,6 +145,7 @@ fun ChessScreen(
             isPlayingSolution = false
             usedSolution = false
             showGameResultDialog = false
+            showNoMoreMovesDialog = false
             gameResultMessage = ""
         }
     }
@@ -242,8 +244,38 @@ fun ChessScreen(
         showGameResultDialog = true
     }
 
+    val onShowSolution: () -> Unit = {
+        if (!showSolutionPath) {
+            stopTimer()
+            usedSolution = true
+            correctStreak = 0
+        }
+        showGameResultDialog = false
+        showNoMoreMovesDialog = false
+        showSolutionPath = !showSolutionPath
+        isPlayingSolution = false
+        currentProblem?.let {
+            val (initialBoard, _) = FenParser.parseFenToBoard(it.fen)
+            currentBoard = initialBoard
+            selectedSquare = initialBoard.pieces.entries.firstOrNull { p -> p.value.color == ChessColor.WHITE }?.key
+            solutionMoveIndex = -1
+        }
+    }
+
+    val onNextPuzzle: () -> Unit = {
+        showGameResultDialog = false
+        showNoMoreMovesDialog = false
+        if (currentProblemIndex + 1 < problemsInSession.size) {
+            currentProblemIndex++
+        } else {
+            stopTimer()
+            scoreManager.saveScore(module, difficulty, currentSessionScore)
+            showSessionEndDialog = true
+        }
+    }
+
     val onSquareClick: (Square) -> Unit = click@{ clickedSquare ->
-        if (showSolutionPath || showGameResultDialog || showSessionEndDialog) return@click
+        if (showSolutionPath || showGameResultDialog || showSessionEndDialog || showNoMoreMovesDialog) return@click
         val pieceOnClickedSquare = currentBoard.getPiece(clickedSquare)
         if (selectedSquare == null) {
             if (pieceOnClickedSquare != null && pieceOnClickedSquare.color == activePlayerColor) {
@@ -280,7 +312,16 @@ fun ChessScreen(
                 playerMoveCount++
 
                 when(module) {
-                    Module.Module1, Module.Module2 -> {
+                    Module.Module1 -> {
+                        if (!currentBoard.hasBlackPiecesRemaining()) {
+                            checkGameStatus(isSuccess = true)
+                        } else if (!currentBoard.hasAnyLegalCaptureMove(activePlayerColor)) {
+                            // NAPOMENA: Potrebno je implementirati 'hasAnyLegalCaptureMove' u klasi Board
+                            stopTimer()
+                            showNoMoreMovesDialog = true
+                        }
+                    }
+                    Module.Module2 -> {
                         if (!currentBoard.hasBlackPiecesRemaining()) checkGameStatus(isSuccess = true)
                         else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) checkGameStatus(isSuccess = false)
                     }
@@ -292,33 +333,6 @@ fun ChessScreen(
             }
         } else {
             coroutineScope.launch { snackbarHostState.showSnackbar("Ne možete pomeriti figuru tako!") }
-        }
-    }
-
-    val onNextPuzzle: () -> Unit = {
-        showGameResultDialog = false
-        if (currentProblemIndex + 1 < problemsInSession.size) {
-            currentProblemIndex++
-        } else {
-            stopTimer()
-            scoreManager.saveScore(module, difficulty, currentSessionScore)
-            showSessionEndDialog = true
-        }
-    }
-
-    val onShowSolution: () -> Unit = {
-        if (!showSolutionPath) {
-            stopTimer()
-            usedSolution = true
-            correctStreak = 0
-        }
-        showSolutionPath = !showSolutionPath
-        isPlayingSolution = false
-        currentProblem?.let {
-            val (initialBoard, _) = FenParser.parseFenToBoard(it.fen)
-            currentBoard = initialBoard
-            selectedSquare = initialBoard.pieces.entries.firstOrNull { p -> p.value.color == ChessColor.WHITE }?.key
-            solutionMoveIndex = -1
         }
     }
 
@@ -391,7 +405,24 @@ fun ChessScreen(
         SnackbarHost(hostState = snackbarHostState, modifier = Modifier.align(Alignment.BottomCenter))
 
         if (showGameResultDialog) {
-            AlertDialog(onDismissRequest = {}, title = { Text("Status zagonetke") }, text = { Text(gameResultMessage) }, confirmButton = { TextButton(onClick = onNextPuzzle) { Text(if (currentProblemIndex + 1 < problemsInSession.size) "Sledeća zagonetka" else "Pogledaj rezultat") } })
+            AlertDialog(
+                onDismissRequest = {},
+                title = { Text("Status zagonetke") },
+                text = { Text(gameResultMessage) },
+                dismissButton = {
+                    TextButton(onClick = onShowSolution) { Text("Rešenje") }
+                },
+                confirmButton = {
+                    TextButton(onClick = onNextPuzzle) { Text(if (currentProblemIndex + 1 < problemsInSession.size) "Sledeća zagonetka" else "Pogledaj rezultat") }
+                }
+            )
+        }
+
+        if (showNoMoreMovesDialog) {
+            NoMoreMovesDialog(
+                onShowSolution = onShowSolution,
+                onNewGame = onNextPuzzle
+            )
         }
 
         if (showSessionEndDialog) {
@@ -403,6 +434,29 @@ fun ChessScreen(
             DefendedSquareDialog(board = boardForDialog!!, onDismiss = { showDefendedSquareDialog = false })
         }
     }
+}
+
+// NOVO: Dijalog koji se prikazuje kada igrač u Modulu 1 ostane bez poteza.
+@Composable
+fun NoMoreMovesDialog(
+    onShowSolution: () -> Unit,
+    onNewGame: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { /* Ne može se zatvoriti prevlačenjem */ },
+        title = { Text("Nema više poteza") },
+        text = { Text("Nažalost, ostali ste bez mogućih poteza kojima biste pojeli preostale crne figure.") },
+        dismissButton = {
+            TextButton(onClick = onShowSolution) {
+                Text("Pregled rešenja")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onNewGame) {
+                Text("Nova zagonetka")
+            }
+        }
+    )
 }
 
 @Composable
