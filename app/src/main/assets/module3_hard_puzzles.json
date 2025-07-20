@@ -1,6 +1,2459 @@
 [
     {
-        "id": "PHARD_Module3_001",
+        "id": "1",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "7N/8/3b4/p7/1r3k1r/4p1p1/7b/5b2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h8f7",
+                "f7d6",
+                "d6c8",
+                "c8e7",
+                "e7g6",
+                "g6h4",
+                "h4g6",
+                "g6e7",
+                "e7c6",
+                "c6a5",
+                "a5c6",
+                "c6b4",
+                "b4d5",
+                "d5f4"
+            ]
+        }
+    },
+    {
+        "id": "2",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "7r/1p6/8/1k2r3/3b1b2/3q3N/1p6/1rr5 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h3f4",
+                "f4d3",
+                "d3f4",
+                "f4g6",
+                "g6h8",
+                "h8g6",
+                "g6h4",
+                "h4f3",
+                "f3d4",
+                "d4f3",
+                "f3e5",
+                "e5f7",
+                "f7d6",
+                "d6b5"
+            ]
+        }
+    },
+    {
+        "id": "3",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2n3p1/8/r2p1q2/8/k1b5/3N4/p7/6n1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d3e1",
+                "e1g2",
+                "g2e3",
+                "e3c4",
+                "c4e3",
+                "e3d5",
+                "d5f6",
+                "f6e8",
+                "e8c7",
+                "c7a6",
+                "a6c7",
+                "c7d5",
+                "d5c3",
+                "c3a4"
+            ]
+        }
+    },
+    {
+        "id": "4",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/2p2n2/8/k2r4/8/5bN1/b2p1p2/4b3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g3f1",
+                "f1h2",
+                "h2f3",
+                "f3h4",
+                "h4g6",
+                "g6f4",
+                "f4e2",
+                "e2c3",
+                "c3a2",
+                "a2c3",
+                "c3d5",
+                "d5e7",
+                "e7c6",
+                "c6a5"
+            ]
+        }
+    },
+    {
+        "id": "5",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "r7/4b3/b1q5/4N3/8/r1b5/2r4p/k7 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e5c6",
+                "c6e7",
+                "e7f5",
+                "f5e3",
+                "e3c2",
+                "c2a3",
+                "a3c2",
+                "c2e3",
+                "e3d5",
+                "d5c3",
+                "c3d5",
+                "d5b4",
+                "b4c2",
+                "c2a1"
+            ]
+        }
+    },
+    {
+        "id": "6",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1r5b/7n/8/8/6pr/2kp3r/1N4b1/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b2a4",
+                "a4c5",
+                "c5d7",
+                "d7b8",
+                "b8d7",
+                "d7b6",
+                "b6c8",
+                "c8e7",
+                "e7g6",
+                "g6h8",
+                "h8f7",
+                "f7d6",
+                "d6b5",
+                "b5c3"
+            ]
+        }
+    },
+    {
+        "id": "7",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1p6/2rp3k/3q4/8/4N2b/8/4n1p1/6qr w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e4d6",
+                "d6f7",
+                "f7e5",
+                "e5d3",
+                "d3b4",
+                "b4a6",
+                "a6b8",
+                "b8a6",
+                "a6c7",
+                "c7a6",
+                "a6b8",
+                "b8d7",
+                "d7f8",
+                "f8h7"
+            ]
+        }
+    },
+    {
+        "id": "8",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "r5nr/1r3b2/4N3/p3b2k/8/p7/5r2/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e6c5",
+                "c5b7",
+                "b7c5",
+                "c5e4",
+                "e4f2",
+                "f2d3",
+                "d3e5",
+                "e5f7",
+                "f7h8",
+                "h8f7",
+                "f7d6",
+                "d6f5",
+                "f5g7",
+                "g7h5"
+            ]
+        }
+    },
+    {
+        "id": "9",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2q4b/4b3/1rb5/1N6/4k1nr/8/2b5/4b1r1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b5a7",
+                "a7c8",
+                "c8b6",
+                "b6c8",
+                "c8e7",
+                "e7c6",
+                "c6a7",
+                "a7b5",
+                "b5a3",
+                "a3c2",
+                "c2a3",
+                "a3b5",
+                "b5d6",
+                "d6e4"
+            ]
+        }
+    },
+    {
+        "id": "10",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/5p1b/8/5k2/8/1n4b1/8/7N w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h1g3",
+                "g3e2",
+                "e2c3",
+                "c3d5",
+                "d5b6",
+                "b6d7",
+                "d7f8",
+                "f8h7",
+                "h7f8",
+                "f8d7",
+                "d7b8",
+                "b8c6",
+                "c6e7",
+                "e7f5"
+            ]
+        }
+    },
+    {
+        "id": "11",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "r7/4b3/8/8/k7/5q2/r1N5/1q6 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c2d4",
+                "d4f3",
+                "f3d4",
+                "d4e6",
+                "e6c7",
+                "c7a8",
+                "a8c7",
+                "c7d5",
+                "d5c3",
+                "c3b1",
+                "b1c3",
+                "c3a2",
+                "a2c3",
+                "c3a4"
+            ]
+        }
+    },
+    {
+        "id": "12",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/k6r/1p1p4/2b2b2/1N6/1n6/8/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b4d5",
+                "d5f4",
+                "f4e2",
+                "e2g3",
+                "g3f5",
+                "f5g3",
+                "g3e4",
+                "e4f6",
+                "f6h7",
+                "h7f8",
+                "f8g6",
+                "g6e7",
+                "e7c8",
+                "c8a7"
+            ]
+        }
+    },
+    {
+        "id": "13",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/8/3p4/5b1N/kb2r3/8/r7/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h5g7",
+                "g7f5",
+                "f5g3",
+                "g3e4",
+                "e4f6",
+                "f6h5",
+                "h5f4",
+                "f4d3",
+                "d3c1",
+                "c1a2",
+                "a2c1",
+                "c1d3",
+                "d3b2",
+                "b2a4"
+            ]
+        }
+    },
+    {
+        "id": "14",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2n5/8/5q2/6N1/r4b1k/8/4q1pr/7n w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g5h7",
+                "h7f6",
+                "f6d7",
+                "d7c5",
+                "c5a4",
+                "a4c3",
+                "c3e2",
+                "e2f4",
+                "f4g6",
+                "g6e5",
+                "e5f3",
+                "f3h2",
+                "h2f3",
+                "f3h4"
+            ]
+        }
+    },
+    {
+        "id": "15",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3nQ3/5r2/1rb5/4n3/1n6/3r1k2/b7/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e8e5",
+                "e5c5",
+                "c5b6",
+                "b6b4",
+                "b4b6",
+                "b6a6",
+                "a6d3",
+                "d3d8",
+                "d8c8",
+                "c8c6",
+                "c6a8",
+                "a8a2",
+                "a2f7",
+                "f7f3"
+            ]
+        }
+    },
+    {
+        "id": "16",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2Q3nr/1b6/2p4b/3n4/2b5/4k1r1/7b/5n2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c8b7",
+                "b7c6",
+                "c6c4",
+                "c4f1",
+                "f1h1",
+                "h1h2",
+                "h2g3",
+                "g3e5",
+                "e5h8",
+                "h8g8",
+                "g8d5",
+                "d5e6",
+                "e6h6",
+                "h6e3"
+            ]
+        }
+    },
+    {
+        "id": "17",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4R3/p7/1n6/2n1bb2/k7/2n5/5bn1/b7 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e8e5",
+                "e5f5",
+                "f5f2",
+                "f2f1",
+                "f1a1",
+                "a1c1",
+                "c1c3",
+                "c3c5",
+                "c5c7",
+                "c7a7",
+                "a7b7",
+                "b7b6",
+                "b6a6",
+                "a6a4"
+            ]
+        }
+    },
+    {
+        "id": "18",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3p4/5k2/2r5/5r1b/1Nb3n1/2p5/2q5/3p3r w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b4c6",
+                "c6d4",
+                "d4c2",
+                "c2d4",
+                "d4f5",
+                "f5g3",
+                "g3h1",
+                "h1g3",
+                "g3h5",
+                "h5g3",
+                "g3f5",
+                "f5d6",
+                "d6c4",
+                "c4d6",
+                "d6f7"
+            ]
+        }
+    },
+    {
+        "id": "19",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "b1rp1q2/8/k7/N5r1/8/3n1p2/8/5b1r w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "a5b3",
+                "b3d4",
+                "d4e6",
+                "e6f8",
+                "f8d7",
+                "d7f6",
+                "f6e8",
+                "e8d6",
+                "d6c8",
+                "c8d6",
+                "d6e8",
+                "e8f6",
+                "f6d7",
+                "d7b8",
+                "b8a6"
+            ]
+        }
+    },
+    {
+        "id": "20",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/q7/6q1/8/3k4/3Nn3/2p5/b1rb2br w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d3f4",
+                "f4g6",
+                "g6f8",
+                "f8e6",
+                "e6d8",
+                "d8c6",
+                "c6a7",
+                "a7c6",
+                "c6a5",
+                "a5b3",
+                "b3c1",
+                "c1b3",
+                "b3a1",
+                "a1b3",
+                "b3d4"
+            ]
+        }
+    },
+    {
+        "id": "21",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/2b1p3/2N5/4k3/2q5/8/8/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c6e7",
+                "e7g6",
+                "g6f8",
+                "f8h7",
+                "h7g5",
+                "g5f3",
+                "f3d2",
+                "d2c4",
+                "c4a3",
+                "a3b5",
+                "b5c7",
+                "c7a8",
+                "a8b6",
+                "b6d7",
+                "d7e5"
+            ]
+        }
+    },
+    {
+        "id": "22",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3b3N/8/8/r4k2/8/3b4/3q4/4r3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h8f7",
+                "f7d8",
+                "d8c6",
+                "c6d4",
+                "d4f3",
+                "f3d2",
+                "d2f3",
+                "f3e1",
+                "e1d3",
+                "d3b4",
+                "b4c6",
+                "c6a5",
+                "a5b7",
+                "b7d6",
+                "d6f5"
+            ]
+        }
+    },
+    {
+        "id": "23",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4q1k1/8/6r1/3b3q/3N4/8/6p1/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d4c2",
+                "c2b4",
+                "b4d3",
+                "d3f4",
+                "f4h5",
+                "h5f4",
+                "f4d5",
+                "d5c7",
+                "c7e8",
+                "e8c7",
+                "c7d5",
+                "d5e7",
+                "e7g6",
+                "g6e7",
+                "e7g8"
+            ]
+        }
+    },
+    {
+        "id": "24",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/8/b4q2/4r3/5b2/1r6/4k2N/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h2g4",
+                "g4f6",
+                "f6h7",
+                "h7f8",
+                "f8g6",
+                "g6f4",
+                "f4g6",
+                "g6e5",
+                "e5d7",
+                "d7c5",
+                "c5a6",
+                "a6c7",
+                "c7e6",
+                "e6f4",
+                "f4e2"
+            ]
+        }
+    },
+    {
+        "id": "25",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/8/8/2N1b1b1/3p1r2/8/8/r4k2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c5d7",
+                "d7e5",
+                "e5d7",
+                "d7c5",
+                "c5e6",
+                "e6g5",
+                "g5e6",
+                "e6f4",
+                "f4e6",
+                "e6d4",
+                "d4b3",
+                "b3a1",
+                "a1b3",
+                "b3d2",
+                "d2f1"
+            ]
+        }
+    },
+    {
+        "id": "26",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/7q/4N2n/8/1b5r/3b4/3r3k/4b3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e6g5",
+                "g5f3",
+                "f3e1",
+                "e1f3",
+                "f3h4",
+                "h4f3",
+                "f3e5",
+                "e5c6",
+                "c6b4",
+                "b4c6",
+                "c6e5",
+                "e5f3",
+                "f3d2",
+                "d2f3",
+                "f3h2"
+            ]
+        }
+    },
+    {
+        "id": "27",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/2q2br1/8/8/8/6p1/k2p3q/2N1p1b1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c1d3",
+                "d3b4",
+                "b4a6",
+                "a6c7",
+                "c7b5",
+                "b5d6",
+                "d6f5",
+                "f5g7",
+                "g7f5",
+                "f5d6",
+                "d6f7",
+                "f7d8",
+                "d8c6",
+                "c6b4",
+                "b4a2"
+            ]
+        }
+    },
+    {
+        "id": "28",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2qbr3/8/8/8/7k/3Np1p1/5b2/6p1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d3f4",
+                "f4e2",
+                "e2d4",
+                "d4b5",
+                "b5a7",
+                "a7c8",
+                "c8d6",
+                "d6e8",
+                "e8g7",
+                "g7e6",
+                "e6d8",
+                "d8f7",
+                "f7h8",
+                "h8g6",
+                "g6h4"
+            ]
+        }
+    },
+    {
+        "id": "29",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "5bQ1/2n2r2/8/1r1k4/nn6/2r5/1b6/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g8f7",
+                "f7f8",
+                "f8f2",
+                "f2a7",
+                "a7a4",
+                "a4a7",
+                "a7f2",
+                "f2b2",
+                "b2c3",
+                "c3c7",
+                "c7d7",
+                "d7b5",
+                "b5b4",
+                "b4b7",
+                "b7d5"
+            ]
+        }
+    },
+    {
+        "id": "30",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1n1q2b1/8/8/2k5/6n1/nn5n/2bR1b2/7n w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d2d8",
+                "d8g8",
+                "g8g4",
+                "g4a4",
+                "a4a3",
+                "a3a2",
+                "a2c2",
+                "c2c3",
+                "c3b3",
+                "b3h3",
+                "h3h1",
+                "h1h2",
+                "h2f2",
+                "f2f5",
+                "f5c5"
+            ]
+        }
+    },
+    {
+        "id": "31",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/2k2p2/2b1nb1R/8/6b1/2q5/8/3n1p2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h6h7",
+                "h7f7",
+                "f7h7",
+                "h7h6",
+                "h6g6",
+                "g6g4",
+                "g4g6",
+                "g6h6",
+                "h6h2",
+                "h2e2",
+                "e2e6",
+                "e6e2",
+                "e2h2",
+                "h2h7",
+                "h7c7"
+            ]
+        }
+    },
+    {
+        "id": "32",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "6q1/6pR/r7/8/6n1/4q3/3n1qpk/3b3n w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h7h5",
+                "h5b5",
+                "b5b7",
+                "b7c7",
+                "c7c1",
+                "c1d1",
+                "d1c1",
+                "c1c7",
+                "c7b7",
+                "b7b4",
+                "b4g4",
+                "g4b4",
+                "b4b5",
+                "b5h5",
+                "h5h2"
+            ]
+        }
+    },
+    {
+        "id": "33",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4b3/3n1n1n/5k2/3R3q/3p4/7b/2b5/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d5h5",
+                "h5h3",
+                "h3g3",
+                "g3g8",
+                "g8e8",
+                "e8c8",
+                "c8c2",
+                "c2c7",
+                "c7d7",
+                "d7d4",
+                "d4h4",
+                "h4h7",
+                "h7h4",
+                "h4f4",
+                "f4f6"
+            ]
+        }
+    },
+    {
+        "id": "34",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3br2n/4N3/1k1b4/8/1r2p1q1/4p3/8/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e7d5",
+                "d5e3",
+                "e3g4",
+                "g4h6",
+                "h6f5",
+                "f5d6",
+                "d6e8",
+                "e8g7",
+                "g7e6",
+                "e6d8",
+                "d8e6",
+                "e6f4",
+                "f4d5",
+                "d5b4",
+                "b4d5",
+                "d5b6"
+            ]
+        }
+    },
+    {
+        "id": "35",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "6r1/8/8/2k2r2/4qn2/brN5/5r2/q7 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c3e4",
+                "e4f2",
+                "f2e4",
+                "e4d2",
+                "d2b3",
+                "b3a1",
+                "a1c2",
+                "c2a3",
+                "a3c2",
+                "c2e3",
+                "e3f5",
+                "f5e7",
+                "e7g8",
+                "g8f6",
+                "f6d7",
+                "d7c5"
+            ]
+        }
+    },
+    {
+        "id": "36",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "5q2/8/8/2rn4/8/3N1b2/2r5/2r1prbk w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d3e5",
+                "e5d7",
+                "d7f8",
+                "f8g6",
+                "g6h4",
+                "h4f5",
+                "f5g3",
+                "g3f1",
+                "f1g3",
+                "g3f5",
+                "f5h4",
+                "h4f3",
+                "f3g5",
+                "g5e4",
+                "e4g3",
+                "g3h1"
+            ]
+        }
+    },
+    {
+        "id": "37",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3k2pr/7r/qb6/4q3/p7/8/1r6/6N1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g1f3",
+                "f3e5",
+                "e5c6",
+                "c6b8",
+                "b8a6",
+                "a6b8",
+                "b8c6",
+                "c6e5",
+                "e5c4",
+                "c4b2",
+                "b2a4",
+                "a4b6",
+                "b6d5",
+                "d5f4",
+                "f4e6",
+                "e6d8"
+            ]
+        }
+    },
+    {
+        "id": "38",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2r3q1/q1bn1pqr/8/8/2q5/2N3p1/8/6k1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c3b1",
+                "b1d2",
+                "d2c4",
+                "c4d2",
+                "d2f3",
+                "f3e1",
+                "e1d3",
+                "d3b4",
+                "b4c6",
+                "c6a7",
+                "a7c6",
+                "c6b4",
+                "b4d3",
+                "d3e1",
+                "e1f3",
+                "f3g1"
+            ]
+        }
+    },
+    {
+        "id": "39",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3rp3/7N/8/6q1/8/8/q7/1r1k4 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h7g5",
+                "g5e4",
+                "e4c3",
+                "c3a2",
+                "a2c3",
+                "c3b1",
+                "b1c3",
+                "c3b5",
+                "b5c7",
+                "c7e6",
+                "e6d8",
+                "d8b7",
+                "b7d6",
+                "d6f5",
+                "f5e3",
+                "e3d1"
+            ]
+        }
+    },
+    {
+        "id": "40",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "7k/8/2b2b2/4N3/5r2/4n3/8/7r w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e5c6",
+                "c6b8",
+                "b8d7",
+                "d7f8",
+                "f8g6",
+                "g6f4",
+                "f4d3",
+                "d3f2",
+                "f2h1",
+                "h1g3",
+                "g3h5",
+                "h5f6",
+                "f6e8",
+                "e8d6",
+                "d6f7",
+                "f7h8"
+            ]
+        }
+    },
+    {
+        "id": "41",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1b1b4/3qn3/5k2/b3N3/3r4/1b6/8/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e5f3",
+                "f3g1",
+                "g1e2",
+                "e2c1",
+                "c1b3",
+                "b3c5",
+                "c5a6",
+                "a6b8",
+                "b8a6",
+                "a6c5",
+                "c5b3",
+                "b3c1",
+                "c1e2",
+                "e2g3",
+                "g3h5",
+                "h5f6"
+            ]
+        }
+    },
+    {
+        "id": "42",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "r2k4/8/8/nqnq2b1/8/4N3/r7/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e3d5",
+                "d5c3",
+                "c3b5",
+                "b5c3",
+                "c3d5",
+                "d5b6",
+                "b6a8",
+                "a8b6",
+                "b6d5",
+                "d5c3",
+                "c3b5",
+                "b5d6",
+                "d6f7",
+                "f7g5",
+                "g5f7",
+                "f7d8"
+            ]
+        }
+    },
+    {
+        "id": "43",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "p1p5/pn5b/2n5/2kR1p2/4n3/6r1/8/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d5d1",
+                "d1h1",
+                "h1h7",
+                "h7h8",
+                "h8c8",
+                "c8a8",
+                "a8h8",
+                "h8h7",
+                "h7b7",
+                "b7f7",
+                "f7f5",
+                "f5f4",
+                "f4e4",
+                "e4h4",
+                "h4h5",
+                "h5c5"
+            ]
+        }
+    },
+    {
+        "id": "44",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3b1p1q/6p1/3r4/6k1/8/2p1b3/7p/1N4r1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b1a3",
+                "a3c4",
+                "c4e3",
+                "e3c4",
+                "c4d6",
+                "d6f7",
+                "f7h8",
+                "h8f7",
+                "f7d8",
+                "d8f7",
+                "f7e5",
+                "e5f3",
+                "f3h2",
+                "h2f3",
+                "f3g1",
+                "g1h3",
+                "h3g5"
+            ]
+        }
+    },
+    {
+        "id": "45",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1q5b/r7/2N5/8/3k4/4p3/5b1r/1n2q3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c6b8",
+                "b8c6",
+                "c6a7",
+                "a7c8",
+                "c8d6",
+                "d6f7",
+                "f7g5",
+                "g5f3",
+                "f3h2",
+                "h2g4",
+                "g4h6",
+                "h6f7",
+                "f7h8",
+                "h8f7",
+                "f7d8",
+                "d8e6",
+                "e6d4"
+            ]
+        }
+    },
+    {
+        "id": "46",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2r3k1/p1n5/2q5/5q2/3N3q/6r1/7b/b3n3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d4f5",
+                "f5h4",
+                "h4f5",
+                "f5e7",
+                "e7c8",
+                "c8a7",
+                "a7c6",
+                "c6a5",
+                "a5c4",
+                "c4d2",
+                "d2f1",
+                "f1h2",
+                "h2f1",
+                "f1g3",
+                "g3f5",
+                "f5e7",
+                "e7g8"
+            ]
+        }
+    },
+    {
+        "id": "47",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3p1q2/2p5/8/2k5/6p1/8/1p1p1br1/1Nr5 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b1d2",
+                "d2e4",
+                "e4g5",
+                "g5h7",
+                "h7f8",
+                "f8g6",
+                "g6f4",
+                "f4g2",
+                "g2f4",
+                "f4d3",
+                "d3f2",
+                "f2d3",
+                "d3b2",
+                "b2d3",
+                "d3c1",
+                "c1d3",
+                "d3c5"
+            ]
+        }
+    },
+    {
+        "id": "48",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "7q/2k2q2/1n4N1/b7/8/r7/3n2qb/3pb3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g6h8",
+                "h8f7",
+                "f7h6",
+                "h6f5",
+                "f5d4",
+                "d4b5",
+                "b5a3",
+                "a3c2",
+                "c2e1",
+                "e1g2",
+                "g2e3",
+                "e3g4",
+                "g4h2",
+                "h2g4",
+                "g4f6",
+                "f6e8",
+                "e8c7"
+            ]
+        }
+    },
+    {
+        "id": "49",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "q2N4/1n6/b3r3/8/8/3k1r1p/8/5bq1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d8e6",
+                "e6c7",
+                "c7a8",
+                "a8c7",
+                "c7a6",
+                "a6b8",
+                "b8d7",
+                "d7e5",
+                "e5f3",
+                "f3g1",
+                "g1f3",
+                "f3h2",
+                "h2f1",
+                "f1g3",
+                "g3h5",
+                "h5f4",
+                "f4d3"
+            ]
+        }
+    },
+    {
+        "id": "50",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3r3b/r7/8/8/3kN3/8/5b1q/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e4g5",
+                "g5e6",
+                "e6d8",
+                "d8e6",
+                "e6g5",
+                "g5f3",
+                "f3h2",
+                "h2g4",
+                "g4f2",
+                "f2h3",
+                "h3f4",
+                "f4g6",
+                "g6h8",
+                "h8g6",
+                "g6f8",
+                "f8e6",
+                "e6d4"
+            ]
+        }
+    },
+    {
+        "id": "51",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "7r/5Nb1/8/6n1/2b5/8/4rn1k/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f7d6",
+                "d6c4",
+                "c4d6",
+                "d6f5",
+                "f5g7",
+                "g7f5",
+                "f5d4",
+                "d4e2",
+                "e2f4",
+                "f4g6",
+                "g6h8",
+                "h8g6",
+                "g6e7",
+                "e7f5",
+                "f5e3",
+                "e3f1",
+                "f1h2"
+            ]
+        }
+    },
+    {
+        "id": "52",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4k3/6b1/3N4/6rb/8/8/5p2/4r3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d6c8",
+                "c8a7",
+                "a7c6",
+                "c6b4",
+                "b4d3",
+                "d3f2",
+                "f2h3",
+                "h3g5",
+                "g5h3",
+                "h3f4",
+                "f4d3",
+                "d3e1",
+                "e1d3",
+                "d3f4",
+                "f4h5",
+                "h5g7",
+                "g7e8"
+            ]
+        }
+    },
+    {
+        "id": "53",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/8/2r3b1/8/1N2k2q/8/6pp/1r5b w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b4c6",
+                "c6a5",
+                "a5c4",
+                "c4a3",
+                "a3b1",
+                "b1c3",
+                "c3b5",
+                "b5c7",
+                "c7e6",
+                "e6f8",
+                "f8g6",
+                "g6h4",
+                "h4g6",
+                "g6h8",
+                "h8f7",
+                "f7d6",
+                "d6e4"
+            ]
+        }
+    },
+    {
+        "id": "54",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "7b/n2n1Rn1/4p2p/3bb2k/1q6/1q6/8/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f7d7",
+                "d7d8",
+                "d8h8",
+                "h8d8",
+                "d8d7",
+                "d7f7",
+                "f7f2",
+                "f2e2",
+                "e2e5",
+                "e5e2",
+                "e2f2",
+                "f2f7",
+                "f7g7",
+                "g7f7",
+                "f7f2",
+                "f2h2",
+                "h2h5"
+            ]
+        }
+    },
+    {
+        "id": "55",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "pr1k4/4rr2/1b6/2N3qr/4n3/8/1q6/6r1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c5a4",
+                "a4b2",
+                "b2d3",
+                "d3b4",
+                "b4c6",
+                "c6b8",
+                "b8c6",
+                "c6b4",
+                "b4d3",
+                "d3b2",
+                "b2c4",
+                "c4b6",
+                "b6c4",
+                "c4a3",
+                "a3c2",
+                "c2d4",
+                "d4c6",
+                "c6d8"
+            ]
+        }
+    },
+    {
+        "id": "56",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1p1k4/r7/6b1/b4p2/5N2/b2r4/4b3/q7 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f4e2",
+                "e2f4",
+                "f4d3",
+                "d3f4",
+                "f4d5",
+                "d5e3",
+                "e3c2",
+                "c2a1",
+                "a1b3",
+                "b3d4",
+                "d4c6",
+                "c6b8",
+                "b8c6",
+                "c6a7",
+                "a7c6",
+                "c6a5",
+                "a5b7",
+                "b7d8"
+            ]
+        }
+    },
+    {
+        "id": "57",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "k5q1/7N/2n2b2/7b/8/5b2/1p6/r3pq2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h7f6",
+                "f6g8",
+                "g8h6",
+                "h6f5",
+                "f5g3",
+                "g3f1",
+                "f1e3",
+                "e3c4",
+                "c4b2",
+                "b2c4",
+                "c4e3",
+                "e3c2",
+                "c2a1",
+                "a1b3",
+                "b3c5",
+                "c5d7",
+                "d7b6",
+                "b6a8"
+            ]
+        }
+    },
+    {
+        "id": "58",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4q2b/8/7q/8/1q6/n2b4/8/k1N1p1b1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c1d3",
+                "d3b4",
+                "b4d5",
+                "d5c7",
+                "c7e8",
+                "e8c7",
+                "c7d5",
+                "d5e7",
+                "e7g8",
+                "g8h6",
+                "h6f7",
+                "f7h8",
+                "h8f7",
+                "f7d8",
+                "d8b7",
+                "b7a5",
+                "a5b3",
+                "b3a1"
+            ]
+        }
+    },
+    {
+        "id": "59",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/k3q3/p2p4/n5N1/5n2/r3bp2/7r/b7 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g5f3",
+                "f3h2",
+                "h2g4",
+                "g4h6",
+                "h6g8",
+                "g8e7",
+                "e7f5",
+                "f5h4",
+                "h4f3",
+                "f3e1",
+                "e1c2",
+                "c2a3",
+                "a3c2",
+                "c2e3",
+                "e3f5",
+                "f5d6",
+                "d6c8",
+                "c8a7"
+            ]
+        }
+    },
+    {
+        "id": "60",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2q5/8/2N5/1p6/r5k1/4b3/8/6r1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c6e7",
+                "e7c8",
+                "c8e7",
+                "e7d5",
+                "d5e3",
+                "e3d5",
+                "d5c7",
+                "c7b5",
+                "b5c3",
+                "c3a4",
+                "a4c3",
+                "c3e2",
+                "e2g1",
+                "g1e2",
+                "e2d4",
+                "d4c6",
+                "c6e5",
+                "e5g4"
+            ]
+        }
+    },
+    {
+        "id": "61",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1q5k/8/1n1p4/N7/r4q2/8/1p6/bq6 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "a5c6",
+                "c6b8",
+                "b8c6",
+                "c6d8",
+                "d8e6",
+                "e6c7",
+                "c7b5",
+                "b5c3",
+                "c3b1",
+                "b1c3",
+                "c3b5",
+                "b5c7",
+                "c7e6",
+                "e6d8",
+                "d8c6",
+                "c6e7",
+                "e7g6",
+                "g6h8"
+            ]
+        }
+    },
+    {
+        "id": "62",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4b3/1k1r4/p1N5/8/6b1/3b2p1/2p5/1r6 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c6e5",
+                "e5g4",
+                "g4f6",
+                "f6e8",
+                "e8f6",
+                "f6d7",
+                "d7e5",
+                "e5d3",
+                "d3e5",
+                "e5g4",
+                "g4e3",
+                "e3c2",
+                "c2a3",
+                "a3b1",
+                "b1c3",
+                "c3e4",
+                "e4d6",
+                "d6b7"
+            ]
+        }
+    },
+    {
+        "id": "63",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/p7/5r2/8/2Nq1k1b/6p1/n5rb/r7 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c4a5",
+                "a5b3",
+                "b3d4",
+                "d4b3",
+                "b3a1",
+                "a1b3",
+                "b3c5",
+                "c5d3",
+                "d3e1",
+                "e1g2",
+                "g2h4",
+                "h4g2",
+                "g2e1",
+                "e1d3",
+                "d3c5",
+                "c5d7",
+                "d7f6",
+                "f6h5",
+                "h5f4"
+            ]
+        }
+    },
+    {
+        "id": "64",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2k2Nn1/4p2r/8/1p1bb3/2r5/8/6p1/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f8h7",
+                "h7g5",
+                "g5h3",
+                "h3f2",
+                "f2d1",
+                "d1e3",
+                "e3d5",
+                "d5e3",
+                "e3g2",
+                "g2e3",
+                "e3f1",
+                "f1d2",
+                "d2b1",
+                "b1a3",
+                "a3b5",
+                "b5a3",
+                "a3c4",
+                "c4b6",
+                "b6c8"
+            ]
+        }
+    },
+    {
+        "id": "65",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "p4br1/1n3r2/8/3r4/8/k1b5/8/r2N4 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d1c3",
+                "c3d5",
+                "d5b6",
+                "b6c4",
+                "c4e5",
+                "e5f7",
+                "f7e5",
+                "e5d7",
+                "d7f6",
+                "f6g8",
+                "g8f6",
+                "f6h7",
+                "h7f8",
+                "f8e6",
+                "e6d4",
+                "d4c2",
+                "c2a1",
+                "a1c2",
+                "c2a3"
+            ]
+        }
+    },
+    {
+        "id": "66",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4p3/8/q7/b5q1/8/2k4N/1p5n/b3r3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h3g5",
+                "g5h3",
+                "h3f4",
+                "f4g2",
+                "g2e1",
+                "e1g2",
+                "g2h4",
+                "h4f5",
+                "f5g3",
+                "g3e4",
+                "e4c5",
+                "c5a6",
+                "a6b8",
+                "b8c6",
+                "c6a5",
+                "a5b7",
+                "b7d6",
+                "d6b5",
+                "b5c3"
+            ]
+        }
+    },
+    {
+        "id": "67",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "b3Nk2/8/4q2b/8/1b5q/8/8/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e8c7",
+                "c7e6",
+                "e6c7",
+                "c7a8",
+                "a8b6",
+                "b6d7",
+                "d7e5",
+                "e5g6",
+                "g6h4",
+                "h4f5",
+                "f5h6",
+                "h6f5",
+                "f5d4",
+                "d4c6",
+                "c6b4",
+                "b4c6",
+                "c6d8",
+                "d8e6",
+                "e6f8"
+            ]
+        }
+    },
+    {
+        "id": "68",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1k5q/8/1b6/8/8/5N2/2b1q2b/1qr5 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f3g5",
+                "g5f7",
+                "f7h8",
+                "h8f7",
+                "f7h6",
+                "h6g8",
+                "g8f6",
+                "f6d5",
+                "d5c3",
+                "c3e2",
+                "e2c3",
+                "c3d5",
+                "d5f6",
+                "f6g4",
+                "g4h2",
+                "h2g4",
+                "g4f6",
+                "f6d7",
+                "d7b8"
+            ]
+        }
+    },
+    {
+        "id": "69",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3bb1r1/8/4q1k1/8/4b3/8/2p5/nbN5 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c1e2",
+                "e2f4",
+                "f4e6",
+                "e6d8",
+                "d8e6",
+                "e6c5",
+                "c5e4",
+                "e4d6",
+                "d6c8",
+                "c8e7",
+                "e7g8",
+                "g8e7",
+                "e7c8",
+                "c8d6",
+                "d6e8",
+                "e8c7",
+                "c7e6",
+                "e6f8",
+                "f8g6"
+            ]
+        }
+    },
+    {
+        "id": "70",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3b4/8/8/1Nk3r1/5qn1/8/8/3q2bq w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b5c3",
+                "c3d1",
+                "d1c3",
+                "c3e2",
+                "e2f4",
+                "f4e6",
+                "e6d8",
+                "d8e6",
+                "e6f4",
+                "f4e2",
+                "e2g3",
+                "g3h1",
+                "h1g3",
+                "g3e2",
+                "e2g1",
+                "g1h3",
+                "h3g5",
+                "g5e6",
+                "e6c5"
+            ]
+        }
+    },
+    {
+        "id": "71",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "5r2/2k2nq1/8/3n4/3b1b2/2b3nn/7R/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h2h3",
+                "h3h2",
+                "h2a2",
+                "a2a3",
+                "a3b3",
+                "b3b5",
+                "b5d5",
+                "d5b5",
+                "b5b1",
+                "b1d1",
+                "d1d3",
+                "d3f3",
+                "f3f4",
+                "f4h4",
+                "h4h2",
+                "h2a2",
+                "a2a4",
+                "a4c4",
+                "c4c7"
+            ]
+        }
+    },
+    {
+        "id": "72",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4n3/8/b3q1p1/5rp1/6b1/1N6/r7/5k2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b3d4",
+                "d4e6",
+                "e6d8",
+                "d8c6",
+                "c6e7",
+                "e7g6",
+                "g6e7",
+                "e7c6",
+                "c6b4",
+                "b4a2",
+                "a2b4",
+                "b4a6",
+                "a6b4",
+                "b4c2",
+                "c2e3",
+                "e3g4",
+                "g4h6",
+                "h6f5",
+                "f5g3",
+                "g3f1"
+            ]
+        }
+    },
+    {
+        "id": "73",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3n1b1r/6N1/3k2r1/5q2/6p1/1q4b1/3p2q1/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g7f5",
+                "f5d4",
+                "d4b3",
+                "b3a5",
+                "a5c4",
+                "c4e3",
+                "e3g2",
+                "g2e3",
+                "e3f5",
+                "f5g3",
+                "g3e2",
+                "e2f4",
+                "f4g6",
+                "g6h8",
+                "h8g6",
+                "g6f8",
+                "f8h7",
+                "h7f6",
+                "f6e8",
+                "e8d6"
+            ]
+        }
+    },
+    {
+        "id": "74",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2r1k3/8/q1b4r/1p6/b2b4/8/r3N3/1r6 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e2d4",
+                "d4f5",
+                "f5h6",
+                "h6f5",
+                "f5g7",
+                "g7e6",
+                "e6c5",
+                "c5a6",
+                "a6c5",
+                "c5e6",
+                "e6g7",
+                "g7f5",
+                "f5d6",
+                "d6c8",
+                "c8a7",
+                "a7c6",
+                "c6b8",
+                "b8a6",
+                "a6c7",
+                "c7e8"
+            ]
+        }
+    },
+    {
+        "id": "75",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2rb1p2/r1N5/5k2/3r4/1q5b/4p2q/6p1/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c7d5",
+                "d5b4",
+                "b4d5",
+                "d5f4",
+                "f4h3",
+                "h3f4",
+                "f4g2",
+                "g2h4",
+                "h4f3",
+                "f3d4",
+                "d4b5",
+                "b5a7",
+                "a7c8",
+                "c8a7",
+                "a7c6",
+                "c6d8",
+                "d8b7",
+                "b7d6",
+                "d6e8",
+                "e8f6"
+            ]
+        }
+    },
+    {
+        "id": "76",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1qb5/8/4k1p1/5N2/8/qb1nr3/8/5b2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f5e3",
+                "e3f1",
+                "f1d2",
+                "d2f3",
+                "f3d4",
+                "d4c6",
+                "c6b8",
+                "b8c6",
+                "c6d4",
+                "d4b5",
+                "b5a3",
+                "a3b5",
+                "b5a7",
+                "a7c8",
+                "c8a7",
+                "a7c6",
+                "c6a5",
+                "a5b3",
+                "b3d4",
+                "d4e6"
+            ]
+        }
+    },
+    {
+        "id": "77",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "3r2k1/2q5/5b2/8/8/rb4r1/2N3n1/1q6 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c2a3",
+                "a3b1",
+                "b1a3",
+                "a3b5",
+                "b5c7",
+                "c7a6",
+                "a6c5",
+                "c5e4",
+                "e4f6",
+                "f6h5",
+                "h5g3",
+                "g3e4",
+                "e4c5",
+                "c5b3",
+                "b3c5",
+                "c5b7",
+                "b7d8",
+                "d8c6",
+                "c6e7",
+                "e7g8"
+            ]
+        }
+    },
+    {
+        "id": "78",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1qp1r3/8/6p1/4k3/5N2/8/r7/b7 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f4d3",
+                "d3c1",
+                "c1a2",
+                "a2c1",
+                "c1d3",
+                "d3c5",
+                "c5a6",
+                "a6b8",
+                "b8a6",
+                "a6c7",
+                "c7e8",
+                "e8c7",
+                "c7a6",
+                "a6c5",
+                "c5b3",
+                "b3a1",
+                "a1b3",
+                "b3c5",
+                "c5d3",
+                "d3e5"
+            ]
+        }
+    },
+    {
+        "id": "79",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/1b3N2/2r1k3/8/b7/4r3/4p3/4r3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f7h6",
+                "h6g4",
+                "g4e3",
+                "e3g4",
+                "g4f2",
+                "f2d3",
+                "d3b2",
+                "b2a4",
+                "a4b2",
+                "b2d3",
+                "d3e1",
+                "e1f3",
+                "f3d4",
+                "d4b3",
+                "b3a5",
+                "a5b7",
+                "b7d8",
+                "d8c6",
+                "c6d8",
+                "d8e6"
+            ]
+        }
+    },
+    {
+        "id": "80",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/2k5/5Nr1/1p6/1p6/2r3b1/3b4/6q1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f6h7",
+                "h7f8",
+                "f8g6",
+                "g6e7",
+                "e7d5",
+                "d5b4",
+                "b4d5",
+                "d5f6",
+                "f6e4",
+                "e4d2",
+                "d2e4",
+                "e4c3",
+                "c3e2",
+                "e2g1",
+                "g1e2",
+                "e2g3",
+                "g3h5",
+                "h5g7",
+                "g7e8",
+                "e8c7"
+            ]
+        }
+    },
+    {
+        "id": "81",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "pN3q2/8/4r3/q7/1r5k/8/2b5/4b3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b8d7",
+                "d7f8",
+                "f8e6",
+                "e6f8",
+                "f8d7",
+                "d7f6",
+                "f6g8",
+                "g8e7",
+                "e7c6",
+                "c6a5",
+                "a5c6",
+                "c6e5",
+                "e5f3",
+                "f3e1",
+                "e1c2",
+                "c2b4",
+                "b4c6",
+                "c6e7",
+                "e7g6",
+                "g6h4"
+            ]
+        }
+    },
+    {
+        "id": "82",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2b5/8/4r3/8/4k1q1/1Nrp4/2b5/3p4 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b3c1",
+                "c1a2",
+                "a2c3",
+                "c3b5",
+                "b5a7",
+                "a7c8",
+                "c8a7",
+                "a7b5",
+                "b5a3",
+                "a3c4",
+                "c4d2",
+                "d2f1",
+                "f1h2",
+                "h2g4",
+                "g4f2",
+                "f2h3",
+                "h3g5",
+                "g5e6",
+                "e6g5",
+                "g5e4"
+            ]
+        }
+    },
+    {
+        "id": "83",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4r3/8/8/4k2b/b2p4/2b5/r7/2r1N3 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e1d3",
+                "d3c1",
+                "c1a2",
+                "a2c1",
+                "c1d3",
+                "d3c5",
+                "c5a4",
+                "a4c5",
+                "c5d3",
+                "d3f2",
+                "f2h1",
+                "h1g3",
+                "g3h5",
+                "h5g7",
+                "g7e8",
+                "e8c7",
+                "c7a8",
+                "a8b6",
+                "b6d7",
+                "d7e5"
+            ]
+        }
+    },
+    {
+        "id": "84",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "6q1/8/8/1k1r2p1/5N2/2qb4/7n/3q3b w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f4h3",
+                "h3f2",
+                "f2d1",
+                "d1c3",
+                "c3d1",
+                "d1f2",
+                "f2h1",
+                "h1g3",
+                "g3h5",
+                "h5f6",
+                "f6g8",
+                "g8e7",
+                "e7d5",
+                "d5f6",
+                "f6d7",
+                "d7e5",
+                "e5d3",
+                "d3e5",
+                "e5f7",
+                "f7d6",
+                "d6b5"
+            ]
+        }
+    },
+    {
+        "id": "85",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "b5r1/1N1r2b1/8/8/7b/1p3b1r/1k6/6r1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b7c5",
+                "c5d7",
+                "d7c5",
+                "c5e6",
+                "e6f4",
+                "f4h3",
+                "h3g1",
+                "g1h3",
+                "h3f4",
+                "f4g6",
+                "g6h4",
+                "h4g6",
+                "g6e7",
+                "e7g8",
+                "g8e7",
+                "e7f5",
+                "f5g7",
+                "g7e8",
+                "e8d6",
+                "d6c4",
+                "c4b2"
+            ]
+        }
+    },
+    {
+        "id": "86",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "k7/8/8/2N5/1b6/rb3b1r/1q5p/5r2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c5d3",
+                "d3b4",
+                "b4d3",
+                "d3b2",
+                "b2d3",
+                "d3f4",
+                "f4h3",
+                "h3f4",
+                "f4g6",
+                "g6e7",
+                "e7f5",
+                "f5g3",
+                "g3f1",
+                "f1h2",
+                "h2f3",
+                "f3d4",
+                "d4b5",
+                "b5a3",
+                "a3b5",
+                "b5c7",
+                "c7a8"
+            ]
+        }
+    },
+    {
+        "id": "87",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1r6/8/1n3q1n/4p3/3r4/2N5/p7/1r1k4 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c3a2",
+                "a2c3",
+                "c3b1",
+                "b1c3",
+                "c3b5",
+                "b5c7",
+                "c7a6",
+                "a6b8",
+                "b8a6",
+                "a6c7",
+                "c7e8",
+                "e8f6",
+                "f6h7",
+                "h7f8",
+                "f8g6",
+                "g6e5",
+                "e5c6",
+                "c6d4",
+                "d4b5",
+                "b5c3",
+                "c3d1"
+            ]
+        }
+    },
+    {
+        "id": "88",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "7r/1r5b/8/5k2/3N2p1/1n2r2b/8/2p5 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d4c2",
+                "c2e3",
+                "e3c4",
+                "c4d6",
+                "d6b7",
+                "b7d6",
+                "d6f7",
+                "f7h8",
+                "h8f7",
+                "f7d8",
+                "d8c6",
+                "c6b8",
+                "b8d7",
+                "d7f8",
+                "f8h7",
+                "h7f8",
+                "f8d7",
+                "d7b8",
+                "b8c6",
+                "c6e7",
+                "e7f5"
+            ]
+        }
+    },
+    {
+        "id": "89",
         "module": "Module3",
         "difficulty": "HARD",
         "fen": "1r2b3/4r1b1/7p/8/k2r4/8/5p2/b4N2 w - - 0 1",
@@ -33,267 +2486,816 @@
         }
     },
     {
-        "id": "PHARD_Module3_002",
+        "id": "90",
         "module": "Module3",
         "difficulty": "HARD",
-        "fen": "pr1k4/4rr2/1b6/2N3qr/4n3/8/1q6/6r1 w - - 0 1",
+        "fen": "3k4/2p5/4p3/b1q3br/r7/8/5Nq1/8 w - - 0 1",
         "description": "Pojedi bezbedno crnog kralja",
         "solution": {
             "moves": [
+                "f2d3",
+                "d3c5",
+                "c5e6",
+                "e6g7",
+                "g7h5",
+                "h5g7",
+                "g7e6",
+                "e6c5",
                 "c5a4",
-                "a4b2",
-                "b2d3",
-                "d3b4",
-                "b4c6",
-                "c6b8",
-                "b8c6",
-                "c6b4",
-                "b4d3",
-                "d3b2",
-                "b2c4",
-                "c4b6",
-                "b6c4",
-                "c4a3",
+                "a4c5",
+                "c5b3",
+                "b3a5",
+                "a5c4",
+                "c4e5",
+                "e5d3",
+                "d3e1",
+                "e1g2",
+                "g2e1",
+                "e1f3",
+                "f3g5",
+                "g5f7",
+                "f7d8"
+            ]
+        }
+    },
+    {
+        "id": "91",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4q3/6N1/1n6/4k2r/6b1/2b3b1/1n6/b2r1r2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g7e8",
+                "e8c7",
+                "c7b5",
+                "b5a3",
                 "a3c2",
-                "c2d4",
-                "d4c6",
-                "c6d8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_006",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1p1k4/r7/6b1/b4p2/5N2/b2r4/4b3/q7 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f4e2",
-                "e2f4",
-                "f4d3",
-                "d3f4",
-                "f4d5",
-                "d5e3",
+                "c2e3",
+                "e3g4",
+                "g4e3",
                 "e3c2",
-                "c2a1",
-                "a1b3",
-                "b3d4",
-                "d4c6",
-                "c6b8",
+                "c2a3",
+                "a3b5",
+                "b5c3",
+                "c3e2",
+                "e2g3",
+                "g3h5",
+                "h5g7",
+                "g7e8",
+                "e8c7",
+                "c7a6",
+                "a6b8",
                 "b8c6",
-                "c6a7",
-                "a7c6",
-                "c6a5",
-                "a5b7",
-                "b7d8"
+                "c6e5"
             ]
         }
     },
     {
-        "id": "PHARD_Module3_007",
+        "id": "92",
         "module": "Module3",
         "difficulty": "HARD",
-        "fen": "7N/8/3b4/p7/1r3k1r/4p1p1/7b/5b2 w - - 0 1",
+        "fen": "6N1/pp6/7b/2br1b2/8/4r2k/5r2/8 w - - 0 1",
         "description": "Pojedi bezbedno crnog kralja",
         "solution": {
             "moves": [
-                "h8f7",
-                "f7d6",
-                "d6c8",
+                "g8f6",
+                "f6d5",
+                "d5f6",
+                "f6g8",
+                "g8h6",
+                "h6f7",
+                "f7d8",
+                "d8b7",
+                "b7c5",
+                "c5b7",
+                "b7d6",
+                "d6c4",
+                "c4e3",
+                "e3d1",
+                "d1f2",
+                "f2d1",
+                "d1e3",
+                "e3f5",
+                "f5g7",
+                "g7e6",
+                "e6g5",
+                "g5h3"
+            ]
+        }
+    },
+    {
+        "id": "93",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "6n1/6N1/8/k6q/2r5/1rb5/r7/1b3r2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g7h5",
+                "h5g3",
+                "g3f1",
+                "f1e3",
+                "e3c4",
+                "c4d6",
+                "d6e8",
+                "e8c7",
+                "c7e6",
+                "e6c5",
+                "c5b3",
+                "b3c5",
+                "c5e6",
+                "e6c7",
+                "c7d5",
+                "d5c3",
+                "c3b1",
+                "b1c3",
+                "c3a2",
+                "a2c1",
+                "c1b3",
+                "b3a5"
+            ]
+        }
+    },
+    {
+        "id": "94",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "6q1/r1b5/5b2/8/b3N3/r7/8/3k2nq w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "e4f6",
+                "f6g8",
+                "g8e7",
+                "e7c8",
+                "c8a7",
+                "a7c8",
                 "c8e7",
                 "e7g6",
-                "g6h4",
-                "h4g6",
-                "g6e7",
-                "e7c6",
-                "c6a5",
-                "a5c6",
-                "c6b4",
-                "b4d5",
-                "d5f4"
+                "g6f8",
+                "f8e6",
+                "e6c7",
+                "c7e6",
+                "e6f8",
+                "f8g6",
+                "g6e5",
+                "e5c4",
+                "c4a3",
+                "a3c4",
+                "c4b6",
+                "b6a4",
+                "a4c3",
+                "c3d1"
             ]
         }
     },
     {
-        "id": "PHARD_Module3_012",
+        "id": "95",
         "module": "Module3",
         "difficulty": "HARD",
-        "fen": "6q1/8/8/1k1r2p1/5N2/2qb4/7n/3q3b w - - 0 1",
+        "fen": "6r1/2r1bq2/8/2k2N2/8/8/8/qnr3b1 w - - 0 1",
         "description": "Pojedi bezbedno crnog kralja",
         "solution": {
             "moves": [
-                "f4h3",
-                "h3f2",
-                "f2d1",
-                "d1c3",
-                "c3d1",
-                "d1f2",
-                "f2h1",
-                "h1g3",
-                "g3h5",
-                "h5f6",
+                "f5h6",
+                "h6f7",
+                "f7h6",
+                "h6g8",
+                "g8h6",
+                "h6f5",
+                "f5g3",
+                "g3e2",
+                "e2c1",
+                "c1e2",
+                "e2g1",
+                "g1h3",
+                "h3f4",
+                "f4e6",
+                "e6c7",
+                "c7e6",
+                "e6f4",
+                "f4g6",
+                "g6e7",
+                "e7g6",
+                "g6f8",
+                "f8d7",
+                "d7c5"
+            ]
+        }
+    },
+    {
+        "id": "96",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "q3b1q1/1n6/5Nk1/8/4p3/4q3/7b/6r1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
                 "f6g8",
                 "g8e7",
                 "e7d5",
-                "d5f6",
-                "f6d7",
-                "d7e5",
-                "e5d3",
-                "d3e5",
-                "e5f7",
-                "f7d6",
-                "d6b5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_014",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4n3/8/b3q1p1/5rp1/6b1/1N6/r7/5k2 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b3d4",
-                "d4e6",
-                "e6d8",
-                "d8c6",
-                "c6e7",
-                "e7g6",
-                "g6e7",
-                "e7c6",
-                "c6b4",
-                "b4a2",
-                "a2b4",
-                "b4a6",
-                "a6b4",
-                "b4c2",
-                "c2e3",
-                "e3g4",
-                "g4h6",
-                "h6f5",
-                "f5g3",
-                "g3f1"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_023",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3br2n/4N3/1k1b4/8/1r2p1q1/4p3/8/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e7d5",
                 "d5e3",
-                "e3g4",
-                "g4h6",
-                "h6f5",
-                "f5d6",
-                "d6e8",
-                "e8g7",
-                "g7e6",
-                "e6d8",
-                "d8e6",
-                "e6f4",
-                "f4d5",
-                "d5b4",
-                "b4d5",
-                "d5b6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_024",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3b1p1q/6p1/3r4/6k1/8/2p1b3/7p/1N4r1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b1a3",
-                "a3c4",
-                "c4e3",
-                "e3c4",
-                "c4d6",
-                "d6f7",
-                "f7h8",
-                "h8f7",
-                "f7d8",
-                "d8f7",
-                "f7e5",
-                "e5f3",
+                "e3d5",
+                "d5c3",
+                "c3e4",
+                "e4d2",
+                "d2f3",
                 "f3h2",
                 "h2f3",
                 "f3g1",
                 "g1h3",
-                "h3g5"
+                "h3f4",
+                "f4e6",
+                "e6c7",
+                "c7a8",
+                "a8c7",
+                "c7e8",
+                "e8c7",
+                "c7e6",
+                "e6f8",
+                "f8g6"
             ]
         }
     },
     {
-        "id": "PHARD_Module3_026",
+        "id": "97",
         "module": "Module3",
         "difficulty": "HARD",
-        "fen": "3n1b1r/6N1/3k2r1/5q2/6p1/1q4b1/3p2q1/8 w - - 0 1",
+        "fen": "N7/1p6/7b/2b4q/8/k5r1/1pr5/2b5 w - - 0 1",
         "description": "Pojedi bezbedno crnog kralja",
         "solution": {
             "moves": [
+                "a8c7",
+                "c7e6",
+                "e6d8",
+                "d8b7",
+                "b7d8",
+                "d8c6",
+                "c6b8",
+                "b8d7",
+                "d7f6",
+                "f6h5",
+                "h5g3",
+                "g3f5",
+                "f5h4",
+                "h4f3",
+                "f3e1",
+                "e1c2",
+                "c2e1",
+                "e1d3",
+                "d3c5",
+                "c5d7",
+                "d7b6",
+                "b6c4",
+                "c4a3"
+            ]
+        }
+    },
+    {
+        "id": "98",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4r3/8/5b2/4n3/1n3r2/2N1r2k/5b2/5bpr w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c3a4",
+                "a4c5",
+                "c5b7",
+                "b7d6",
+                "d6e8",
+                "e8c7",
+                "c7e6",
+                "e6f4",
+                "f4e6",
+                "e6c5",
+                "c5a4",
+                "a4b2",
+                "b2d1",
+                "d1f2",
+                "f2h1",
+                "h1f2",
+                "f2d1",
+                "d1e3",
+                "e3f1",
+                "f1e3",
+                "e3d1",
+                "d1f2",
+                "f2h3"
+            ]
+        }
+    },
+    {
+        "id": "99",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "k7/8/5r2/8/3N4/1p3b1r/r7/1q4p1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d4b5",
+                "b5c3",
+                "c3b1",
+                "b1c3",
+                "c3b5",
+                "b5c7",
+                "c7e8",
+                "e8f6",
+                "f6g8",
+                "g8e7",
+                "e7g6",
+                "g6f4",
+                "f4h3",
+                "h3g1",
+                "g1f3",
+                "f3d4",
+                "d4b3",
+                "b3c1",
+                "c1a2",
+                "a2b4",
+                "b4a6",
+                "a6c7",
+                "c7a8"
+            ]
+        }
+    },
+    {
+        "id": "100",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/r5N1/3b1p2/b1r5/8/r1k5/8/5qb1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g7e8",
+                "e8d6",
+                "d6e4",
+                "e4g3",
+                "g3f1",
+                "f1g3",
+                "g3e2",
+                "e2g1",
+                "g1h3",
+                "h3f4",
+                "f4e6",
+                "e6c5",
+                "c5e4",
+                "e4d6",
+                "d6b5",
+                "b5a3",
+                "a3b5",
+                "b5a7",
+                "a7c6",
+                "c6a5",
+                "a5b7",
+                "b7d6",
+                "d6b5",
+                "b5c3"
+            ]
+        }
+    },
+    {
+        "id": "101",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1n2bq2/8/8/br1k4/6N1/3q1b1r/8/1n6 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "g4f2",
+                "f2d3",
+                "d3f2",
+                "f2h3",
+                "h3g5",
+                "g5h7",
+                "h7f8",
+                "f8h7",
+                "h7f6",
+                "f6e8",
+                "e8g7",
                 "g7f5",
+                "f5h4",
+                "h4f3",
+                "f3h4",
+                "h4g6",
+                "g6e7",
+                "e7c8",
+                "c8a7",
+                "a7b5",
+                "b5a7",
+                "a7c8",
+                "c8e7",
+                "e7d5"
+            ]
+        }
+    },
+    {
+        "id": "102",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2r5/3p2qb/8/3N1kpr/8/5n2/q1b5/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d5b6",
+                "b6c8",
+                "c8d6",
+                "d6e8",
+                "e8g7",
+                "g7h5",
+                "h5g7",
+                "g7e8",
+                "e8d6",
+                "d6c8",
+                "c8b6",
+                "b6d7",
+                "d7f8",
+                "f8h7",
+                "h7f8",
+                "f8d7",
+                "d7b8",
+                "b8c6",
+                "c6b4",
+                "b4a2",
+                "a2b4",
+                "b4c2",
+                "c2e3",
+                "e3f5"
+            ]
+        }
+    },
+    {
+        "id": "103",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4q1b1/8/4k3/7n/1r4bq/8/8/5N2 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "f1e3",
+                "e3g2",
+                "g2h4",
+                "h4g2",
+                "g2e3",
+                "e3c2",
+                "c2b4",
+                "b4a6",
+                "a6c7",
+                "c7e8",
+                "e8c7",
+                "c7a8",
+                "a8b6",
+                "b6c4",
+                "c4e3",
+                "e3g4",
+                "g4h6",
+                "h6g8",
+                "g8h6",
+                "h6g4",
+                "g4e3",
+                "e3c2",
+                "c2d4",
+                "d4e6"
+            ]
+        }
+    },
+    {
+        "id": "104",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1N1nn3/8/q5br/8/1r6/5p1b/2k3r1/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b8a6",
+                "a6b4",
+                "b4d5",
+                "d5e7",
+                "e7g8",
+                "g8h6",
+                "h6g8",
+                "g8e7",
+                "e7d5",
+                "d5f4",
+                "f4h3",
+                "h3f4",
+                "f4d5",
+                "d5b6",
+                "b6d7",
+                "d7e5",
+                "e5f3",
+                "f3h4",
+                "h4g2",
+                "g2h4",
+                "h4g6",
+                "g6e7",
+                "e7f5",
                 "f5d4",
+                "d4c2"
+            ]
+        }
+    },
+    {
+        "id": "105",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1rN5/8/rb6/8/1r1k4/b1n5/2q5/4b1b1 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c8e7",
+                "e7c6",
+                "c6b8",
+                "b8a6",
+                "a6b8",
+                "b8d7",
+                "d7f8",
+                "f8e6",
+                "e6g5",
+                "g5h3",
+                "h3g1",
+                "g1f3",
+                "f3e1",
+                "e1c2",
+                "c2a3",
+                "a3c2",
+                "c2b4",
+                "b4c6",
+                "c6b8",
+                "b8d7",
+                "d7b6",
+                "b6c8",
+                "c8e7",
+                "e7c6",
+                "c6d4"
+            ]
+        }
+    },
+    {
+        "id": "106",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "7r/8/qb1r4/7N/1r1k4/8/p7/b1r5 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h5g7",
+                "g7f5",
+                "f5d6",
+                "d6f7",
+                "f7h8",
+                "h8g6",
+                "g6f8",
+                "f8d7",
+                "d7b8",
+                "b8a6",
+                "a6b4",
+                "b4a2",
+                "a2c1",
+                "c1b3",
+                "b3a1",
+                "a1c2",
+                "c2b4",
+                "b4c6",
+                "c6b8",
+                "b8d7",
+                "d7b6",
+                "b6c8",
+                "c8e7",
+                "e7c6",
+                "c6d4"
+            ]
+        }
+    },
+    {
+        "id": "107",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4r3/8/6b1/8/q1N1k1r1/8/8/3r4 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c4b6",
+                "b6a4",
+                "a4c3",
+                "c3d1",
+                "d1f2",
+                "f2g4",
+                "g4f6",
+                "f6d7",
+                "d7b6",
+                "b6c4",
+                "c4a3",
+                "a3c2",
+                "c2e1",
+                "e1g2",
+                "g2h4",
+                "h4g6",
+                "g6h4",
+                "h4g2",
+                "g2e1",
+                "e1c2",
+                "c2b4",
+                "b4a6",
+                "a6c7",
+                "c7e8",
+                "e8f6",
+                "f6e4"
+            ]
+        }
+    },
+    {
+        "id": "108",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "8/1b3b2/8/1n1r4/5p2/n2k3r/b1N5/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c2b4",
+                "b4a2",
+                "a2c1",
+                "c1b3",
+                "b3a5",
+                "a5b7",
+                "b7a5",
+                "a5c6",
+                "c6e7",
+                "e7c8",
+                "c8b6",
+                "b6a4",
+                "a4b2",
+                "b2d1",
+                "d1f2",
+                "f2h3",
+                "h3f2",
+                "f2g4",
+                "g4h6",
+                "h6f7",
+                "f7h8",
+                "h8g6",
+                "g6f4",
+                "f4d5",
+                "d5f4",
+                "f4d3"
+            ]
+        }
+    },
+    {
+        "id": "109",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2r1br2/7b/2k5/b1N3r1/8/5p2/6br/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "c5e6",
+                "e6f8",
+                "f8e6",
+                "e6g5",
+                "g5e6",
+                "e6d4",
                 "d4b3",
                 "b3a5",
                 "a5c4",
-                "c4e3",
+                "c4e5",
+                "e5g4",
+                "g4h2",
+                "h2g4",
+                "g4f6",
+                "f6h7",
+                "h7f6",
+                "f6g8",
+                "g8e7",
+                "e7c8",
+                "c8e7",
+                "e7g8",
+                "g8f6",
+                "f6e8",
+                "e8g7",
+                "g7e6",
+                "e6d8",
+                "d8c6"
+            ]
+        }
+    },
+    {
+        "id": "110",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "2q1b3/N7/6pb/3k3r/6r1/4p3/1r4b1/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "a7c8",
+                "c8e7",
+                "e7g8",
+                "g8f6",
+                "f6e8",
+                "e8f6",
+                "f6g4",
+                "g4f6",
+                "f6g8",
+                "g8e7",
+                "e7g6",
+                "g6e7",
+                "e7g8",
+                "g8f6",
+                "f6h5",
+                "h5f6",
+                "f6g8",
+                "g8h6",
+                "h6f5",
+                "f5e3",
+                "e3d1",
+                "d1b2",
+                "b2d3",
+                "d3f4",
+                "f4g2",
+                "g2f4",
+                "f4d5"
+            ]
+        }
+    },
+    {
+        "id": "111",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "4r2b/8/1b5r/2r1k3/1b6/8/8/5r1N w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "h1g3",
+                "g3f1",
+                "f1e3",
+                "e3g4",
+                "g4h6",
+                "h6g4",
+                "g4f2",
+                "f2d3",
+                "d3b4",
+                "b4d3",
+                "d3b2",
+                "b2a4",
+                "a4b6",
+                "b6d7",
+                "d7c5",
+                "c5a6",
+                "a6c7",
+                "c7e8",
+                "e8c7",
+                "c7a8",
+                "a8b6",
+                "b6c8",
+                "c8e7",
+                "e7g6",
+                "g6h8",
+                "h8f7",
+                "f7e5"
+            ]
+        }
+    },
+    {
+        "id": "112",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "1N3qbr/8/1q6/4q3/p1k5/8/3bb1r1/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b8d7",
+                "d7f8",
+                "f8d7",
+                "d7b6",
+                "b6d7",
+                "d7e5",
+                "e5d7",
+                "d7f6",
+                "f6e4",
+                "e4d2",
+                "d2e4",
+                "e4d6",
+                "d6f5",
+                "f5e3",
                 "e3g2",
-                "g2e3",
-                "e3f5",
-                "f5g3",
-                "g3e2",
+                "g2f4",
+                "f4e2",
                 "e2f4",
                 "f4g6",
                 "g6h8",
                 "h8g6",
-                "g6f8",
-                "f8h7",
-                "h7f6",
-                "f6e8",
-                "e8d6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_032",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1q5b/r7/2N5/8/3k4/4p3/5b1r/1n2q3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c6b8",
-                "b8c6",
-                "c6a7",
-                "a7c8",
+                "g6e7",
+                "e7g8",
+                "g8e7",
+                "e7c8",
                 "c8d6",
-                "d6f7",
-                "f7g5",
-                "g5f3",
-                "f3h2",
-                "h2g4",
-                "g4h6",
-                "h6f7",
-                "f7h8",
-                "h8f7",
-                "f7d8",
-                "d8e6",
-                "e6d4"
+                "d6c4"
             ]
         }
     },
     {
-        "id": "PHARD_Module3_033",
+        "id": "113",
         "module": "Module3",
         "difficulty": "HARD",
         "fen": "r2N4/brp3r1/8/q4p2/3k4/8/8/b2r4 w - - 0 1",
@@ -332,445 +3334,7 @@
         }
     },
     {
-        "id": "PHARD_Module3_034",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "6r1/8/8/2k2r2/4qn2/brN5/5r2/q7 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c3e4",
-                "e4f2",
-                "f2e4",
-                "e4d2",
-                "d2b3",
-                "b3a1",
-                "a1c2",
-                "c2a3",
-                "a3c2",
-                "c2e3",
-                "e3f5",
-                "f5e7",
-                "e7g8",
-                "g8f6",
-                "f6d7",
-                "d7c5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_035",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3k4/2p5/4p3/b1q3br/r7/8/5Nq1/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f2d3",
-                "d3c5",
-                "c5e6",
-                "e6g7",
-                "g7h5",
-                "h5g7",
-                "g7e6",
-                "e6c5",
-                "c5a4",
-                "a4c5",
-                "c5b3",
-                "b3a5",
-                "a5c4",
-                "c4e5",
-                "e5d3",
-                "d3e1",
-                "e1g2",
-                "g2e1",
-                "e1f3",
-                "f3g5",
-                "g5f7",
-                "f7d8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_036",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2r3k1/p1n5/2q5/5q2/3N3q/6r1/7b/b3n3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d4f5",
-                "f5h4",
-                "h4f5",
-                "f5e7",
-                "e7c8",
-                "c8a7",
-                "a7c6",
-                "c6a5",
-                "a5c4",
-                "c4d2",
-                "d2f1",
-                "f1h2",
-                "h2f1",
-                "f1g3",
-                "g3f5",
-                "f5e7",
-                "e7g8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_039",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3p1q2/2p5/8/2k5/6p1/8/1p1p1br1/1Nr5 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b1d2",
-                "d2e4",
-                "e4g5",
-                "g5h7",
-                "h7f8",
-                "f8g6",
-                "g6f4",
-                "f4g2",
-                "g2f4",
-                "f4d3",
-                "d3f2",
-                "f2d3",
-                "d3b2",
-                "b2d3",
-                "d3c1",
-                "c1d3",
-                "d3c5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_041",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "7r/1p6/8/1k2r3/3b1b2/3q3N/1p6/1rr5 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h3f4",
-                "f4d3",
-                "d3f4",
-                "f4g6",
-                "g6h8",
-                "h8g6",
-                "g6h4",
-                "h4f3",
-                "f3d4",
-                "d4f3",
-                "f3e5",
-                "e5f7",
-                "f7d6",
-                "d6b5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_048",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2n3p1/8/r2p1q2/8/k1b5/3N4/p7/6n1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d3e1",
-                "e1g2",
-                "g2e3",
-                "e3c4",
-                "c4e3",
-                "e3d5",
-                "d5f6",
-                "f6e8",
-                "e8c7",
-                "c7a6",
-                "a6c7",
-                "c7d5",
-                "d5c3",
-                "c3a4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_050",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "b5r1/1N1r2b1/8/8/7b/1p3b1r/1k6/6r1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b7c5",
-                "c5d7",
-                "d7c5",
-                "c5e6",
-                "e6f4",
-                "f4h3",
-                "h3g1",
-                "g1h3",
-                "h3f4",
-                "f4g6",
-                "g6h4",
-                "h4g6",
-                "g6e7",
-                "e7g8",
-                "g8e7",
-                "e7f5",
-                "f5g7",
-                "g7e8",
-                "e8d6",
-                "d6c4",
-                "c4b2"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_052",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2r1k3/8/q1b4r/1p6/b2b4/8/r3N3/1r6 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e2d4",
-                "d4f5",
-                "f5h6",
-                "h6f5",
-                "f5g7",
-                "g7e6",
-                "e6c5",
-                "c5a6",
-                "a6c5",
-                "c5e6",
-                "e6g7",
-                "g7f5",
-                "f5d6",
-                "d6c8",
-                "c8a7",
-                "a7c6",
-                "c6b8",
-                "b8a6",
-                "a6c7",
-                "c7e8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_056",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3p4/5k2/2r5/5r1b/1Nb3n1/2p5/2q5/3p3r w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b4c6",
-                "c6d4",
-                "d4c2",
-                "c2d4",
-                "d4f5",
-                "f5g3",
-                "g3h1",
-                "h1g3",
-                "g3h5",
-                "h5g3",
-                "g3f5",
-                "f5d6",
-                "d6c4",
-                "c4d6",
-                "d6f7"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_057",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/2p2n2/8/k2r4/8/5bN1/b2p1p2/4b3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g3f1",
-                "f1h2",
-                "h2f3",
-                "f3h4",
-                "h4g6",
-                "g6f4",
-                "f4e2",
-                "e2c3",
-                "c3a2",
-                "a2c3",
-                "c3d5",
-                "d5e7",
-                "e7c6",
-                "c6a5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_059",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2r1br2/7b/2k5/b1N3r1/8/5p2/6br/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c5e6",
-                "e6f8",
-                "f8e6",
-                "e6g5",
-                "g5e6",
-                "e6d4",
-                "d4b3",
-                "b3a5",
-                "a5c4",
-                "c4e5",
-                "e5g4",
-                "g4h2",
-                "h2g4",
-                "g4f6",
-                "f6h7",
-                "h7f6",
-                "f6g8",
-                "g8e7",
-                "e7c8",
-                "c8e7",
-                "e7g8",
-                "g8f6",
-                "f6e8",
-                "e8g7",
-                "g7e6",
-                "e6d8",
-                "d8c6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_060",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1N1nn3/8/q5br/8/1r6/5p1b/2k3r1/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b8a6",
-                "a6b4",
-                "b4d5",
-                "d5e7",
-                "e7g8",
-                "g8h6",
-                "h6g8",
-                "g8e7",
-                "e7d5",
-                "d5f4",
-                "f4h3",
-                "h3f4",
-                "f4d5",
-                "d5b6",
-                "b6d7",
-                "d7e5",
-                "e5f3",
-                "f3h4",
-                "h4g2",
-                "g2h4",
-                "h4g6",
-                "g6e7",
-                "e7f5",
-                "f5d4",
-                "d4c2"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_063",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "k5q1/7N/2n2b2/7b/8/5b2/1p6/r3pq2 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h7f6",
-                "f6g8",
-                "g8h6",
-                "h6f5",
-                "f5g3",
-                "g3f1",
-                "f1e3",
-                "e3c4",
-                "c4b2",
-                "b2c4",
-                "c4e3",
-                "e3c2",
-                "c2a1",
-                "a1b3",
-                "b3c5",
-                "c5d7",
-                "d7b6",
-                "b6a8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_067",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "r7/4b3/b1q5/4N3/8/r1b5/2r4p/k7 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e5c6",
-                "c6e7",
-                "e7f5",
-                "f5e3",
-                "e3c2",
-                "c2a3",
-                "a3c2",
-                "c2e3",
-                "e3d5",
-                "d5c3",
-                "c3d5",
-                "d5b4",
-                "b4c2",
-                "c2a1"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_068",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/p7/5r2/8/2Nq1k1b/6p1/n5rb/r7 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c4a5",
-                "a5b3",
-                "b3d4",
-                "d4b3",
-                "b3a1",
-                "a1b3",
-                "b3c5",
-                "c5d3",
-                "d3e1",
-                "e1g2",
-                "g2h4",
-                "h4g2",
-                "g2e1",
-                "e1d3",
-                "d3c5",
-                "c5d7",
-                "d7f6",
-                "f6h5",
-                "h5f4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_070",
+        "id": "114",
         "module": "Module3",
         "difficulty": "HARD",
         "fen": "4b1r1/6p1/2k1r3/r1N5/bq2b1p1/8/4r3/8 w - - 0 1",
@@ -810,707 +3374,130 @@
         }
     },
     {
-        "id": "PHARD_Module3_073",
+        "id": "115",
         "module": "Module3",
         "difficulty": "HARD",
-        "fen": "1r5b/7n/8/8/6pr/2kp3r/1N4b1/8 w - - 0 1",
+        "fen": "8/q1b1rN2/8/1rn1k3/bq6/3b3p/8/8 w - - 0 1",
         "description": "Pojedi bezbedno crnog kralja",
         "solution": {
             "moves": [
-                "b2a4",
-                "a4c5",
-                "c5d7",
-                "d7b8",
-                "b8d7",
-                "d7b6",
-                "b6c8",
-                "c8e7",
-                "e7g6",
-                "g6h8",
-                "h8f7",
-                "f7d6",
-                "d6b5",
-                "b5c3"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_074",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2rb1p2/r1N5/5k2/3r4/1q5b/4p2q/6p1/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c7d5",
-                "d5b4",
-                "b4d5",
-                "d5f4",
-                "f4h3",
-                "h3f4",
-                "f4g2",
-                "g2h4",
-                "h4f3",
-                "f3d4",
-                "d4b5",
-                "b5a7",
-                "a7c8",
-                "c8a7",
-                "a7c6",
-                "c6d8",
-                "d8b7",
-                "b7d6",
-                "d6e8",
-                "e8f6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_076",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "7q/2k2q2/1n4N1/b7/8/r7/3n2qb/3pb3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g6h8",
-                "h8f7",
                 "f7h6",
-                "h6f5",
-                "f5d4",
-                "d4b5",
-                "b5a3",
-                "a3c2",
-                "c2e1",
-                "e1g2",
-                "g2e3",
-                "e3g4",
-                "g4h2",
-                "h2g4",
-                "g4f6",
-                "f6e8",
-                "e8c7"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_081",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4q3/6N1/1n6/4k2r/6b1/2b3b1/1n6/b2r1r2 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g7e8",
-                "e8c7",
-                "c7b5",
-                "b5a3",
-                "a3c2",
-                "c2e3",
-                "e3g4",
-                "g4e3",
-                "e3c2",
-                "c2a3",
-                "a3b5",
-                "b5c3",
-                "c3e2",
-                "e2g3",
+                "h6g8",
+                "g8e7",
+                "e7c8",
+                "c8a7",
+                "a7c8",
+                "c8e7",
+                "e7g8",
+                "g8h6",
+                "h6f7",
+                "f7g5",
+                "g5h3",
+                "h3f2",
+                "f2h1",
+                "h1g3",
                 "g3h5",
                 "h5g7",
                 "g7e8",
                 "e8c7",
-                "c7a6",
-                "a6b8",
-                "b8c6",
-                "c6e5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_083",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2k2Nn1/4p2r/8/1p1bb3/2r5/8/6p1/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f8h7",
-                "h7g5",
-                "g5h3",
-                "h3f2",
-                "f2d1",
-                "d1e3",
-                "e3d5",
-                "d5e3",
-                "e3g2",
-                "g2e3",
-                "e3f1",
-                "f1d2",
-                "d2b1",
-                "b1a3",
-                "a3b5",
-                "b5a3",
-                "a3c4",
-                "c4b6",
-                "b6c8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_084",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1p6/2rp3k/3q4/8/4N2b/8/4n1p1/6qr w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e4d6",
-                "d6f7",
-                "f7e5",
-                "e5d3",
-                "d3b4",
-                "b4a6",
-                "a6b8",
-                "b8a6",
-                "a6c7",
-                "c7a6",
-                "a6b8",
-                "b8d7",
-                "d7f8",
-                "f8h7"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_085",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "5q2/8/8/2rn4/8/3N1b2/2r5/2r1prbk w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d3e5",
-                "e5d7",
-                "d7f8",
-                "f8g6",
-                "g6h4",
-                "h4f5",
-                "f5g3",
-                "g3f1",
-                "f1g3",
-                "g3f5",
-                "f5h4",
-                "h4f3",
-                "f3g5",
-                "g5e4",
-                "e4g3",
-                "g3h1"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_086",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3k2pr/7r/qb6/4q3/p7/8/1r6/6N1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g1f3",
-                "f3e5",
-                "e5c6",
-                "c6b8",
-                "b8a6",
-                "a6b8",
-                "b8c6",
-                "c6e5",
-                "e5c4",
-                "c4b2",
-                "b2a4",
-                "a4b6",
-                "b6d5",
-                "d5f4",
-                "f4e6",
-                "e6d8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_087",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4q2b/8/7q/8/1q6/n2b4/8/k1N1p1b1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c1d3",
-                "d3b4",
-                "b4d5",
-                "d5c7",
                 "c7e8",
-                "e8c7",
-                "c7d5",
-                "d5e7",
-                "e7g8",
-                "g8h6",
-                "h6f7",
-                "f7h8",
-                "h8f7",
-                "f7d8",
-                "d8b7",
-                "b7a5",
-                "a5b3",
-                "b3a1"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_088",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "q2N4/1n6/b3r3/8/8/3k1r1p/8/5bq1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d8e6",
-                "e6c7",
-                "c7a8",
-                "a8c7",
-                "c7a6",
-                "a6b8",
-                "b8d7",
-                "d7e5",
-                "e5f3",
-                "f3g1",
-                "g1f3",
-                "f3h2",
-                "h2f1",
-                "f1g3",
-                "g3h5",
-                "h5f4",
-                "f4d3"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_091",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "6r1/2r1bq2/8/2k2N2/8/8/8/qnr3b1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f5h6",
-                "h6f7",
-                "f7h6",
-                "h6g8",
-                "g8h6",
-                "h6f5",
-                "f5g3",
-                "g3e2",
-                "e2c1",
-                "c1e2",
-                "e2g1",
-                "g1h3",
-                "h3f4",
-                "f4e6",
-                "e6c7",
-                "c7e6",
-                "e6f4",
-                "f4g6",
-                "g6e7",
-                "e7g6",
-                "g6f8",
-                "f8d7",
-                "d7c5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_093",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "b1rp1q2/8/k7/N5r1/8/3n1p2/8/5b1r w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "a5b3",
-                "b3d4",
-                "d4e6",
-                "e6f8",
-                "f8d7",
-                "d7f6",
-                "f6e8",
-                "e8d6",
-                "d6c8",
-                "c8d6",
-                "d6e8",
-                "e8f6",
-                "f6d7",
-                "d7b8",
-                "b8a6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_098",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/r5N1/3b1p2/b1r5/8/r1k5/8/5qb1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g7e8",
-                "e8d6",
-                "d6e4",
-                "e4g3",
-                "g3f1",
-                "f1g3",
-                "g3e2",
-                "e2g1",
-                "g1h3",
-                "h3f4",
-                "f4e6",
-                "e6c5",
-                "c5e4",
-                "e4d6",
-                "d6b5",
-                "b5a3",
-                "a3b5",
-                "b5a7",
-                "a7c6",
-                "c6a5",
-                "a5b7",
-                "b7d6",
-                "d6b5",
-                "b5c3"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_099",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "r5nr/1r3b2/4N3/p3b2k/8/p7/5r2/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e6c5",
-                "c5b7",
-                "b7c5",
-                "c5e4",
-                "e4f2",
-                "f2d3",
-                "d3e5",
-                "e5f7",
-                "f7h8",
-                "h8f7",
-                "f7d6",
-                "d6f5",
-                "f5g7",
-                "g7h5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_104",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "6N1/pp6/7b/2br1b2/8/4r2k/5r2/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g8f6",
-                "f6d5",
-                "d5f6",
-                "f6g8",
-                "g8h6",
-                "h6f7",
-                "f7d8",
-                "d8b7",
-                "b7c5",
-                "c5b7",
-                "b7d6",
-                "d6c4",
-                "c4e3",
-                "e3d1",
-                "d1f2",
-                "f2d1",
-                "d1e3",
-                "e3f5",
-                "f5g7",
-                "g7e6",
-                "e6g5",
-                "g5h3"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_106",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "k7/8/8/2N5/1b6/rb3b1r/1q5p/5r2 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c5d3",
-                "d3b4",
-                "b4d3",
-                "d3b2",
-                "b2d3",
-                "d3f4",
-                "f4h3",
-                "h3f4",
-                "f4g6",
-                "g6e7",
-                "e7f5",
-                "f5g3",
-                "g3f1",
-                "f1h2",
-                "h2f3",
-                "f3d4",
-                "d4b5",
-                "b5a3",
-                "a3b5",
-                "b5c7",
-                "c7a8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_108",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "q3b1q1/1n6/5Nk1/8/4p3/4q3/7b/6r1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f6g8",
-                "g8e7",
-                "e7d5",
-                "d5e3",
-                "e3d5",
-                "d5c3",
-                "c3e4",
-                "e4d2",
-                "d2f3",
-                "f3h2",
-                "h2f3",
-                "f3g1",
-                "g1h3",
-                "h3f4",
-                "f4e6",
-                "e6c7",
-                "c7a8",
-                "a8c7",
-                "c7e8",
-                "e8c7",
-                "c7e6",
-                "e6f8",
-                "f8g6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_110",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2q1b3/N7/6pb/3k3r/6r1/4p3/1r4b1/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "a7c8",
-                "c8e7",
-                "e7g8",
-                "g8f6",
-                "f6e8",
-                "e8f6",
-                "f6g4",
-                "g4f6",
-                "f6g8",
-                "g8e7",
-                "e7g6",
-                "g6e7",
-                "e7g8",
-                "g8f6",
-                "f6h5",
-                "h5f6",
-                "f6g8",
-                "g8h6",
-                "h6f5",
-                "f5e3",
-                "e3d1",
-                "d1b2",
-                "b2d3",
-                "d3f4",
-                "f4g2",
-                "g2f4",
-                "f4d5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_112",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2q4b/4b3/1rb5/1N6/4k1nr/8/2b5/4b1r1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b5a7",
-                "a7c8",
-                "c8b6",
-                "b6c8",
-                "c8e7",
-                "e7c6",
-                "c6a7",
-                "a7b5",
-                "b5a3",
-                "a3c2",
-                "c2a3",
-                "a3b5",
-                "b5d6",
-                "d6e4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_115",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "p4br1/1n3r2/8/3r4/8/k1b5/8/r2N4 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d1c3",
-                "c3d5",
-                "d5b6",
-                "b6c4",
-                "c4e5",
-                "e5f7",
-                "f7e5",
-                "e5d7",
-                "d7f6",
-                "f6g8",
-                "g8f6",
-                "f6h7",
-                "h7f8",
-                "f8e6",
-                "e6d4",
-                "d4c2",
-                "c2a1",
-                "a1c2",
-                "c2a3"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_116",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "N7/1p6/7b/2b4q/8/k5r1/1pr5/2b5 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "a8c7",
-                "c7e6",
-                "e6d8",
-                "d8b7",
-                "b7d8",
-                "d8c6",
-                "c6b8",
-                "b8d7",
-                "d7f6",
-                "f6h5",
+                "e8g7",
+                "g7h5",
                 "h5g3",
-                "g3f5",
-                "f5h4",
-                "h4f3",
-                "f3e1",
-                "e1c2",
+                "g3h1",
+                "h1f2",
+                "f2h3",
+                "h3g5",
+                "g5f7",
+                "f7e5"
+            ]
+        }
+    },
+    {
+        "id": "116",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "r3b3/8/8/6bp/k4r2/1N2qbb1/3p4/8 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "b3a1",
+                "a1c2",
+                "c2e3",
+                "e3f1",
+                "f1g3",
+                "g3f1",
+                "f1d2",
+                "d2f1",
+                "f1e3",
+                "e3c2",
                 "c2e1",
                 "e1d3",
                 "d3c5",
+                "c5e6",
+                "e6g5",
+                "g5e6",
+                "e6f4",
+                "f4e6",
+                "e6g5",
+                "g5f3",
+                "f3g5",
+                "g5e6",
+                "e6c7",
+                "c7a8",
+                "a8c7",
+                "c7e8",
+                "e8g7",
+                "g7e6",
+                "e6c5",
+                "c5a4"
+            ]
+        }
+    },
+    {
+        "id": "117",
+        "module": "Module3",
+        "difficulty": "HARD",
+        "fen": "rb6/1q6/5b2/2p5/5k1r/8/5r1b/3N4 w - - 0 1",
+        "description": "Pojedi bezbedno crnog kralja",
+        "solution": {
+            "moves": [
+                "d1f2",
+                "f2d3",
+                "d3c5",
+                "c5b7",
+                "b7c5",
                 "c5d7",
+                "d7f6",
+                "f6g8",
+                "g8e7",
+                "e7g6",
+                "g6h4",
+                "h4g6",
+                "g6f8",
+                "f8d7",
+                "d7b6",
+                "b6a8",
+                "a8b6",
+                "b6d7",
+                "d7b8",
+                "b8d7",
                 "d7b6",
                 "b6c4",
-                "c4a3"
+                "c4d2",
+                "d2f1",
+                "f1h2",
+                "h2f1",
+                "f1d2",
+                "d2c4",
+                "c4b6",
+                "b6d5",
+                "d5f4"
             ]
         }
     },
     {
-        "id": "PHARD_Module3_117",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1n2bq2/8/8/br1k4/6N1/3q1b1r/8/1n6 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g4f2",
-                "f2d3",
-                "d3f2",
-                "f2h3",
-                "h3g5",
-                "g5h7",
-                "h7f8",
-                "f8h7",
-                "h7f6",
-                "f6e8",
-                "e8g7",
-                "g7f5",
-                "f5h4",
-                "h4f3",
-                "f3h4",
-                "h4g6",
-                "g6e7",
-                "e7c8",
-                "c8a7",
-                "a7b5",
-                "b5a7",
-                "a7c8",
-                "c8e7",
-                "e7d5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_118",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1rN5/8/rb6/8/1r1k4/b1n5/2q5/4b1b1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c8e7",
-                "e7c6",
-                "c6b8",
-                "b8a6",
-                "a6b8",
-                "b8d7",
-                "d7f8",
-                "f8e6",
-                "e6g5",
-                "g5h3",
-                "h3g1",
-                "g1f3",
-                "f3e1",
-                "e1c2",
-                "c2a3",
-                "a3c2",
-                "c2b4",
-                "b4c6",
-                "c6b8",
-                "b8d7",
-                "d7b6",
-                "b6c8",
-                "c8e7",
-                "e7c6",
-                "c6d4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_119",
+        "id": "118",
         "module": "Module3",
         "difficulty": "HARD",
         "fen": "1r2n2r/qb6/8/3k3p/1r6/3r1br1/5N2/8 w - - 0 1",
@@ -1554,1993 +3541,6 @@
                 "h8g6",
                 "g6e7",
                 "e7d5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_121",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2r3q1/q1bn1pqr/8/8/2q5/2N3p1/8/6k1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c3b1",
-                "b1d2",
-                "d2c4",
-                "c4d2",
-                "d2f3",
-                "f3e1",
-                "e1d3",
-                "d3b4",
-                "b4c6",
-                "c6a7",
-                "a7c6",
-                "c6b4",
-                "b4d3",
-                "d3e1",
-                "e1f3",
-                "f3g1"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_124",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/q7/6q1/8/3k4/3Nn3/2p5/b1rb2br w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d3f4",
-                "f4g6",
-                "g6f8",
-                "f8e6",
-                "e6d8",
-                "d8c6",
-                "c6a7",
-                "a7c6",
-                "c6a5",
-                "a5b3",
-                "b3c1",
-                "c1b3",
-                "b3a1",
-                "a1b3",
-                "b3d4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_129",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1qb5/8/4k1p1/5N2/8/qb1nr3/8/5b2 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f5e3",
-                "e3f1",
-                "f1d2",
-                "d2f3",
-                "f3d4",
-                "d4c6",
-                "c6b8",
-                "b8c6",
-                "c6d4",
-                "d4b5",
-                "b5a3",
-                "a3b5",
-                "b5a7",
-                "a7c8",
-                "c8a7",
-                "a7c6",
-                "c6a5",
-                "a5b3",
-                "b3d4",
-                "d4e6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_130",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2r5/3p2qb/8/3N1kpr/8/5n2/q1b5/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d5b6",
-                "b6c8",
-                "c8d6",
-                "d6e8",
-                "e8g7",
-                "g7h5",
-                "h5g7",
-                "g7e8",
-                "e8d6",
-                "d6c8",
-                "c8b6",
-                "b6d7",
-                "d7f8",
-                "f8h7",
-                "h7f8",
-                "f8d7",
-                "d7b8",
-                "b8c6",
-                "c6b4",
-                "b4a2",
-                "a2b4",
-                "b4c2",
-                "c2e3",
-                "e3f5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_134",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "6n1/6N1/8/k6q/2r5/1rb5/r7/1b3r2 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g7h5",
-                "h5g3",
-                "g3f1",
-                "f1e3",
-                "e3c4",
-                "c4d6",
-                "d6e8",
-                "e8c7",
-                "c7e6",
-                "e6c5",
-                "c5b3",
-                "b3c5",
-                "c5e6",
-                "e6c7",
-                "c7d5",
-                "d5c3",
-                "c3b1",
-                "b1c3",
-                "c3a2",
-                "a2c1",
-                "c1b3",
-                "b3a5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_135",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4r3/8/5b2/4n3/1n3r2/2N1r2k/5b2/5bpr w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c3a4",
-                "a4c5",
-                "c5b7",
-                "b7d6",
-                "d6e8",
-                "e8c7",
-                "c7e6",
-                "e6f4",
-                "f4e6",
-                "e6c5",
-                "c5a4",
-                "a4b2",
-                "b2d1",
-                "d1f2",
-                "f2h1",
-                "h1f2",
-                "f2d1",
-                "d1e3",
-                "e3f1",
-                "f1e3",
-                "e3d1",
-                "d1f2",
-                "f2h3"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_136",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4p3/8/q7/b5q1/8/2k4N/1p5n/b3r3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h3g5",
-                "g5h3",
-                "h3f4",
-                "f4g2",
-                "g2e1",
-                "e1g2",
-                "g2h4",
-                "h4f5",
-                "f5g3",
-                "g3e4",
-                "e4c5",
-                "c5a6",
-                "a6b8",
-                "b8c6",
-                "c6a5",
-                "a5b7",
-                "b7d6",
-                "d6b5",
-                "b5c3"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_139",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3r2k1/2q5/5b2/8/8/rb4r1/2N3n1/1q6 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c2a3",
-                "a3b1",
-                "b1a3",
-                "a3b5",
-                "b5c7",
-                "c7a6",
-                "a6c5",
-                "c5e4",
-                "e4f6",
-                "f6h5",
-                "h5g3",
-                "g3e4",
-                "e4c5",
-                "c5b3",
-                "b3c5",
-                "c5b7",
-                "b7d8",
-                "d8c6",
-                "c6e7",
-                "e7g8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_140",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/k3q3/p2p4/n5N1/5n2/r3bp2/7r/b7 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g5f3",
-                "f3h2",
-                "h2g4",
-                "g4h6",
-                "h6g8",
-                "g8e7",
-                "e7f5",
-                "f5h4",
-                "h4f3",
-                "f3e1",
-                "e1c2",
-                "c2a3",
-                "a3c2",
-                "c2e3",
-                "e3f5",
-                "f5d6",
-                "d6c8",
-                "c8a7"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_002",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/2b1p3/2N5/4k3/2q5/8/8/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c6e7",
-                "e7g6",
-                "g6f8",
-                "f8h7",
-                "h7g5",
-                "g5f3",
-                "f3d2",
-                "d2c4",
-                "c4a3",
-                "a3b5",
-                "b5c7",
-                "c7a8",
-                "a8b6",
-                "b6d7",
-                "d7e5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_009",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/5p1b/8/5k2/8/1n4b1/8/7N w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h1g3",
-                "g3e2",
-                "e2c3",
-                "c3d5",
-                "d5b6",
-                "b6d7",
-                "d7f8",
-                "f8h7",
-                "h7f8",
-                "f8d7",
-                "d7b8",
-                "b8c6",
-                "c6e7",
-                "e7f5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_001",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3b3N/8/8/r4k2/8/3b4/3q4/4r3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h8f7",
-                "f7d8",
-                "d8c6",
-                "c6d4",
-                "d4f3",
-                "f3d2",
-                "d2f3",
-                "f3e1",
-                "e1d3",
-                "d3b4",
-                "b4c6",
-                "c6a5",
-                "a5b7",
-                "b7d6",
-                "d6f5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_006",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "r7/4b3/8/8/k7/5q2/r1N5/1q6 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c2d4",
-                "d4f3",
-                "f3d4",
-                "d4e6",
-                "e6c7",
-                "c7a8",
-                "a8c7",
-                "c7d5",
-                "d5c3",
-                "c3b1",
-                "b1c3",
-                "c3a2",
-                "a2c3",
-                "c3a4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_010",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1qp1r3/8/6p1/4k3/5N2/8/r7/b7 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f4d3",
-                "d3c1",
-                "c1a2",
-                "a2c1",
-                "c1d3",
-                "d3c5",
-                "c5a6",
-                "a6b8",
-                "b8a6",
-                "a6c7",
-                "c7e8",
-                "e8c7",
-                "c7a6",
-                "a6c5",
-                "c5b3",
-                "b3a1",
-                "a1b3",
-                "b3c5",
-                "c5d3",
-                "d3e5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_012",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3r3b/r7/8/8/3kN3/8/5b1q/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e4g5",
-                "g5e6",
-                "e6d8",
-                "d8e6",
-                "e6g5",
-                "g5f3",
-                "f3h2",
-                "h2g4",
-                "g4f2",
-                "f2h3",
-                "h3f4",
-                "f4g6",
-                "g6h8",
-                "h8g6",
-                "g6f8",
-                "f8e6",
-                "e6d4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_013",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4r3/8/6b1/8/q1N1k1r1/8/8/3r4 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c4b6",
-                "b6a4",
-                "a4c3",
-                "c3d1",
-                "d1f2",
-                "f2g4",
-                "g4f6",
-                "f6d7",
-                "d7b6",
-                "b6c4",
-                "c4a3",
-                "a3c2",
-                "c2e1",
-                "e1g2",
-                "g2h4",
-                "h4g6",
-                "g6h4",
-                "h4g2",
-                "g2e1",
-                "e1c2",
-                "c2b4",
-                "b4a6",
-                "a6c7",
-                "c7e8",
-                "e8f6",
-                "f6e4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_015",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3rp3/7N/8/6q1/8/8/q7/1r1k4 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h7g5",
-                "g5e4",
-                "e4c3",
-                "c3a2",
-                "a2c3",
-                "c3b1",
-                "b1c3",
-                "c3b5",
-                "b5c7",
-                "c7e6",
-                "e6d8",
-                "d8b7",
-                "b7d6",
-                "d6f5",
-                "f5e3",
-                "e3d1"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_016",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/k6r/1p1p4/2b2b2/1N6/1n6/8/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b4d5",
-                "d5f4",
-                "f4e2",
-                "e2g3",
-                "g3f5",
-                "f5g3",
-                "g3e4",
-                "e4f6",
-                "f6h7",
-                "h7f8",
-                "f8g6",
-                "g6e7",
-                "e7c8",
-                "c8a7"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_017",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "b3Nk2/8/4q2b/8/1b5q/8/8/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e8c7",
-                "c7e6",
-                "e6c7",
-                "c7a8",
-                "a8b6",
-                "b6d7",
-                "d7e5",
-                "e5g6",
-                "g6h4",
-                "h4f5",
-                "f5h6",
-                "h6f5",
-                "f5d4",
-                "d4c6",
-                "c6b4",
-                "b4c6",
-                "c6d8",
-                "d8e6",
-                "e6f8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_020",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4q1k1/8/6r1/3b3q/3N4/8/6p1/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d4c2",
-                "c2b4",
-                "b4d3",
-                "d3f4",
-                "f4h5",
-                "h5f4",
-                "f4d5",
-                "d5c7",
-                "c7e8",
-                "e8c7",
-                "c7d5",
-                "d5e7",
-                "e7g6",
-                "g6e7",
-                "e7g8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_023",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/8/3p4/5b1N/kb2r3/8/r7/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h5g7",
-                "g7f5",
-                "f5g3",
-                "g3e4",
-                "e4f6",
-                "f6h5",
-                "h5f4",
-                "f4d3",
-                "d3c1",
-                "c1a2",
-                "a2c1",
-                "c1d3",
-                "d3b2",
-                "b2a4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_024",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/1b3N2/2r1k3/8/b7/4r3/4p3/4r3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f7h6",
-                "h6g4",
-                "g4e3",
-                "e3g4",
-                "g4f2",
-                "f2d3",
-                "d3b2",
-                "b2a4",
-                "a4b2",
-                "b2d3",
-                "d3e1",
-                "e1f3",
-                "f3d4",
-                "d4b3",
-                "b3a5",
-                "a5b7",
-                "b7d8",
-                "d8c6",
-                "c6d8",
-                "d8e6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_026",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/8/b4q2/4r3/5b2/1r6/4k2N/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h2g4",
-                "g4f6",
-                "f6h7",
-                "h7f8",
-                "f8g6",
-                "g6f4",
-                "f4g6",
-                "g6e5",
-                "e5d7",
-                "d7c5",
-                "c5a6",
-                "a6c7",
-                "c7e6",
-                "e6f4",
-                "f4e2"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_028",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2q5/8/2N5/1p6/r5k1/4b3/8/6r1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c6e7",
-                "e7c8",
-                "c8e7",
-                "e7d5",
-                "d5e3",
-                "e3d5",
-                "d5c7",
-                "c7b5",
-                "b5c3",
-                "c3a4",
-                "a4c3",
-                "c3e2",
-                "e2g1",
-                "g1e2",
-                "e2d4",
-                "d4c6",
-                "c6e5",
-                "e5g4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_029",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "7r/5Nb1/8/6n1/2b5/8/4rn1k/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f7d6",
-                "d6c4",
-                "c4d6",
-                "d6f5",
-                "f5g7",
-                "g7f5",
-                "f5d4",
-                "d4e2",
-                "e2f4",
-                "f4g6",
-                "g6h8",
-                "h8g6",
-                "g6e7",
-                "e7f5",
-                "f5e3",
-                "e3f1",
-                "f1h2"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_030",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "7k/8/2b2b2/4N3/5r2/4n3/8/7r w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e5c6",
-                "c6b8",
-                "b8d7",
-                "d7f8",
-                "f8g6",
-                "g6f4",
-                "f4d3",
-                "d3f2",
-                "f2h1",
-                "h1g3",
-                "g3h5",
-                "h5f6",
-                "f6e8",
-                "e8d6",
-                "d6f7",
-                "f7h8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_032",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4k3/6b1/3N4/6rb/8/8/5p2/4r3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d6c8",
-                "c8a7",
-                "a7c6",
-                "c6b4",
-                "b4d3",
-                "d3f2",
-                "f2h3",
-                "h3g5",
-                "g5h3",
-                "h3f4",
-                "f4d3",
-                "d3e1",
-                "e1d3",
-                "d3f4",
-                "f4h5",
-                "h5g7",
-                "g7e8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_036",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/8/8/2N1b1b1/3p1r2/8/8/r4k2 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c5d7",
-                "d7e5",
-                "e5d7",
-                "d7c5",
-                "c5e6",
-                "e6g5",
-                "g5e6",
-                "e6f4",
-                "f4e6",
-                "e6d4",
-                "d4b3",
-                "b3a1",
-                "a1b3",
-                "b3d2",
-                "d2f1"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_037",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4q1b1/8/4k3/7n/1r4bq/8/8/5N2 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f1e3",
-                "e3g2",
-                "g2h4",
-                "h4g2",
-                "g2e3",
-                "e3c2",
-                "c2b4",
-                "b4a6",
-                "a6c7",
-                "c7e8",
-                "e8c7",
-                "c7a8",
-                "a8b6",
-                "b6c4",
-                "c4e3",
-                "e3g4",
-                "g4h6",
-                "h6g8",
-                "g8h6",
-                "h6g4",
-                "g4e3",
-                "e3c2",
-                "c2d4",
-                "d4e6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_004",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/2k5/5Nr1/1p6/1p6/2r3b1/3b4/6q1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f6h7",
-                "h7f8",
-                "f8g6",
-                "g6e7",
-                "e7d5",
-                "d5b4",
-                "b4d5",
-                "d5f6",
-                "f6e4",
-                "e4d2",
-                "d2e4",
-                "e4c3",
-                "c3e2",
-                "e2g1",
-                "g1e2",
-                "e2g3",
-                "g3h5",
-                "h5g7",
-                "g7e8",
-                "e8c7"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_005",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/7q/4N2n/8/1b5r/3b4/3r3k/4b3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e6g5",
-                "g5f3",
-                "f3e1",
-                "e1f3",
-                "f3h4",
-                "h4f3",
-                "f3e5",
-                "e5c6",
-                "c6b4",
-                "b4c6",
-                "c6e5",
-                "e5f3",
-                "f3d2",
-                "d2f3",
-                "f3h2"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_006",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4r2b/8/1b5r/2r1k3/1b6/8/8/5r1N w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h1g3",
-                "g3f1",
-                "f1e3",
-                "e3g4",
-                "g4h6",
-                "h6g4",
-                "g4f2",
-                "f2d3",
-                "d3b4",
-                "b4d3",
-                "d3b2",
-                "b2a4",
-                "a4b6",
-                "b6d7",
-                "d7c5",
-                "c5a6",
-                "a6c7",
-                "c7e8",
-                "e8c7",
-                "c7a8",
-                "a8b6",
-                "b6c8",
-                "c8e7",
-                "e7g6",
-                "g6h8",
-                "h8f7",
-                "f7e5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_007",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/2q2br1/8/8/8/6p1/k2p3q/2N1p1b1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c1d3",
-                "d3b4",
-                "b4a6",
-                "a6c7",
-                "c7b5",
-                "b5d6",
-                "d6f5",
-                "f5g7",
-                "g7f5",
-                "f5d6",
-                "d6f7",
-                "f7d8",
-                "d8c6",
-                "c6b4",
-                "b4a2"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_009",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "7r/8/qb1r4/7N/1r1k4/8/p7/b1r5 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h5g7",
-                "g7f5",
-                "f5d6",
-                "d6f7",
-                "f7h8",
-                "h8g6",
-                "g6f8",
-                "f8d7",
-                "d7b8",
-                "b8a6",
-                "a6b4",
-                "b4a2",
-                "a2c1",
-                "c1b3",
-                "b3a1",
-                "a1c2",
-                "c2b4",
-                "b4c6",
-                "c6b8",
-                "b8d7",
-                "d7b6",
-                "b6c8",
-                "c8e7",
-                "e7c6",
-                "c6d4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_017",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "6q1/r1b5/5b2/8/b3N3/r7/8/3k2nq w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e4f6",
-                "f6g8",
-                "g8e7",
-                "e7c8",
-                "c8a7",
-                "a7c8",
-                "c8e7",
-                "e7g6",
-                "g6f8",
-                "f8e6",
-                "e6c7",
-                "c7e6",
-                "e6f8",
-                "f8g6",
-                "g6e5",
-                "e5c4",
-                "c4a3",
-                "a3c4",
-                "c4b6",
-                "b6a4",
-                "a4c3",
-                "c3d1"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_019",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2n5/8/5q2/6N1/r4b1k/8/4q1pr/7n w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g5h7",
-                "h7f6",
-                "f6d7",
-                "d7c5",
-                "c5a4",
-                "a4c3",
-                "c3e2",
-                "e2f4",
-                "f4g6",
-                "g6e5",
-                "e5f3",
-                "f3h2",
-                "h2f3",
-                "f3h4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_021",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1q5k/8/1n1p4/N7/r4q2/8/1p6/bq6 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "a5c6",
-                "c6b8",
-                "b8c6",
-                "c6d8",
-                "d8e6",
-                "e6c7",
-                "c7b5",
-                "b5c3",
-                "c3b1",
-                "b1c3",
-                "c3b5",
-                "b5c7",
-                "c7e6",
-                "e6d8",
-                "d8c6",
-                "c6e7",
-                "e7g6",
-                "g6h8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_026",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "pN3q2/8/4r3/q7/1r5k/8/2b5/4b3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b8d7",
-                "d7f8",
-                "f8e6",
-                "e6f8",
-                "f8d7",
-                "d7f6",
-                "f6g8",
-                "g8e7",
-                "e7c6",
-                "c6a5",
-                "a5c6",
-                "c6e5",
-                "e5f3",
-                "f3e1",
-                "e1c2",
-                "c2b4",
-                "b4c6",
-                "c6e7",
-                "e7g6",
-                "g6h4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_028",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2b5/8/4r3/8/4k1q1/1Nrp4/2b5/3p4 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b3c1",
-                "c1a2",
-                "a2c3",
-                "c3b5",
-                "b5a7",
-                "a7c8",
-                "c8a7",
-                "a7b5",
-                "b5a3",
-                "a3c4",
-                "c4d2",
-                "d2f1",
-                "f1h2",
-                "h2g4",
-                "g4f2",
-                "f2h3",
-                "h3g5",
-                "g5e6",
-                "e6g5",
-                "g5e4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_029",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1b1b4/3qn3/5k2/b3N3/3r4/1b6/8/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e5f3",
-                "f3g1",
-                "g1e2",
-                "e2c1",
-                "c1b3",
-                "b3c5",
-                "c5a6",
-                "a6b8",
-                "b8a6",
-                "a6c5",
-                "c5b3",
-                "b3c1",
-                "c1e2",
-                "e2g3",
-                "g3h5",
-                "h5f6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_032",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "rb6/1q6/5b2/2p5/5k1r/8/5r1b/3N4 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d1f2",
-                "f2d3",
-                "d3c5",
-                "c5b7",
-                "b7c5",
-                "c5d7",
-                "d7f6",
-                "f6g8",
-                "g8e7",
-                "e7g6",
-                "g6h4",
-                "h4g6",
-                "g6f8",
-                "f8d7",
-                "d7b6",
-                "b6a8",
-                "a8b6",
-                "b6d7",
-                "d7b8",
-                "b8d7",
-                "d7b6",
-                "b6c4",
-                "c4d2",
-                "d2f1",
-                "f1h2",
-                "h2f1",
-                "f1d2",
-                "d2c4",
-                "c4b6",
-                "b6d5",
-                "d5f4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_034",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/q1b1rN2/8/1rn1k3/bq6/3b3p/8/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f7h6",
-                "h6g8",
-                "g8e7",
-                "e7c8",
-                "c8a7",
-                "a7c8",
-                "c8e7",
-                "e7g8",
-                "g8h6",
-                "h6f7",
-                "f7g5",
-                "g5h3",
-                "h3f2",
-                "f2h1",
-                "h1g3",
-                "g3h5",
-                "h5g7",
-                "g7e8",
-                "e8c7",
-                "c7e8",
-                "e8g7",
-                "g7h5",
-                "h5g3",
-                "g3h1",
-                "h1f2",
-                "f2h3",
-                "h3g5",
-                "g5f7",
-                "f7e5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_040",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "r3b3/8/8/6bp/k4r2/1N2qbb1/3p4/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b3a1",
-                "a1c2",
-                "c2e3",
-                "e3f1",
-                "f1g3",
-                "g3f1",
-                "f1d2",
-                "d2f1",
-                "f1e3",
-                "e3c2",
-                "c2e1",
-                "e1d3",
-                "d3c5",
-                "c5e6",
-                "e6g5",
-                "g5e6",
-                "e6f4",
-                "f4e6",
-                "e6g5",
-                "g5f3",
-                "f3g5",
-                "g5e6",
-                "e6c7",
-                "c7a8",
-                "a8c7",
-                "c7e8",
-                "e8g7",
-                "g7e6",
-                "e6c5",
-                "c5a4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_045",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4b3/1k1r4/p1N5/8/6b1/3b2p1/2p5/1r6 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c6e5",
-                "e5g4",
-                "g4f6",
-                "f6e8",
-                "e8f6",
-                "f6d7",
-                "d7e5",
-                "e5d3",
-                "d3e5",
-                "e5g4",
-                "g4e3",
-                "e3c2",
-                "c2a3",
-                "a3b1",
-                "b1c3",
-                "c3e4",
-                "e4d6",
-                "d6b7"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_053",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1N3qbr/8/1q6/4q3/p1k5/8/3bb1r1/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b8d7",
-                "d7f8",
-                "f8d7",
-                "d7b6",
-                "b6d7",
-                "d7e5",
-                "e5d7",
-                "d7f6",
-                "f6e4",
-                "e4d2",
-                "d2e4",
-                "e4d6",
-                "d6f5",
-                "f5e3",
-                "e3g2",
-                "g2f4",
-                "f4e2",
-                "e2f4",
-                "f4g6",
-                "g6h8",
-                "h8g6",
-                "g6e7",
-                "e7g8",
-                "g8e7",
-                "e7c8",
-                "c8d6",
-                "d6c4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_055",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2qbr3/8/8/8/7k/3Np1p1/5b2/6p1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d3f4",
-                "f4e2",
-                "e2d4",
-                "d4b5",
-                "b5a7",
-                "a7c8",
-                "c8d6",
-                "d6e8",
-                "e8g7",
-                "g7e6",
-                "e6d8",
-                "d8f7",
-                "f7h8",
-                "h8g6",
-                "g6h4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_057",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "r2k4/8/8/nqnq2b1/8/4N3/r7/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e3d5",
-                "d5c3",
-                "c3b5",
-                "b5c3",
-                "c3d5",
-                "d5b6",
-                "b6a8",
-                "a8b6",
-                "b6d5",
-                "d5c3",
-                "c3b5",
-                "b5d6",
-                "d6f7",
-                "f7g5",
-                "g5f7",
-                "f7d8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_058",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "k7/8/5r2/8/3N4/1p3b1r/r7/1q4p1 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d4b5",
-                "b5c3",
-                "c3b1",
-                "b1c3",
-                "c3b5",
-                "b5c7",
-                "c7e8",
-                "e8f6",
-                "f6g8",
-                "g8e7",
-                "e7g6",
-                "g6f4",
-                "f4h3",
-                "h3g1",
-                "g1f3",
-                "f3d4",
-                "d4b3",
-                "b3c1",
-                "c1a2",
-                "a2b4",
-                "b4a6",
-                "a6c7",
-                "c7a8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_060",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/8/2r3b1/8/1N2k2q/8/6pp/1r5b w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b4c6",
-                "c6a5",
-                "a5c4",
-                "c4a3",
-                "a3b1",
-                "b1c3",
-                "c3b5",
-                "b5c7",
-                "c7e6",
-                "e6f8",
-                "f8g6",
-                "g6h4",
-                "h4g6",
-                "g6h8",
-                "h8f7",
-                "f7d6",
-                "d6e4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_062",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1k5q/8/1b6/8/8/5N2/2b1q2b/1qr5 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f3g5",
-                "g5f7",
-                "f7h8",
-                "h8f7",
-                "f7h6",
-                "h6g8",
-                "g8f6",
-                "f6d5",
-                "d5c3",
-                "c3e2",
-                "e2c3",
-                "c3d5",
-                "d5f6",
-                "f6g4",
-                "g4h2",
-                "h2g4",
-                "g4f6",
-                "f6d7",
-                "d7b8"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_067",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/1b3b2/8/1n1r4/5p2/n2k3r/b1N5/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c2b4",
-                "b4a2",
-                "a2c1",
-                "c1b3",
-                "b3a5",
-                "a5b7",
-                "b7a5",
-                "a5c6",
-                "c6e7",
-                "e7c8",
-                "c8b6",
-                "b6a4",
-                "a4b2",
-                "b2d1",
-                "d1f2",
-                "f2h3",
-                "h3f2",
-                "f2g4",
-                "g4h6",
-                "h6f7",
-                "f7h8",
-                "h8g6",
-                "g6f4",
-                "f4d5",
-                "d5f4",
-                "f4d3"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_068",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1r6/8/1n3q1n/4p3/3r4/2N5/p7/1r1k4 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c3a2",
-                "a2c3",
-                "c3b1",
-                "b1c3",
-                "c3b5",
-                "b5c7",
-                "c7a6",
-                "a6b8",
-                "b8a6",
-                "a6c7",
-                "c7e8",
-                "e8f6",
-                "f6h7",
-                "h7f8",
-                "f8g6",
-                "g6e5",
-                "e5c6",
-                "c6d4",
-                "d4b5",
-                "b5c3",
-                "c3d1"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_072",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4r3/8/8/4k2b/b2p4/2b5/r7/2r1N3 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e1d3",
-                "d3c1",
-                "c1a2",
-                "a2c1",
-                "c1d3",
-                "d3c5",
-                "c5a4",
-                "a4c5",
-                "c5d3",
-                "d3f2",
-                "f2h1",
-                "h1g3",
-                "g3h5",
-                "h5g7",
-                "g7e8",
-                "e8c7",
-                "c7a8",
-                "a8b6",
-                "b6d7",
-                "d7e5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_073",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "7r/1r5b/8/5k2/3N2p1/1n2r2b/8/2p5 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d4c2",
-                "c2e3",
-                "e3c4",
-                "c4d6",
-                "d6b7",
-                "b7d6",
-                "d6f7",
-                "f7h8",
-                "h8f7",
-                "f7d8",
-                "d8c6",
-                "c6b8",
-                "b8d7",
-                "d7f8",
-                "f8h7",
-                "h7f8",
-                "f8d7",
-                "d7b8",
-                "b8c6",
-                "c6e7",
-                "e7f5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_075",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3bb1r1/8/4q1k1/8/4b3/8/2p5/nbN5 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c1e2",
-                "e2f4",
-                "f4e6",
-                "e6d8",
-                "d8e6",
-                "e6c5",
-                "c5e4",
-                "e4d6",
-                "d6c8",
-                "c8e7",
-                "e7g8",
-                "g8e7",
-                "e7c8",
-                "c8d6",
-                "d6e8",
-                "e8c7",
-                "c7e6",
-                "e6f8",
-                "f8g6"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_079",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3b4/8/8/1Nk3r1/5qn1/8/8/3q2bq w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "b5c3",
-                "c3d1",
-                "d1c3",
-                "c3e2",
-                "e2f4",
-                "f4e6",
-                "e6d8",
-                "d8e6",
-                "e6f4",
-                "f4e2",
-                "e2g3",
-                "g3h1",
-                "h1g3",
-                "g3e2",
-                "e2g1",
-                "g1h3",
-                "h3g5",
-                "g5e6",
-                "e6c5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_016",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "3nQ3/5r2/1rb5/4n3/1n6/3r1k2/b7/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e8e5",
-                "e5c5",
-                "c5b6",
-                "b6b4",
-                "b4b6",
-                "b6a6",
-                "a6d3",
-                "d3d8",
-                "d8c8",
-                "c8c6",
-                "c6a8",
-                "a8a2",
-                "a2f7",
-                "f7f3"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_048",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "2Q3nr/1b6/2p4b/3n4/2b5/4k1r1/7b/5n2 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "c8b7",
-                "b7c6",
-                "c6c4",
-                "c4f1",
-                "f1h1",
-                "h1h2",
-                "h2g3",
-                "g3e5",
-                "e5h8",
-                "h8g8",
-                "g8d5",
-                "d5e6",
-                "e6h6",
-                "h6e3"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_029",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "5bQ1/2n2r2/8/1r1k4/nn6/2r5/1b6/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "g8f7",
-                "f7f8",
-                "f8f2",
-                "f2a7",
-                "a7a4",
-                "a4a7",
-                "a7f2",
-                "f2b2",
-                "b2c3",
-                "c3c7",
-                "c7d7",
-                "d7b5",
-                "b5b4",
-                "b4b7",
-                "b7d5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_017",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "1n1q2b1/8/8/2k5/6n1/nn5n/2bR1b2/7n w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d2d8",
-                "d8g8",
-                "g8g4",
-                "g4a4",
-                "a4a3",
-                "a3a2",
-                "a2c2",
-                "c2c3",
-                "c3b3",
-                "b3h3",
-                "h3h1",
-                "h1h2",
-                "h2f2",
-                "f2f5",
-                "f5c5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_018",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "8/2k2p2/2b1nb1R/8/6b1/2q5/8/3n1p2 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h6h7",
-                "h7f7",
-                "f7h7",
-                "h7h6",
-                "h6g6",
-                "g6g4",
-                "g4g6",
-                "g6h6",
-                "h6h2",
-                "h2e2",
-                "e2e6",
-                "e6e2",
-                "e2h2",
-                "h2h7",
-                "h7c7"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_022",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "p1p5/pn5b/2n5/2kR1p2/4n3/6r1/8/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d5d1",
-                "d1h1",
-                "h1h7",
-                "h7h8",
-                "h8c8",
-                "c8a8",
-                "a8h8",
-                "h8h7",
-                "h7b7",
-                "b7f7",
-                "f7f5",
-                "f5f4",
-                "f4e4",
-                "e4h4",
-                "h4h5",
-                "h5c5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_072",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "6q1/6pR/r7/8/6n1/4q3/3n1qpk/3b3n w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h7h5",
-                "h5b5",
-                "b5b7",
-                "b7c7",
-                "c7c1",
-                "c1d1",
-                "d1c1",
-                "c1c7",
-                "c7b7",
-                "b7b4",
-                "b4g4",
-                "g4b4",
-                "b4b5",
-                "b5h5",
-                "h5h2"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_082",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "5r2/2k2nq1/8/3n4/3b1b2/2b3nn/7R/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "h2h3",
-                "h3h2",
-                "h2a2",
-                "a2a3",
-                "a3b3",
-                "b3b5",
-                "b5d5",
-                "d5b5",
-                "b5b1",
-                "b1d1",
-                "d1d3",
-                "d3f3",
-                "f3f4",
-                "f4h4",
-                "h4h2",
-                "h2a2",
-                "a2a4",
-                "a4c4",
-                "c4c7"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_090",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "7b/n2n1Rn1/4p2p/3bb2k/1q6/1q6/8/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "f7d7",
-                "d7d8",
-                "d8h8",
-                "h8d8",
-                "d8d7",
-                "d7f7",
-                "f7f2",
-                "f2e2",
-                "e2e5",
-                "e5e2",
-                "e2f2",
-                "f2f7",
-                "f7g7",
-                "g7f7",
-                "f7f2",
-                "f2h2",
-                "h2h5"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_104",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4R3/p7/1n6/2n1bb2/k7/2n5/5bn1/b7 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "e8e5",
-                "e5f5",
-                "f5f2",
-                "f2f1",
-                "f1a1",
-                "a1c1",
-                "c1c3",
-                "c3c5",
-                "c5c7",
-                "c7a7",
-                "a7b7",
-                "b7b6",
-                "b6a6",
-                "a6a4"
-            ]
-        }
-    },
-    {
-        "id": "PHARD_Module3_105",
-        "module": "Module3",
-        "difficulty": "HARD",
-        "fen": "4b3/3n1n1n/5k2/3R3q/3p4/7b/2b5/8 w - - 0 1",
-        "description": "Pojedi bezbedno crnog kralja",
-        "solution": {
-            "moves": [
-                "d5h5",
-                "h5h3",
-                "h3g3",
-                "g3g8",
-                "g8e8",
-                "e8c8",
-                "c8c2",
-                "c2c7",
-                "c7d7",
-                "d7d4",
-                "d4h4",
-                "h4h7",
-                "h7h4",
-                "h4f4",
-                "f4f6"
             ]
         }
     }

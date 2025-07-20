@@ -6,25 +6,18 @@ import com.program.braintrainer.chess.model.Module
 
 class ScoreManager(context: Context) {
 
-    // Pristup SharedPreferences
     private val prefs = context.getSharedPreferences(SCORE_PREFS, Context.MODE_PRIVATE)
 
     companion object {
-        // Jedinstveno ime za naš SharedPreferences fajl
         private const val SCORE_PREFS = "BrainTrainerScores"
+        // NOVO: Ključ za čuvanje ukupnog XP-a
+        private const val TOTAL_XP_KEY = "TOTAL_XP"
     }
 
-    /**
-     * Generiše jedinstveni ključ za svaku kombinaciju modula i težine.
-     * Npr. "HIGHSCORE_Module1_EASY"
-     */
     private fun getKey(module: Module, difficulty: Difficulty): String {
         return "HIGHSCORE_${module.name}_${difficulty.name}"
     }
 
-    /**
-     * Čuva novi rezultat ako je veći od postojećeg najboljeg rezultata.
-     */
     fun saveScore(module: Module, difficulty: Difficulty, newScore: Int) {
         val key = getKey(module, difficulty)
         val currentHighScore = getHighScore(module, difficulty)
@@ -34,21 +27,13 @@ class ScoreManager(context: Context) {
         }
     }
 
-    /**
-     * Vraća najbolji rezultat za datu kombinaciju. Vraća 0 ako rezultat ne postoji.
-     */
     fun getHighScore(module: Module, difficulty: Difficulty): Int {
         val key = getKey(module, difficulty)
         return prefs.getInt(key, 0)
     }
 
-    /**
-     * Vraća mapu svih najboljih rezultata, korisno za ekran sa rezultatima.
-     */
     fun getAllHighScores(): Map<Module, Map<Difficulty, Int>> {
-        // Prolazimo kroz sve module
         return Module.values().associateWith { module ->
-            // Za svaki modul, prolazimo kroz sve težine
             Difficulty.values().associateWith { difficulty ->
                 getHighScore(module, difficulty)
             }
@@ -56,8 +41,23 @@ class ScoreManager(context: Context) {
     }
 
     /**
-     * NOVO: Briše sve sačuvane rezultate.
-     * Ova funkcija se poziva iz SettingsViewModel-a kada korisnik potvrdi resetovanje.
+     * NOVO: Dodaje osvojene poene (XP) na ukupan zbir.
+     * @param xpToAdd Broj poena za dodavanje.
+     */
+    fun addXp(xpToAdd: Int) {
+        val currentXp = getTotalXp()
+        prefs.edit().putInt(TOTAL_XP_KEY, currentXp + xpToAdd).apply()
+    }
+
+    /**
+     * NOVO: Vraća ukupan broj XP poena koje je igrač sakupio.
+     */
+    fun getTotalXp(): Int {
+        return prefs.getInt(TOTAL_XP_KEY, 0)
+    }
+
+    /**
+     * AŽURIRANO: Briše sve sačuvane rezultate I UKUPAN XP.
      */
     fun resetAllScores() {
         prefs.edit().clear().apply()

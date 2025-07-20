@@ -94,7 +94,7 @@ fun ChessScreen(
     var boardForDialog by remember { mutableStateOf<Board?>(null) }
     var showSessionEndDialog by remember { mutableStateOf(false) }
     val scoreManager = remember { ScoreManager(context) }
-    var currentSessionScore by remember { mutableStateOf(0) }
+    var lastAwardedXp by remember { mutableStateOf(0) } // NOVO: Pamtimo XP iz poslednje zagonetke
     var elapsedTimeInSeconds by remember { mutableStateOf(0) }
     var isTimerRunning by remember { mutableStateOf(false) }
     var defendedSquareMistakes by remember { mutableStateOf(0) }
@@ -108,6 +108,10 @@ fun ChessScreen(
         isTimerRunning = false
     }
 
+    fun startTimer() {
+        isTimerRunning = true
+    }
+
     LaunchedEffect(currentProblemIndex) {
         elapsedTimeInSeconds = 0
         isTimerRunning = true
@@ -119,6 +123,7 @@ fun ChessScreen(
         solutionMoveIndex = -1
         isPlayingSolution = false
         usedSolution = false
+        lastAwardedXp = 0
     }
 
     LaunchedEffect(isTimerRunning) {
@@ -138,6 +143,7 @@ fun ChessScreen(
             } else {
                 isShowingHint = false
                 hintMoves = emptyList()
+                startTimer() // IZMENA: Pokreni tajmer nakon što se hint završi
             }
         }
     }
@@ -155,14 +161,13 @@ fun ChessScreen(
         }
     }
 
-    // LaunchedEffect za automatsku reprodukciju rešenja
     LaunchedEffect(isPlayingSolution) {
         if (isPlayingSolution && showSolutionPath) {
             val solutionMoves = currentProblem?.solution?.moves
             if (!solutionMoves.isNullOrEmpty()) {
                 val startFromIndex = if (solutionMoveIndex == -1) 0 else solutionMoveIndex
                 for (i in startFromIndex until solutionMoves.size) {
-                    if (!isPlayingSolution) break // Prekini ako je korisnik pritisnuo pauzu
+                    if (!isPlayingSolution) break
                     val move = solutionMoves[i]
                     val (start, end) = FenParser.parseMove(move)
                     currentBoard.applyMove(start, end)?.let { newBoard ->
@@ -172,7 +177,7 @@ fun ChessScreen(
                     }
                     delay(1200L)
                 }
-                isPlayingSolution = false // Automatski pauziraj na kraju
+                isPlayingSolution = false
             }
         }
     }
@@ -231,11 +236,16 @@ fun ChessScreen(
                 0
             }
             finalPoints = max(0, basePoints + timeBonus + streakBonus - efficiencyPenalty - mistakePenalty)
-            currentSessionScore += finalPoints
-            detailedMessage += "\n🏆 Ukupno poena: $finalPoints"
+
+            // IZMENA: Dodajemo XP u ScoreManager
+            scoreManager.addXp(finalPoints)
+            lastAwardedXp = finalPoints // Pamtimo za prikaz u dijalogu
+
+            detailedMessage += "\n🏆 Osvojeno XP: $finalPoints"
         } else {
             correctStreak = 0
-            detailedMessage = "Zagonetka rešena uz pomoć.\n\n(Niste osvojili poene jer ste koristili rešenje.)"
+            lastAwardedXp = 0
+            detailedMessage = "Zagonetka rešena uz pomoć.\n\n(Niste osvojili XP poene jer ste koristili rešenje.)"
         }
         gameResultMessage = detailedMessage
         showGameResultDialog = true
@@ -266,7 +276,7 @@ fun ChessScreen(
             currentProblemIndex++
         } else {
             stopTimer()
-            scoreManager.saveScore(module, difficulty, currentSessionScore)
+            // Sesija je gotova, ne moramo čuvati pojedinačni skor sesije više
             showSessionEndDialog = true
         }
     }
@@ -297,6 +307,7 @@ fun ChessScreen(
                 } else {
                     launch(Dispatchers.Main) {
                         snackbarHostState.showSnackbar("Solver nije uspeo da pronađe rešenje.")
+                        startTimer() // Vrati tajmer ako solver ne uspe
                     }
                 }
             }
@@ -430,14 +441,14 @@ fun ChessScreen(
         }
         SnackbarHost(hostState = snackbarHostState, modifier = Modifier.align(Alignment.BottomCenter))
         if (showGameResultDialog) {
-            AlertDialog(onDismissRequest = {}, title = { Text("Status zagonetke") }, text = { Text(gameResultMessage) }, dismissButton = { TextButton(onClick = onShowSolution) { Text("Rešenje") } }, confirmButton = { TextButton(onClick = onNextPuzzle) { Text(if (currentProblemIndex + 1 < problemsInSession.size) "Sledeća zagonetka" else "Pogledaj rezultat") } })
+            AlertDialog(onDismissRequest = {}, title = { Text("Status zagonetke") }, text = { Text(gameResultMessage) }, dismissButton = { TextButton(onClick = onShowSolution) { Text("Rešenje") } }, confirmButton = { TextButton(onClick = onNextPuzzle) { Text(if (currentProblemIndex + 1 < problemsInSession.size) "Sledeća zagonetka" else "Kraj sesije") } })
         }
         if (showNoMoreMovesDialog) {
             NoMoreMovesDialog(onShowSolution = onShowSolution, onNewGame = onNextPuzzle)
         }
         if (showSessionEndDialog) {
-            val highScore = scoreManager.getHighScore(module, difficulty)
-            AlertDialog(onDismissRequest = {}, title = { Text("Kraj sesije") }, text = { Column { Text("Završili ste sesiju sa ukupno $currentSessionScore poena.") ; Text("Najbolji rezultat za ovaj mod je: $highScore poena.") ; if (currentSessionScore > highScore && currentSessionScore > 0) { Text("\n🎉 Čestitamo, postavili ste novi rekord!", color = MaterialTheme.colorScheme.primary) } } }, confirmButton = { TextButton(onClick = { showSessionEndDialog = false; onGameFinished() }) { Text("Glavni Meni") } })
+            val totalXp = scoreManager.getTotalXp()
+            AlertDialog(onDismissRequest = {}, title = { Text("Kraj sesije") }, text = { Column { Text("Završili ste sesiju.") ; Text("Ukupno XP poena: $totalXp") } }, confirmButton = { TextButton(onClick = { showSessionEndDialog = false; onGameFinished() }) { Text("Glavni Meni") } })
         }
         if (showDefendedSquareDialog && boardForDialog != null) {
             DefendedSquareDialog(board = boardForDialog!!, onDismiss = { showDefendedSquareDialog = false })
@@ -486,14 +497,12 @@ fun GameControlsPanel(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.padding(horizontal = 8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        // Gornji red sa glavnim akcijama
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             Button(onClick = onShowSolutionClick) { Text(if (showSolutionPath) "Sakrij" else "Rešenje") }
             Button(onClick = onHintClick) { Text("Hint") }
             Button(onClick = onNextPuzzleClick) { Text("Sledeća") }
         }
 
-        // Uslovno prikazivanje kontrola za reprodukciju rešenja
         if (showSolutionPath) {
             Spacer(modifier = Modifier.height(12.dp))
             Text("Rešenje iz JSON-a:", style = MaterialTheme.typography.labelMedium)

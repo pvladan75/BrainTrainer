@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -29,13 +30,21 @@ fun MainScreen(
     gameModes: List<GameModeInfo>,
     onModeAndDifficultySelected: (Module, Difficulty) -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToHighScores: () -> Unit // Dodato za rezultate
+    onNavigateToHighScores: () -> Unit,
+    onNavigateToProfile: () -> Unit // NOVO
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Brain Trainer") },
                 actions = {
+                    // NOVO: Ikonica za profil
+                    IconButton(onClick = onNavigateToProfile) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Moj Profil"
+                        )
+                    }
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(
                             imageVector = Icons.Default.Settings,
@@ -58,7 +67,6 @@ fun MainScreen(
             WelcomeHeader()
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Logika za prikaz modova (uspravno ili položeno)
             if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 LazyRow(
                     modifier = Modifier.weight(1f),
@@ -95,7 +103,6 @@ fun MainScreen(
                 }
             }
 
-            // Dugme za najbolje rezultate
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = onNavigateToHighScores,
@@ -109,6 +116,7 @@ fun MainScreen(
     }
 }
 
+// Ostatak fajla (WelcomeHeader, GameModeCard) ostaje nepromenjen...
 @Composable
 fun WelcomeHeader() {
     Column(
@@ -170,7 +178,7 @@ fun GameModeCard(
                 )
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                Divider(modifier = Modifier.padding(vertical = 12.dp))
                 Text(
                     text = "Izaberi težinu:",
                     style = MaterialTheme.typography.bodySmall,
