@@ -71,7 +71,7 @@ fun HighScoresScreen(navController: NavController) {
                                 Text(text = difficulty.label, style = MaterialTheme.typography.bodyLarge)
                                 Text(text = "$score poena", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
                             }
-                            Divider(modifier = Modifier.padding(top = 8.dp))
+                            HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
                         }
                     }
                 }

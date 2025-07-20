@@ -170,7 +170,7 @@ fun GameModeCard(
                 )
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Divider(modifier = Modifier.padding(vertical = 12.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                 Text(
                     text = "Izaberi težinu:",
                     style = MaterialTheme.typography.bodySmall,

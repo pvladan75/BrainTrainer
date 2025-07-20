@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,7 +29,7 @@ fun SettingsScreen(
                 title = { Text("Podešavanja") },
                 navigationIcon = {
                     IconButton(onClick = onBackPress) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Nazad")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Nazad")
                     }
                 }
             )
@@ -45,14 +46,14 @@ fun SettingsScreen(
                 isSoundEnabled = settings.isSoundEnabled,
                 onSoundToggle = viewModel::onSoundToggle
             )
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // Opcija za temu
             ThemeSettingsGroup(
                 selectedTheme = settings.appTheme,
                 onThemeChange = viewModel::onThemeChange
             )
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // Opcija za resetovanje
             ResetProgressRow(onResetClick = { showResetDialog = true })
