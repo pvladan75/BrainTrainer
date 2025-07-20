@@ -54,4 +54,12 @@ class ScoreManager(context: Context) {
             }
         }
     }
+
+    /**
+     * NOVO: Briše sve sačuvane rezultate.
+     * Ova funkcija se poziva iz SettingsViewModel-a kada korisnik potvrdi resetovanje.
+     */
+    fun resetAllScores() {
+        prefs.edit().clear().apply()
+    }
 }

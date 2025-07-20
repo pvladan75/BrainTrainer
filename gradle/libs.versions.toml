@@ -13,6 +13,7 @@ kotlinxCoroutines = "1.8.0"
 kotlinSerialization = "1.8.1" # ISPRAVLJENO: Verzija za kotlinx-serialization-json
 kotlinPluginSerialization = "2.0.21" # ISPRAVLJENO: Verzija za Kotlin Serialization Plugin, TREBA DA ODGOVARA TVOJOJ VERZIJI KOTLINA!
 navigationCompose = "2.9.2"
+datastoreCoreAndroid = "1.1.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,6 +37,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinSerialization" } # DODATO/ISPRAVLJENO
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

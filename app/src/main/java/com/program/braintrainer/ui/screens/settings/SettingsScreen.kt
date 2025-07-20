@@ -1,0 +1,166 @@
+package com.program.braintrainer.ui.screens.settings
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
+import com.program.braintrainer.data.SettingsManager
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreen(
+    viewModel: SettingsViewModel,
+    onBackPress: () -> Unit
+) {
+    val settings by viewModel.settingsState.collectAsState()
+    var showResetDialog by remember { mutableStateOf(false) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Podešavanja") },
+                navigationIcon = {
+                    IconButton(onClick = onBackPress) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Nazad")
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            // Opcija za zvuk
+            SoundSettingsRow(
+                isSoundEnabled = settings.isSoundEnabled,
+                onSoundToggle = viewModel::onSoundToggle
+            )
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // Opcija za temu
+            ThemeSettingsGroup(
+                selectedTheme = settings.appTheme,
+                onThemeChange = viewModel::onThemeChange
+            )
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // Opcija za resetovanje
+            ResetProgressRow(onResetClick = { showResetDialog = true })
+        }
+
+        // Dijalog za potvrdu resetovanja
+        if (showResetDialog) {
+            AlertDialog(
+                onDismissRequest = { showResetDialog = false },
+                title = { Text("Potvrda") },
+                text = { Text("Da li ste sigurni da želite da obrišete sav napredak i rezultate? Ova akcija je nepovratna.") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.onResetProgressConfirmed()
+                            showResetDialog = false
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    ) {
+                        Text("Obriši")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showResetDialog = false }) {
+                        Text("Otkaži")
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun SoundSettingsRow(isSoundEnabled: Boolean, onSoundToggle: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text("Zvučni efekti", style = MaterialTheme.typography.bodyLarge)
+        Switch(
+            checked = isSoundEnabled,
+            onCheckedChange = onSoundToggle
+        )
+    }
+}
+
+@Composable
+private fun ThemeSettingsGroup(selectedTheme: SettingsManager.AppTheme, onThemeChange: (SettingsManager.AppTheme) -> Unit) {
+    Column(Modifier.selectableGroup()) {
+        Text("Tema aplikacije", style = MaterialTheme.typography.bodyLarge)
+        Spacer(Modifier.height(8.dp))
+
+        val themes = SettingsManager.AppTheme.values()
+        themes.forEach { theme ->
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .selectable(
+                        selected = (theme == selectedTheme),
+                        onClick = { onThemeChange(theme) },
+                        role = Role.RadioButton
+                    )
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = (theme == selectedTheme),
+                    onClick = null // null jer je selectable već na Row
+                )
+                Text(
+                    text = when (theme) {
+                        SettingsManager.AppTheme.LIGHT -> "Svetla"
+                        SettingsManager.AppTheme.DARK -> "Tamna"
+                        SettingsManager.AppTheme.SYSTEM -> "Sistemska podrazumevana"
+                    },
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ResetProgressRow(onResetClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text("Resetuj napredak", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                "Briše sve sačuvane rezultate.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Button(
+            onClick = onResetClick,
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+        ) {
+            Text("Resetuj", color = MaterialTheme.colorScheme.onErrorContainer)
+        }
+    }
+}
