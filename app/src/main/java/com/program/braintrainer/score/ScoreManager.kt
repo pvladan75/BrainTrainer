@@ -3,7 +3,6 @@ package com.program.braintrainer.score
 import android.content.Context
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
-import androidx.core.content.edit
 
 class ScoreManager(context: Context) {
 
@@ -12,85 +11,99 @@ class ScoreManager(context: Context) {
     companion object {
         private const val SCORE_PREFS = "BrainTrainerScores"
         private const val TOTAL_XP_KEY = "TOTAL_XP"
-        // NOVO: Ključevi za praćenje statistike za dostignuća
         private const val TOTAL_PUZZLES_SOLVED_KEY = "TOTAL_PUZZLES_SOLVED"
         private const val SOLVED_IN_MODULE_PREFIX = "SOLVED_IN_MODULE_"
+        private const val PERFECT_STREAK_KEY = "PERFECT_STREAK"
+        private const val SOLVED_COUNT_PREFIX = "SOLVED_COUNT_"
+        // NOVO: Ključ za praćenje savršeno rešenih zagonetki
+        private const val PERFECT_SOLVED_COUNT_PREFIX = "PERFECT_SOLVED_COUNT_"
     }
 
     private fun getKey(module: Module, difficulty: Difficulty): String {
         return "HIGHSCORE_${module.name}_${difficulty.name}"
     }
 
-    // --- Metode za XP i Highscore ---
-
     fun saveScore(module: Module, difficulty: Difficulty, newScore: Int) {
         val key = getKey(module, difficulty)
         val currentHighScore = getHighScore(module, difficulty)
         if (newScore > currentHighScore) {
-            prefs.edit { putInt(key, newScore) }
+            prefs.edit().putInt(key, newScore).apply()
         }
     }
 
-    private fun getHighScore(module: Module, difficulty: Difficulty): Int {
+    fun getHighScore(module: Module, difficulty: Difficulty): Int {
         val key = getKey(module, difficulty)
         return prefs.getInt(key, 0)
     }
 
     fun getAllHighScores(): Map<Module, Map<Difficulty, Int>> {
-        return Module.entries.associateWith { module ->
-            Difficulty.entries.associateWith { difficulty ->
+        return Module.values().associateWith { module ->
+            Difficulty.values().associateWith { difficulty ->
                 getHighScore(module, difficulty)
             }
         }
     }
 
     fun addXp(xpToAdd: Int) {
-        val currentXp = getTotalXp()
-        prefs.edit { putInt(TOTAL_XP_KEY, currentXp + xpToAdd) }
+        prefs.edit().putInt(TOTAL_XP_KEY, getTotalXp() + xpToAdd).apply()
     }
 
     fun getTotalXp(): Int {
         return prefs.getInt(TOTAL_XP_KEY, 0)
     }
 
-    // --- NOVO: Metode za statistiku potrebnu za dostignuća ---
-
-    /**
-     * Povećava ukupan broj rešenih zagonetki za 1.
-     */
     fun incrementTotalPuzzlesSolved() {
-        val currentTotal = getTotalPuzzlesSolved()
-        prefs.edit { putInt(TOTAL_PUZZLES_SOLVED_KEY, currentTotal + 1) }
+        prefs.edit().putInt(TOTAL_PUZZLES_SOLVED_KEY, getTotalPuzzlesSolved() + 1).apply()
     }
 
-    /**
-     * Vraća ukupan broj rešenih zagonetki.
-     */
     fun getTotalPuzzlesSolved(): Int {
         return prefs.getInt(TOTAL_PUZZLES_SOLVED_KEY, 0)
     }
 
-    /**
-     * Povećava broj rešenih zagonetki za specifični modul.
-     */
     fun incrementSolvedInModule(module: Module) {
         val key = SOLVED_IN_MODULE_PREFIX + module.name
-        val currentTotal = getSolvedInModule(module)
-        prefs.edit { putInt(key, currentTotal + 1) }
+        prefs.edit().putInt(key, getSolvedInModule(module) + 1).apply()
     }
 
-    /**
-     * Vraća broj rešenih zagonetki za specifični modul.
-     */
     fun getSolvedInModule(module: Module): Int {
         val key = SOLVED_IN_MODULE_PREFIX + module.name
         return prefs.getInt(key, 0)
     }
 
-    /**
-     * Briše sve sačuvane rezultate, XP i statistiku.
-     */
+    fun incrementPerfectStreak() {
+        prefs.edit().putInt(PERFECT_STREAK_KEY, getPerfectStreak() + 1).apply()
+    }
+
+    fun resetPerfectStreak() {
+        prefs.edit().putInt(PERFECT_STREAK_KEY, 0).apply()
+    }
+
+    fun getPerfectStreak(): Int {
+        return prefs.getInt(PERFECT_STREAK_KEY, 0)
+    }
+
+    fun incrementSolvedCount(module: Module, difficulty: Difficulty) {
+        val key = "${SOLVED_COUNT_PREFIX}${module.name}_${difficulty.name}"
+        prefs.edit().putInt(key, getSolvedCount(module, difficulty) + 1).apply()
+    }
+
+    fun getSolvedCount(module: Module, difficulty: Difficulty): Int {
+        val key = "${SOLVED_COUNT_PREFIX}${module.name}_${difficulty.name}"
+        return prefs.getInt(key, 0)
+    }
+
+    // NOVO: Metode za praćenje broja rešenih BEZ GREŠKE po modulu i težini
+    fun incrementPerfectSolvedCount(module: Module, difficulty: Difficulty) {
+        val key = "${PERFECT_SOLVED_COUNT_PREFIX}${module.name}_${difficulty.name}"
+        prefs.edit().putInt(key, getPerfectSolvedCount(module, difficulty) + 1).apply()
+    }
+
+    fun getPerfectSolvedCount(module: Module, difficulty: Difficulty): Int {
+        val key = "${PERFECT_SOLVED_COUNT_PREFIX}${module.name}_${difficulty.name}"
+        return prefs.getInt(key, 0)
+    }
+
     fun resetAllScores() {
-        prefs.edit { clear() }
+        prefs.edit().clear().apply()
     }
 }
