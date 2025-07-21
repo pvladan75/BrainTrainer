@@ -5,14 +5,13 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.program.braintrainer.data.SettingsManager
+import com.program.braintrainer.chess.model.data.SettingsManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,7 +108,7 @@ private fun ThemeSettingsGroup(selectedTheme: SettingsManager.AppTheme, onThemeC
         Text("Tema aplikacije", style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(8.dp))
 
-        val themes = SettingsManager.AppTheme.values()
+        val themes = SettingsManager.AppTheme.entries.toTypedArray()
         themes.forEach { theme ->
             Row(
                 Modifier

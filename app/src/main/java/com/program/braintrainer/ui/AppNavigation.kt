@@ -1,8 +1,5 @@
 package com.program.braintrainer.ui
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -14,28 +11,44 @@ import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.GameModeInfo
 import com.program.braintrainer.chess.model.Module
+import com.program.braintrainer.gamification.AchievementsViewModelFactory
 import com.program.braintrainer.gamification.ProfileViewModelFactory
 import com.program.braintrainer.ui.screens.*
 import com.program.braintrainer.ui.screens.settings.SettingsScreen
 import com.program.braintrainer.ui.screens.settings.SettingsViewModelFactory
 
+/**
+ * Objekat koji sadrži konstante za navigacione rute.
+ * Ovo sprečava greške u kucanju i olakšava održavanje.
+ */
 object Routes {
     const val MAIN_MENU = "main_menu"
     const val SETTINGS = "settings"
     const val HIGH_SCORES = "high_scores"
-    const val PROFILE = "profile" // NOVO
+    const val PROFILE = "profile"
+    const val ACHIEVEMENTS = "achievements" // Ruta za dostignuća
     const val CHESS_GAME = "chess_game/{moduleType}/{difficultyType}"
 
+    /**
+     * Pomoćna funkcija za kreiranje rute do ekrana igre sa konkretnim vrednostima.
+     * @param module Izabrani modul igre.
+     * @param difficulty Izabrana težina.
+     * @return String koji predstavlja kompletnu rutu, npr. "chess_game/Module1/EASY".
+     */
     fun createChessGameRoute(module: Module, difficulty: Difficulty): String {
         return "chess_game/${module.name}/${difficulty.name}"
     }
 }
 
+/**
+ * Glavna Composable funkcija koja upravlja celokupnom navigacijom u aplikaciji.
+ */
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
     val context = LocalContext.current
 
+    // Lista modova igre, koja se prosleđuje glavnom ekranu.
     val gameModes = listOf(
         GameModeInfo(
             type = Module.Module1,
@@ -60,25 +73,24 @@ fun AppNavigation() {
         )
     )
 
+    // NavHost je kontejner koji prikazuje trenutno aktivni ekran.
     NavHost(navController = navController, startDestination = Routes.MAIN_MENU) {
+
+        // Definicija ekrana za Glavni Meni
         composable(Routes.MAIN_MENU) {
             MainScreen(
                 gameModes = gameModes,
                 onModeAndDifficultySelected = { module, difficulty ->
                     navController.navigate(Routes.createChessGameRoute(module, difficulty))
                 },
-                onNavigateToSettings = {
-                    navController.navigate(Routes.SETTINGS)
-                },
-                onNavigateToHighScores = {
-                    navController.navigate(Routes.HIGH_SCORES)
-                },
-                onNavigateToProfile = { // NOVO
-                    navController.navigate(Routes.PROFILE)
-                }
+                onNavigateToSettings = { navController.navigate(Routes.SETTINGS) },
+                onNavigateToHighScores = { navController.navigate(Routes.HIGH_SCORES) },
+                onNavigateToProfile = { navController.navigate(Routes.PROFILE) },
+                onNavigateToAchievements = { navController.navigate(Routes.ACHIEVEMENTS) }
             )
         }
 
+        // Definicija ekrana za Podešavanja
         composable(Routes.SETTINGS) {
             SettingsScreen(
                 viewModel = viewModel(factory = SettingsViewModelFactory(context)),
@@ -86,7 +98,7 @@ fun AppNavigation() {
             )
         }
 
-        // NOVO: Ruta za ekran profila
+        // Definicija ekrana za Profil
         composable(Routes.PROFILE) {
             ProfileScreen(
                 viewModel = viewModel(factory = ProfileViewModelFactory(context)),
@@ -94,6 +106,15 @@ fun AppNavigation() {
             )
         }
 
+        // Definicija ekrana za Dostignuća
+        composable(Routes.ACHIEVEMENTS) {
+            AchievementsScreen(
+                navController = navController,
+                viewModel = viewModel(factory = AchievementsViewModelFactory(context))
+            )
+        }
+
+        // Definicija ekrana za Igru (Šah)
         composable(Routes.CHESS_GAME) { backStackEntry ->
             val moduleType = backStackEntry.arguments?.getString("moduleType")?.let { Module.valueOf(it) }
             val difficultyType = backStackEntry.arguments?.getString("difficultyType")?.let { Difficulty.valueOf(it) }
@@ -109,6 +130,7 @@ fun AppNavigation() {
             }
         }
 
+        // Definicija ekrana za Najbolje Rezultate
         composable(Routes.HIGH_SCORES) {
             HighScoresScreen(navController = navController)
         }

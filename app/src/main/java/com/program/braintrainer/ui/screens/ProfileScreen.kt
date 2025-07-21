@@ -13,7 +13,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.program.braintrainer.gamification.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,11 +78,11 @@ fun ProfileScreen(
                         label = "XP Progress Animation"
                     )
                     LinearProgressIndicator(
-                        progress = progressAnimation,
+                        progress = { progressAnimation },
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .height(12.dp)
-                            .clip(MaterialTheme.shapes.extraLarge)
+                            .clip(MaterialTheme.shapes.extraLarge),
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(

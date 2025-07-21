@@ -1,4 +1,4 @@
-package com.program.braintrainer.data
+package com.program.braintrainer.chess.model.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore

@@ -2,8 +2,8 @@ package com.program.braintrainer.ui.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.program.braintrainer.data.AppSettings
-import com.program.braintrainer.data.SettingsManager
+import com.program.braintrainer.chess.model.data.AppSettings
+import com.program.braintrainer.chess.model.data.SettingsManager
 import com.program.braintrainer.score.ScoreManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

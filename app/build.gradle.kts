@@ -61,5 +61,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlin.stdlib)
-    implementation("androidx.datastore:datastore-preferences:1.1.7")
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.material.icons.extended.android)
 }

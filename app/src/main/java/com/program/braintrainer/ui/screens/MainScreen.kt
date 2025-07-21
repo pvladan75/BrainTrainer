@@ -6,20 +6,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiEvents // Ikonica za dostignuća
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.GameModeInfo
 import com.program.braintrainer.chess.model.Module
@@ -31,14 +30,21 @@ fun MainScreen(
     onModeAndDifficultySelected: (Module, Difficulty) -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToHighScores: () -> Unit,
-    onNavigateToProfile: () -> Unit // NOVO
+    onNavigateToProfile: () -> Unit,
+    onNavigateToAchievements: () -> Unit // NOVO
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Brain Trainer") },
                 actions = {
-                    // NOVO: Ikonica za profil
+                    // NOVO: Ikonica za dostignuća
+                    IconButton(onClick = onNavigateToAchievements) {
+                        Icon(
+                            imageVector = Icons.Default.EmojiEvents,
+                            contentDescription = "Dostignuća"
+                        )
+                    }
                     IconButton(onClick = onNavigateToProfile) {
                         Icon(
                             imageVector = Icons.Default.Person,
@@ -178,7 +184,7 @@ fun GameModeCard(
                 )
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Divider(modifier = Modifier.padding(vertical = 12.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                 Text(
                     text = "Izaberi težinu:",
                     style = MaterialTheme.typography.bodySmall,
@@ -189,7 +195,7 @@ fun GameModeCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Difficulty.values().forEach { difficulty ->
+                    Difficulty.entries.forEach { difficulty ->
                         OutlinedButton(onClick = { onDifficultySelected(difficulty) }) {
                             Text(text = difficulty.label)
                         }

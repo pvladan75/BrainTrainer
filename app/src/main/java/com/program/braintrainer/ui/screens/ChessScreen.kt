@@ -3,7 +3,6 @@ package com.program.braintrainer.ui.screens
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.util.Log
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +32,8 @@ import com.program.braintrainer.chess.model.Problem
 import com.program.braintrainer.chess.model.Square
 import com.program.braintrainer.chess.parser.FenParser
 import com.program.braintrainer.chess.solver.UniversalPuzzleSolver
+import com.program.braintrainer.gamification.AchievementManager
+import com.program.braintrainer.gamification.PuzzleResultData
 import com.program.braintrainer.rules.Module1Rules
 import com.program.braintrainer.rules.Module2Rules
 import com.program.braintrainer.rules.Module3Rules
@@ -62,7 +63,6 @@ data class ScoringParams(
 )
 // ===================================================================
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun ChessScreen(
     module: Module,
@@ -76,41 +76,50 @@ fun ChessScreen(
         problemLoader.loadProblemsForModuleAndDifficulty(module, difficulty)
     }
 
-    var currentProblemIndex by remember { mutableStateOf(0) }
+    val scoreManager = remember { ScoreManager(context) }
+    // NOVO: Instanciramo AchievementManager
+    val achievementManager = remember { AchievementManager(context) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    var currentProblemIndex by remember { mutableIntStateOf(0) }
     var currentProblem by remember { mutableStateOf<Problem?>(null) }
     var currentBoard by remember { mutableStateOf(Board()) }
     val activePlayerColor = ChessColor.WHITE
     var selectedSquare by remember { mutableStateOf<Square?>(null) }
     var showSolutionPath by remember { mutableStateOf(false) }
-    var solutionMoveIndex by remember { mutableStateOf(-1) }
+    var solutionMoveIndex by remember { mutableIntStateOf(-1) }
     var isPlayingSolution by remember { mutableStateOf(false) }
     var usedSolution by remember { mutableStateOf(false) }
     var showGameResultDialog by remember { mutableStateOf(false) }
     var showNoMoreMovesDialog by remember { mutableStateOf(false) }
     var gameResultMessage by remember { mutableStateOf("") }
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
     var showDefendedSquareDialog by remember { mutableStateOf(false) }
     var boardForDialog by remember { mutableStateOf<Board?>(null) }
     var showSessionEndDialog by remember { mutableStateOf(false) }
-    val scoreManager = remember { ScoreManager(context) }
-    var lastAwardedXp by remember { mutableStateOf(0) } // NOVO: Pamtimo XP iz poslednje zagonetke
-    var elapsedTimeInSeconds by remember { mutableStateOf(0) }
+    var lastAwardedXp by remember { mutableIntStateOf(0) }
+    var elapsedTimeInSeconds by remember { mutableIntStateOf(0) }
     var isTimerRunning by remember { mutableStateOf(false) }
-    var defendedSquareMistakes by remember { mutableStateOf(0) }
-    var playerMoveCount by remember { mutableStateOf(0) }
-    var correctStreak by remember { mutableStateOf(0) }
+    var defendedSquareMistakes by remember { mutableIntStateOf(0) }
+    var playerMoveCount by remember { mutableIntStateOf(0) }
+    var correctStreak by remember { mutableIntStateOf(0) }
     var hintMoves by remember { mutableStateOf<List<Move>>(emptyList()) }
     var isShowingHint by remember { mutableStateOf(false) }
-    var hintMoveIndex by remember { mutableStateOf(0) }
+    var hintMoveIndex by remember { mutableIntStateOf(0) }
 
-    fun stopTimer() {
-        isTimerRunning = false
+    // NOVO: LaunchedEffect koji osluškuje nova dostignuća i prikazuje Snackbar
+    LaunchedEffect(Unit) {
+        achievementManager.newlyUnlockedAchievementFlow.collect { achievement ->
+            snackbarHostState.showSnackbar(
+                message = "Dostignuće otključano: ${achievement.title}!",
+                withDismissAction = true,
+                duration = SnackbarDuration.Short
+            )
+        }
     }
 
-    fun startTimer() {
-        isTimerRunning = true
-    }
+    fun stopTimer() { isTimerRunning = false }
+    fun startTimer() { isTimerRunning = true }
 
     LaunchedEffect(currentProblemIndex) {
         elapsedTimeInSeconds = 0
@@ -143,7 +152,7 @@ fun ChessScreen(
             } else {
                 isShowingHint = false
                 hintMoves = emptyList()
-                startTimer() // IZMENA: Pokreni tajmer nakon što se hint završi
+                startTimer()
             }
         }
     }
@@ -189,6 +198,26 @@ fun ChessScreen(
 
     fun checkGameStatus(isSuccess: Boolean) {
         stopTimer()
+
+        // NOVO: Provera dostignuća nakon uspešno rešene zagonetke
+        if (isSuccess && !usedSolution) {
+            scoreManager.incrementTotalPuzzlesSolved()
+            scoreManager.incrementSolvedInModule(module)
+
+            val resultData = PuzzleResultData(
+                module = module,
+                wasSuccess = true,
+                mistakesMade = defendedSquareMistakes,
+                timeTakenSeconds = elapsedTimeInSeconds,
+                currentStreak = correctStreak + 1, // +1 jer se streak povećava NAKON uspeha
+                totalPuzzlesSolved = scoreManager.getTotalPuzzlesSolved(),
+                totalSolvedInModule = scoreManager.getSolvedInModule(module)
+            )
+            coroutineScope.launch(Dispatchers.IO) {
+                achievementManager.checkAndUnlockAchievements(resultData)
+            }
+        }
+
         if (!isSuccess) {
             correctStreak = 0
             gameResultMessage = when (module) {
@@ -198,8 +227,9 @@ fun ChessScreen(
             showGameResultDialog = true
             return
         }
+
         var detailedMessage = "Zagonetka rešena!\n\n"
-        var finalPoints = 0
+        val finalPoints: Int
         if (!usedSolution) {
             val basePoints = when (difficulty) {
                 Difficulty.EASY -> scoringParams.basePointsEasy
@@ -237,9 +267,8 @@ fun ChessScreen(
             }
             finalPoints = max(0, basePoints + timeBonus + streakBonus - efficiencyPenalty - mistakePenalty)
 
-            // IZMENA: Dodajemo XP u ScoreManager
             scoreManager.addXp(finalPoints)
-            lastAwardedXp = finalPoints // Pamtimo za prikaz u dijalogu
+            lastAwardedXp = finalPoints
 
             detailedMessage += "\n🏆 Osvojeno XP: $finalPoints"
         } else {
@@ -276,7 +305,6 @@ fun ChessScreen(
             currentProblemIndex++
         } else {
             stopTimer()
-            // Sesija je gotova, ne moramo čuvati pojedinačni skor sesije više
             showSessionEndDialog = true
         }
     }
@@ -307,7 +335,7 @@ fun ChessScreen(
                 } else {
                     launch(Dispatchers.Main) {
                         snackbarHostState.showSnackbar("Solver nije uspeo da pronađe rešenje.")
-                        startTimer() // Vrati tajmer ako solver ne uspe
+                        startTimer()
                     }
                 }
             }
@@ -365,21 +393,20 @@ fun ChessScreen(
             return@click
         }
         val startSquare = selectedSquare!!
-        val endSquare = clickedSquare
-        if (startSquare == endSquare || (pieceOnClickedSquare != null && pieceOnClickedSquare.color == activePlayerColor)) {
+        if (startSquare == clickedSquare || (pieceOnClickedSquare != null && pieceOnClickedSquare.color == activePlayerColor)) {
             selectedSquare = clickedSquare
             return@click
         }
-        if (currentBoard.isValidMove(startSquare, endSquare)) {
-            if (module == Module.Module1 && currentBoard.getPiece(endSquare) == null) {
+        if (currentBoard.isValidMove(startSquare, clickedSquare)) {
+            if (module == Module.Module1 && currentBoard.getPiece(clickedSquare) == null) {
                 coroutineScope.launch { snackbarHostState.showSnackbar("U ovom modulu svaki potez mora biti uzimanje!") }
                 return@click
             }
-            val newBoard = currentBoard.applyMove(startSquare, endSquare)
+            val newBoard = currentBoard.applyMove(startSquare, clickedSquare)
             if (newBoard != null) {
                 if (module == Module.Module2 || module == Module.Module3) {
                     val attackedByBlackOnNewBoard = newBoard.getAttackedSquares(ChessColor.BLACK)
-                    if (attackedByBlackOnNewBoard.contains(endSquare)) {
+                    if (attackedByBlackOnNewBoard.contains(clickedSquare)) {
                         boardForDialog = newBoard
                         showDefendedSquareDialog = true
                         selectedSquare = startSquare
@@ -388,9 +415,9 @@ fun ChessScreen(
                     }
                 }
                 currentBoard = newBoard
-                selectedSquare = endSquare
+                selectedSquare = clickedSquare
                 playerMoveCount++
-                when(module) {
+                when (module) {
                     Module.Module1 -> {
                         if (!currentBoard.hasBlackPiecesRemaining()) {
                             checkGameStatus(isSuccess = true)
@@ -399,13 +426,24 @@ fun ChessScreen(
                             showNoMoreMovesDialog = true
                         }
                     }
+
                     Module.Module2 -> {
                         if (!currentBoard.hasBlackPiecesRemaining()) checkGameStatus(isSuccess = true)
-                        else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) checkGameStatus(isSuccess = false)
+                        else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) checkGameStatus(
+                            isSuccess = false
+                        )
                     }
+
                     Module.Module3 -> {
-                        if (!currentBoard.pieces.any { it.value == Piece(PieceType.KING, ChessColor.BLACK) }) checkGameStatus(isSuccess = true)
-                        else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) checkGameStatus(isSuccess = false)
+                        if (!currentBoard.pieces.any {
+                                it.value == Piece(
+                                    PieceType.KING,
+                                    ChessColor.BLACK
+                                )
+                            }) checkGameStatus(isSuccess = true)
+                        else if (!currentBoard.hasAnyLegalMove(activePlayerColor)) checkGameStatus(
+                            isSuccess = false
+                        )
                     }
                 }
             }
@@ -439,7 +477,9 @@ fun ChessScreen(
                 GameControlsPanel(showSolutionPath, isPlayingSolution, solutionMoveIndex, currentProblem, onShowSolution, onNextPuzzle, onPreviousMove, { isPlayingSolution = !isPlayingSolution }, onNextMove, onHintClick, onSurrender)
             }
         }
+        // IZMENA: Dodajemo SnackbarHost ovde da bi bio vidljiv
         SnackbarHost(hostState = snackbarHostState, modifier = Modifier.align(Alignment.BottomCenter))
+
         if (showGameResultDialog) {
             AlertDialog(onDismissRequest = {}, title = { Text("Status zagonetke") }, text = { Text(gameResultMessage) }, dismissButton = { TextButton(onClick = onShowSolution) { Text("Rešenje") } }, confirmButton = { TextButton(onClick = onNextPuzzle) { Text(if (currentProblemIndex + 1 < problemsInSession.size) "Sledeća zagonetka" else "Kraj sesije") } })
         }
@@ -456,11 +496,13 @@ fun ChessScreen(
     }
 }
 
+// ... ostatak fajla ostaje nepromenjen ...
 @Composable
 fun NoMoreMovesDialog(onShowSolution: () -> Unit, onNewGame: () -> Unit) {
     AlertDialog(onDismissRequest = { }, title = { Text("Nema više poteza") }, text = { Text("Nažalost, ostali ste bez mogućih poteza kojima biste pojeli preostale crne figure.") }, dismissButton = { TextButton(onClick = onShowSolution) { Text("Pregled rešenja") } }, confirmButton = { TextButton(onClick = onNewGame) { Text("Nova zagonetka") } })
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun GameInfoPanel(module: Module, difficulty: Difficulty, currentProblem: Problem?, problemsInSession: List<Problem>, currentSessionProblemIndex: Int, modifier: Modifier = Modifier, elapsedTime: Int) {
     val minutes = elapsedTime / 60

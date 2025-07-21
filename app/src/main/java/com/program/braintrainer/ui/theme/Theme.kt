@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.program.braintrainer.data.AppSettings
-import com.program.braintrainer.data.SettingsManager
+import com.program.braintrainer.chess.model.data.AppSettings
+import com.program.braintrainer.chess.model.data.SettingsManager
 
 // Definicija paleta boja koje koriste vrednosti iz Color.kt
 private val DarkColorScheme = darkColorScheme(

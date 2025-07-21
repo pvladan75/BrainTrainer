@@ -3,7 +3,7 @@ package com.program.braintrainer.ui.screens.settings
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.program.braintrainer.data.SettingsManager
+import com.program.braintrainer.chess.model.data.SettingsManager
 import com.program.braintrainer.score.ScoreManager
 
 /**

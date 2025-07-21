@@ -2,9 +2,9 @@ package com.program.braintrainer.rules
 
 import com.program.braintrainer.chess.model.Board
 import com.program.braintrainer.chess.model.Move
-import com.program.braintrainer.chess.model.Piece
+
 import com.program.braintrainer.chess.model.Color
-import com.program.braintrainer.chess.model.Square
+
 
 interface PuzzleRules {
     /**
