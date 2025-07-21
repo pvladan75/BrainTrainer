@@ -46,11 +46,11 @@ fun ProfileScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 // Ikonica i naziv ranga
-                Image(
-                    painter = painterResource(id = state.currentRank.iconResId),
-                    contentDescription = "Ikonica ranga: ${state.currentRank.title}",
-                    modifier = Modifier.size(120.dp)
-                )
+              //  Image(
+                //    painter = painterResource(id = state.currentRank.iconResId),
+                  //  contentDescription = "Ikonica ranga: ${state.currentRank.title}",
+                    //modifier = Modifier.size(120.dp)
+                //)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = state.currentRank.title,

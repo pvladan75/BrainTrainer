@@ -3,6 +3,7 @@ package com.program.braintrainer.ui.screens
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.util.Log
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -63,6 +64,7 @@ data class ScoringParams(
 )
 // ===================================================================
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun ChessScreen(
     module: Module,
@@ -77,7 +79,6 @@ fun ChessScreen(
     }
 
     val scoreManager = remember { ScoreManager(context) }
-    // NOVO: Instanciramo AchievementManager
     val achievementManager = remember { AchievementManager(context) }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -107,7 +108,6 @@ fun ChessScreen(
     var isShowingHint by remember { mutableStateOf(false) }
     var hintMoveIndex by remember { mutableIntStateOf(0) }
 
-    // NOVO: LaunchedEffect koji osluškuje nova dostignuća i prikazuje Snackbar
     LaunchedEffect(Unit) {
         achievementManager.newlyUnlockedAchievementFlow.collect { achievement ->
             snackbarHostState.showSnackbar(
@@ -199,27 +199,38 @@ fun ChessScreen(
     fun checkGameStatus(isSuccess: Boolean) {
         stopTimer()
 
-        // NOVO: Provera dostignuća nakon uspešno rešene zagonetke
+        val isPerfect = defendedSquareMistakes == 0 && playerMoveCount <= (currentProblem?.solution?.moves?.size ?: playerMoveCount)
+
         if (isSuccess && !usedSolution) {
             scoreManager.incrementTotalPuzzlesSolved()
             scoreManager.incrementSolvedInModule(module)
+            scoreManager.incrementSolvedCount(module, difficulty)
+
+            if (isPerfect) {
+                scoreManager.incrementPerfectStreak()
+                scoreManager.incrementPerfectSolvedCount(module, difficulty)
+            } else {
+                scoreManager.resetPerfectStreak()
+            }
 
             val resultData = PuzzleResultData(
                 module = module,
+                difficulty = difficulty,
                 wasSuccess = true,
                 mistakesMade = defendedSquareMistakes,
                 timeTakenSeconds = elapsedTimeInSeconds,
-                currentStreak = correctStreak + 1, // +1 jer se streak povećava NAKON uspeha
+                currentStreak = scoreManager.getPerfectStreak(),
                 totalPuzzlesSolved = scoreManager.getTotalPuzzlesSolved(),
                 totalSolvedInModule = scoreManager.getSolvedInModule(module)
             )
             coroutineScope.launch(Dispatchers.IO) {
                 achievementManager.checkAndUnlockAchievements(resultData)
             }
+        } else {
+            scoreManager.resetPerfectStreak()
         }
 
         if (!isSuccess) {
-            correctStreak = 0
             gameResultMessage = when (module) {
                 Module.Module1 -> "Promašaj! Nema više legalnih poteza uzimanja."
                 else -> "Promašaj! Nema više legalnih poteza."
@@ -229,7 +240,7 @@ fun ChessScreen(
         }
 
         var detailedMessage = "Zagonetka rešena!\n\n"
-        val finalPoints: Int
+        var finalPoints = 0
         if (!usedSolution) {
             val basePoints = when (difficulty) {
                 Difficulty.EASY -> scoringParams.basePointsEasy
@@ -250,21 +261,22 @@ fun ChessScreen(
             detailedMessage += "🔻 Kazna za poteze: -$efficiencyPenalty ($extraMoves poteza viška)\n"
             val mistakePenalty = defendedSquareMistakes * scoringParams.penaltyPerMistake
             detailedMessage += "🔻 Kazna za greške: -$mistakePenalty ($defendedSquareMistakes grešaka)\n"
-            val streakBonus = if (defendedSquareMistakes == 0 && extraMoves == 0) {
-                correctStreak++
+
+            val streakBonus = if (isPerfect) {
+                val currentStreak = scoreManager.getPerfectStreak()
                 val bonusPerStreak = when(difficulty) {
                     Difficulty.EASY -> scoringParams.streakBonusEasy
                     Difficulty.MEDIUM -> scoringParams.streakBonusMedium
                     Difficulty.HARD -> scoringParams.streakBonusHard
                 }
-                val totalBonus = correctStreak * bonusPerStreak
-                detailedMessage += "🔥 Bonus za niz: +$totalBonus ($correctStreak zagonetki zaredom)\n"
+                val totalBonus = currentStreak * bonusPerStreak
+                detailedMessage += "🔥 Bonus za niz: +$totalBonus ($currentStreak zagonetki zaredom)\n"
                 totalBonus
             } else {
-                correctStreak = 0
-                detailedMessage += "🔥 Bonus za niz: +0 (bilo je grešaka)\n"
+                detailedMessage += "🔥 Bonus za niz: +0 (niz prekinut)\n"
                 0
             }
+
             finalPoints = max(0, basePoints + timeBonus + streakBonus - efficiencyPenalty - mistakePenalty)
 
             scoreManager.addXp(finalPoints)
@@ -272,8 +284,6 @@ fun ChessScreen(
 
             detailedMessage += "\n🏆 Osvojeno XP: $finalPoints"
         } else {
-            correctStreak = 0
-            lastAwardedXp = 0
             detailedMessage = "Zagonetka rešena uz pomoć.\n\n(Niste osvojili XP poene jer ste koristili rešenje.)"
         }
         gameResultMessage = detailedMessage
@@ -477,7 +487,6 @@ fun ChessScreen(
                 GameControlsPanel(showSolutionPath, isPlayingSolution, solutionMoveIndex, currentProblem, onShowSolution, onNextPuzzle, onPreviousMove, { isPlayingSolution = !isPlayingSolution }, onNextMove, onHintClick, onSurrender)
             }
         }
-        // IZMENA: Dodajemo SnackbarHost ovde da bi bio vidljiv
         SnackbarHost(hostState = snackbarHostState, modifier = Modifier.align(Alignment.BottomCenter))
 
         if (showGameResultDialog) {
@@ -496,7 +505,6 @@ fun ChessScreen(
     }
 }
 
-// ... ostatak fajla ostaje nepromenjen ...
 @Composable
 fun NoMoreMovesDialog(onShowSolution: () -> Unit, onNewGame: () -> Unit) {
     AlertDialog(onDismissRequest = { }, title = { Text("Nema više poteza") }, text = { Text("Nažalost, ostali ste bez mogućih poteza kojima biste pojeli preostale crne figure.") }, dismissButton = { TextButton(onClick = onShowSolution) { Text("Pregled rešenja") } }, confirmButton = { TextButton(onClick = onNewGame) { Text("Nova zagonetka") } })
