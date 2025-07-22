@@ -35,7 +35,6 @@ fun MainScreen(
     gameModes: List<GameModeInfo>,
     onModeAndDifficultySelected: (Module, Difficulty) -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToHighScores: () -> Unit,
     onNavigateToProfile: () -> Unit,
     onNavigateToAchievements: () -> Unit
 ) {
@@ -105,15 +104,7 @@ fun MainScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-            Button(
-                onClick = onNavigateToHighScores,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-            ) {
-                Text(text = "🏆 Najbolji Rezultati")
-            }
+
         }
     }
 }
