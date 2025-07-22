@@ -78,7 +78,7 @@ fun MainScreen(
                         GameModeCard(
                             modifier = Modifier.width(320.dp),
                             gameMode = mode,
-                            currentRank = currentRank, // Prosleđujemo rang
+                            currentRank = currentRank,
                             onDifficultySelected = { difficulty ->
                                 onModeAndDifficultySelected(mode.type, difficulty)
                             }
@@ -96,7 +96,7 @@ fun MainScreen(
                         GameModeCard(
                             modifier = Modifier.fillMaxWidth(),
                             gameMode = mode,
-                            currentRank = currentRank, // Prosleđujemo rang
+                            currentRank = currentRank,
                             onDifficultySelected = { difficulty ->
                                 onModeAndDifficultySelected(mode.type, difficulty)
                             }
@@ -122,10 +122,9 @@ fun MainScreen(
 fun GameModeCard(
     modifier: Modifier = Modifier,
     gameMode: GameModeInfo,
-    currentRank: com.program.braintrainer.gamification.Rank, // Prima trenutni rang
+    currentRank: com.program.braintrainer.gamification.Rank,
     onDifficultySelected: (Difficulty) -> Unit
 ) {
-    // Proveravamo koje su težine dostupne za ovaj rang i modul
     val availableDifficulties = remember(currentRank, gameMode.type) {
         RankManager.getAvailableDifficultiesFor(currentRank, gameMode.type)
     }
@@ -143,9 +142,8 @@ fun GameModeCard(
         ) {
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Koristimo placeholder ikonicu dok ne dodate prave
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_module1_target),
+                        painter = painterResource(id = gameMode.icon),
                         contentDescription = gameMode.title,
                         tint = gameMode.color,
                         modifier = Modifier.size(40.dp)
@@ -177,7 +175,6 @@ fun GameModeCard(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Difficulty.values().forEach { difficulty ->
-                        // Dugme je omogućeno samo ako je težina dostupna za trenutni rang
                         val isEnabled = availableDifficulties.contains(difficulty)
                         OutlinedButton(
                             onClick = { onDifficultySelected(difficulty) },

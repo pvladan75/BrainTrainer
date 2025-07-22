@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.data.ProblemLoader
 import com.program.braintrainer.chess.model.Board
 import com.program.braintrainer.chess.model.Difficulty
@@ -231,6 +232,7 @@ fun ChessScreen(
         }
 
         if (!isSuccess) {
+            correctStreak = 0
             gameResultMessage = when (module) {
                 Module.Module1 -> "Promašaj! Nema više legalnih poteza uzimanja."
                 else -> "Promašaj! Nema više legalnih poteza."
@@ -262,28 +264,30 @@ fun ChessScreen(
             val mistakePenalty = defendedSquareMistakes * scoringParams.penaltyPerMistake
             detailedMessage += "🔻 Kazna za greške: -$mistakePenalty ($defendedSquareMistakes grešaka)\n"
 
-            val streakBonus = if (isPerfect) {
-                val currentStreak = scoreManager.getPerfectStreak()
+            if (isPerfect) {
+                correctStreak++
                 val bonusPerStreak = when(difficulty) {
                     Difficulty.EASY -> scoringParams.streakBonusEasy
                     Difficulty.MEDIUM -> scoringParams.streakBonusMedium
                     Difficulty.HARD -> scoringParams.streakBonusHard
                 }
-                val totalBonus = currentStreak * bonusPerStreak
-                detailedMessage += "🔥 Bonus za niz: +$totalBonus ($currentStreak zagonetki zaredom)\n"
-                totalBonus
+                val totalBonus = correctStreak * bonusPerStreak
+                detailedMessage += "🔥 Bonus za niz: +$totalBonus ($correctStreak zagonetki zaredom)\n"
+                finalPoints += totalBonus
             } else {
+                correctStreak = 0
                 detailedMessage += "🔥 Bonus za niz: +0 (niz prekinut)\n"
-                0
             }
 
-            finalPoints = max(0, basePoints + timeBonus + streakBonus - efficiencyPenalty - mistakePenalty)
+            finalPoints += max(0, basePoints + timeBonus - efficiencyPenalty - mistakePenalty)
 
             scoreManager.addXp(finalPoints)
             lastAwardedXp = finalPoints
 
             detailedMessage += "\n🏆 Osvojeno XP: $finalPoints"
         } else {
+            correctStreak = 0
+            lastAwardedXp = 0
             detailedMessage = "Zagonetka rešena uz pomoć.\n\n(Niste osvojili XP poene jer ste koristili rešenje.)"
         }
         gameResultMessage = detailedMessage
@@ -432,7 +436,11 @@ fun ChessScreen(
                         if (!currentBoard.hasBlackPiecesRemaining()) {
                             checkGameStatus(isSuccess = true)
                         } else if (!currentBoard.hasAnyLegalCaptureMove(activePlayerColor)) {
+                            // Neuspeh - igrač je zaglavljen
                             stopTimer()
+                            // ISPRAVKA: Resetuj nizove pre prikazivanja dijaloga
+                            correctStreak = 0
+                            scoreManager.resetPerfectStreak()
                             showNoMoreMovesDialog = true
                         }
                     }
@@ -505,6 +513,7 @@ fun ChessScreen(
     }
 }
 
+// ... ostatak fajla je nepromenjen ...
 @Composable
 fun NoMoreMovesDialog(onShowSolution: () -> Unit, onNewGame: () -> Unit) {
     AlertDialog(onDismissRequest = { }, title = { Text("Nema više poteza") }, text = { Text("Nažalost, ostali ste bez mogućih poteza kojima biste pojeli preostale crne figure.") }, dismissButton = { TextButton(onClick = onShowSolution) { Text("Pregled rešenja") } }, confirmButton = { TextButton(onClick = onNewGame) { Text("Nova zagonetka") } })

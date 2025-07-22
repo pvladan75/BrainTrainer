@@ -44,42 +44,33 @@ class AchievementsViewModel(
             initialValue = AchievementsUiState()
         )
 
-    /**
-     * Pomoćna funkcija koja vraća trenutni i ciljni napredak za dato dostignuće.
-     */
     private fun getProgressForAchievement(id: AchievementId): Pair<Int, Int> {
         return when (id) {
             // Početnik
             AchievementId.FIRST_PUZZLE_SOLVED -> Pair(scoreManager.getTotalPuzzlesSolved(), 1)
             AchievementId.SOLVE_10_M1 -> Pair(scoreManager.getSolvedInModule(Module.Module1), 10)
             AchievementId.STREAK_3_PERFECT -> Pair(scoreManager.getPerfectStreak(), 3)
-            AchievementId.FINISH_SESSION -> Pair(0, 1) // Zahteva složeniju logiku praćenja sesije
-            AchievementId.SOLVE_UNDER_15_SECS -> Pair(0, 1) // Zahteva praćenje najboljeg vremena
 
             // Učenik
             AchievementId.SOLVE_5_M1_MEDIUM -> Pair(scoreManager.getSolvedCount(Module.Module1, Difficulty.MEDIUM), 5)
-            AchievementId.PERFECT_SESSION -> Pair(0, 1) // Zahteva složeniju logiku
-            AchievementId.SOLVE_1_M2_UNDER_30_SECS -> Pair(0, 1)
             AchievementId.SOLVE_10_M2_PERFECT -> Pair(scoreManager.getPerfectSolvedCount(Module.Module2, Difficulty.EASY), 10)
 
             // Amater
-            AchievementId.SOLVE_5_HARD -> Pair(scoreManager.getSolvedCount(Module.Module1, Difficulty.HARD) + scoreManager.getSolvedCount(Module.Module2, Difficulty.HARD) + scoreManager.getSolvedCount(Module.Module3, Difficulty.HARD), 5)
+            AchievementId.SOLVE_5_HARD -> Pair(
+                scoreManager.getSolvedCount(Module.Module1, Difficulty.HARD) +
+                        scoreManager.getSolvedCount(Module.Module2, Difficulty.HARD) +
+                        scoreManager.getSolvedCount(Module.Module3, Difficulty.HARD), 5
+            )
             AchievementId.SOLVE_5_M2_MEDIUM -> Pair(scoreManager.getSolvedCount(Module.Module2, Difficulty.MEDIUM), 5)
-            AchievementId.SOLVE_1_HARD_UNDER_60_SECS -> Pair(0, 1)
-            AchievementId.SOLVE_1_MEDIUM_UNDER_45_SECS -> Pair(0, 1)
             AchievementId.SOLVE_10_M3 -> Pair(scoreManager.getSolvedInModule(Module.Module3), 10)
 
             // Iskusni Igrač
             AchievementId.SOLVE_5_M2_HARD -> Pair(scoreManager.getSolvedCount(Module.Module2, Difficulty.HARD), 5)
             AchievementId.SOLVE_5_M3_MEDIUM -> Pair(scoreManager.getSolvedCount(Module.Module3, Difficulty.MEDIUM), 5)
-            AchievementId.SOLVE_1_M2_HARD_PERFECT_UNDER_60_SECS -> Pair(0, 1)
-            AchievementId.SOLVE_1_M3_MEDIUM_PERFECT_UNDER_45_SECS -> Pair(0, 1)
 
             // Majstor
             AchievementId.SOLVE_20_M3_HARD_PERFECT -> Pair(scoreManager.getPerfectSolvedCount(Module.Module3, Difficulty.HARD), 20)
             AchievementId.SOLVE_20_M2_HARD_PERFECT -> Pair(scoreManager.getPerfectSolvedCount(Module.Module2, Difficulty.HARD), 20)
-            AchievementId.SOLVE_1_M3_HARD_PERFECT_UNDER_120_SECS -> Pair(0, 1)
-            AchievementId.SOLVE_1_M3_MEDIUM_PERFECT_UNDER_60_SECS -> Pair(0, 1)
         }
     }
 }

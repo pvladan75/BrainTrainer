@@ -89,18 +89,13 @@ class AchievementManager(private val context: Context) {
             resultData.totalSolvedInModule >= 5 && !unlockedIds.contains(AchievementId.SOLVE_5_M1_MEDIUM)) {
             unlockAchievement(AchievementId.SOLVE_5_M1_MEDIUM)
         }
-
-        // TODO: Implement perfect session tracking for PERFECT_SESSION
-
-        if (resultData.module == Module.Module2 && resultData.timeTakenSeconds < 30 &&
-            !unlockedIds.contains(AchievementId.SOLVE_1_M2_UNDER_30_SECS)) {
-            unlockAchievement(AchievementId.SOLVE_1_M2_UNDER_30_SECS)
-        }
-
-        if (resultData.module == Module.Module2 && resultData.mistakesMade == 0 &&
-            resultData.totalSolvedInModule >= 10 && !unlockedIds.contains(AchievementId.SOLVE_10_M2_PERFECT)) {
+        if (resultData.module == Module.Module2 && resultData.difficulty == Difficulty.EASY &&
+            resultData.mistakesMade == 0 && resultData.totalSolvedInModule >= 10 &&
+            !unlockedIds.contains(AchievementId.SOLVE_10_M2_PERFECT)) {
             unlockAchievement(AchievementId.SOLVE_10_M2_PERFECT)
         }
+        // TODO: Implement perfect session tracking for PERFECT_SESSION
+
 
         // === Amater ===
         if (resultData.difficulty == Difficulty.HARD && resultData.totalPuzzlesSolved >= 5 &&
@@ -113,15 +108,9 @@ class AchievementManager(private val context: Context) {
             unlockAchievement(AchievementId.SOLVE_5_M2_MEDIUM)
         }
 
-        if (resultData.difficulty == Difficulty.HARD && resultData.timeTakenSeconds < 60 &&
-            !unlockedIds.contains(AchievementId.SOLVE_1_HARD_UNDER_60_SECS)) {
-            unlockAchievement(AchievementId.SOLVE_1_HARD_UNDER_60_SECS)
-        }
 
-        if (resultData.difficulty == Difficulty.MEDIUM && resultData.timeTakenSeconds < 45 &&
-            !unlockedIds.contains(AchievementId.SOLVE_1_MEDIUM_UNDER_45_SECS)) {
-            unlockAchievement(AchievementId.SOLVE_1_MEDIUM_UNDER_45_SECS)
-        }
+
+
 
         if (resultData.module == Module.Module3 && resultData.totalSolvedInModule >= 10 &&
             !unlockedIds.contains(AchievementId.SOLVE_10_M3)) {
@@ -139,17 +128,9 @@ class AchievementManager(private val context: Context) {
             unlockAchievement(AchievementId.SOLVE_5_M3_MEDIUM)
         }
 
-        if (resultData.module == Module.Module2 && resultData.difficulty == Difficulty.HARD &&
-            resultData.mistakesMade == 0 && resultData.timeTakenSeconds < 60 &&
-            !unlockedIds.contains(AchievementId.SOLVE_1_M2_HARD_PERFECT_UNDER_60_SECS)) {
-            unlockAchievement(AchievementId.SOLVE_1_M2_HARD_PERFECT_UNDER_60_SECS)
-        }
 
-        if (resultData.module == Module.Module3 && resultData.difficulty == Difficulty.MEDIUM &&
-            resultData.mistakesMade == 0 && resultData.timeTakenSeconds < 45 &&
-            !unlockedIds.contains(AchievementId.SOLVE_1_M3_MEDIUM_PERFECT_UNDER_45_SECS)) {
-            unlockAchievement(AchievementId.SOLVE_1_M3_MEDIUM_PERFECT_UNDER_45_SECS)
-        }
+
+
 
         // === Majstor ===
         if (resultData.module == Module.Module3 && resultData.difficulty == Difficulty.HARD &&
@@ -164,17 +145,9 @@ class AchievementManager(private val context: Context) {
             unlockAchievement(AchievementId.SOLVE_20_M2_HARD_PERFECT)
         }
 
-        if (resultData.module == Module.Module3 && resultData.difficulty == Difficulty.HARD &&
-            resultData.mistakesMade == 0 && resultData.timeTakenSeconds < 120 &&
-            !unlockedIds.contains(AchievementId.SOLVE_1_M3_HARD_PERFECT_UNDER_120_SECS)) {
-            unlockAchievement(AchievementId.SOLVE_1_M3_HARD_PERFECT_UNDER_120_SECS)
-        }
 
-        if (resultData.module == Module.Module3 && resultData.difficulty == Difficulty.MEDIUM &&
-            resultData.mistakesMade == 0 && resultData.timeTakenSeconds < 60 &&
-            !unlockedIds.contains(AchievementId.SOLVE_1_M3_MEDIUM_PERFECT_UNDER_60_SECS)) {
-            unlockAchievement(AchievementId.SOLVE_1_M3_MEDIUM_PERFECT_UNDER_60_SECS)
-        }
+
+
     }
 
     /**

@@ -3,21 +3,11 @@ package com.program.braintrainer.gamification
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 
-/**
- * Predstavlja otključane module i težine za određeni rang.
- */
 data class UnlockedContent(
     val module: Module,
     val availableDifficulties: List<Difficulty>
 )
 
-/**
- * Data klasa koja predstavlja jedan rang u igri.
- * @param title Naziv ranga.
- * @param requiredXp Minimalni XP potreban za ovaj rang.
- * @param requiredAchievements Lista dostignuća potrebnih za prelazak SA ovog ranga na sledeći.
- * @param unlockedContent Lista modula i težina dostupnih NA ovom rangu.
- */
 data class Rank(
     val title: String,
     val requiredXp: Int,
@@ -25,9 +15,6 @@ data class Rank(
     val unlockedContent: List<UnlockedContent>
 )
 
-/**
- * Singleton objekat koji upravlja logikom rangova i XP poena.
- */
 object RankManager {
 
     private val ranks = listOf(
@@ -37,9 +24,7 @@ object RankManager {
             requiredAchievements = listOf(
                 AchievementId.FIRST_PUZZLE_SOLVED,
                 AchievementId.SOLVE_10_M1,
-                AchievementId.STREAK_3_PERFECT,
-                AchievementId.FINISH_SESSION,
-                AchievementId.SOLVE_UNDER_15_SECS
+                AchievementId.STREAK_3_PERFECT
             ),
             unlockedContent = listOf(
                 UnlockedContent(Module.Module1, listOf(Difficulty.EASY)),
@@ -52,8 +37,6 @@ object RankManager {
             requiredXp = 1000,
             requiredAchievements = listOf(
                 AchievementId.SOLVE_5_M1_MEDIUM,
-                AchievementId.PERFECT_SESSION,
-                AchievementId.SOLVE_1_M2_UNDER_30_SECS,
                 AchievementId.SOLVE_10_M2_PERFECT
             ),
             unlockedContent = listOf(
@@ -68,8 +51,6 @@ object RankManager {
             requiredAchievements = listOf(
                 AchievementId.SOLVE_5_HARD,
                 AchievementId.SOLVE_5_M2_MEDIUM,
-                AchievementId.SOLVE_1_HARD_UNDER_60_SECS,
-                AchievementId.SOLVE_1_MEDIUM_UNDER_45_SECS,
                 AchievementId.SOLVE_10_M3
             ),
             unlockedContent = listOf(
@@ -83,9 +64,7 @@ object RankManager {
             requiredXp = 7000,
             requiredAchievements = listOf(
                 AchievementId.SOLVE_5_M2_HARD,
-                AchievementId.SOLVE_5_M3_MEDIUM,
-                AchievementId.SOLVE_1_M2_HARD_PERFECT_UNDER_60_SECS,
-                AchievementId.SOLVE_1_M3_MEDIUM_PERFECT_UNDER_45_SECS
+                AchievementId.SOLVE_5_M3_MEDIUM
             ),
             unlockedContent = listOf(
                 UnlockedContent(Module.Module1, Difficulty.values().toList()),
@@ -98,9 +77,7 @@ object RankManager {
             requiredXp = 15000,
             requiredAchievements = listOf(
                 AchievementId.SOLVE_20_M3_HARD_PERFECT,
-                AchievementId.SOLVE_20_M2_HARD_PERFECT,
-                AchievementId.SOLVE_1_M3_HARD_PERFECT_UNDER_120_SECS,
-                AchievementId.SOLVE_1_M3_MEDIUM_PERFECT_UNDER_60_SECS
+                AchievementId.SOLVE_20_M2_HARD_PERFECT
             ),
             unlockedContent = listOf(
                 UnlockedContent(Module.Module1, Difficulty.values().toList()),
@@ -111,7 +88,7 @@ object RankManager {
         Rank(
             title = "Velemajstor",
             requiredXp = 30000,
-            requiredAchievements = emptyList(), // Nema više dostignuća za prelazak
+            requiredAchievements = emptyList(),
             unlockedContent = listOf(
                 UnlockedContent(Module.Module1, Difficulty.values().toList()),
                 UnlockedContent(Module.Module2, Difficulty.values().toList()),
@@ -121,8 +98,23 @@ object RankManager {
     )
 
     fun getRankForXp(totalXp: Int): Rank {
-        // Vraća poslednji rang za koji igrač ima dovoljno poena.
         return ranks.lastOrNull { totalXp >= it.requiredXp } ?: ranks.first()
+    }
+
+    fun determineRank(totalXp: Int, unlockedAchievements: Set<AchievementId>): Rank {
+        var currentRank = ranks.first()
+        for (i in 0 until ranks.size - 1) {
+            val rank = ranks[i]
+            val nextRank = ranks[i + 1]
+            val hasEnoughXp = totalXp >= nextRank.requiredXp
+            val hasAllAchievements = unlockedAchievements.containsAll(rank.requiredAchievements)
+            if (hasEnoughXp && hasAllAchievements) {
+                currentRank = nextRank
+            } else {
+                break
+            }
+        }
+        return currentRank
     }
 
     fun getNextRank(currentRank: Rank): Rank? {
@@ -134,9 +126,6 @@ object RankManager {
         }
     }
 
-    /**
-     * Vraća listu dostupnih težina za dati rang i modul.
-     */
     fun getAvailableDifficultiesFor(rank: Rank, module: Module): List<Difficulty> {
         return rank.unlockedContent.find { it.module == module }?.availableDifficulties ?: emptyList()
     }
