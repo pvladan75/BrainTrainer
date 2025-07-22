@@ -1,17 +1,22 @@
 package com.program.braintrainer.ui.theme
 
+import android.app.Activity
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import com.program.braintrainer.chess.model.data.AppSettings
 import com.program.braintrainer.chess.model.data.SettingsManager
 
-// Definicija paleta boja koje koriste vrednosti iz Color.kt
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
@@ -26,25 +31,36 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun BrainTrainerTheme(
+    // --- ISPRAVKA: Tema sada prima AppSettings ---
+    appSettings: AppSettings,
+    // Omogućavanje dinamičkih boja na podržanim uređajima
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    // 1. Kreiramo instancu SettingsManager-a
-    val context = LocalContext.current
-    val settingsManager = remember { SettingsManager(context) }
-
-    // 2. Skupljamo stanje teme iz DataStore-a
-    val currentTheme = settingsManager.settingsFlow.collectAsState(
-        initial = AppSettings(isSoundEnabled = true, appTheme = SettingsManager.AppTheme.SYSTEM)
-    ).value.appTheme
-
-    // 3. Određujemo da li treba koristiti tamnu temu na osnovu podešavanja
-    val useDarkTheme = when (currentTheme) {
+    // --- ISPRAVKA: Logika za biranje teme je ažurirana ---
+    val darkTheme = when (appSettings.appTheme) {
         SettingsManager.AppTheme.LIGHT -> false
         SettingsManager.AppTheme.DARK -> true
         SettingsManager.AppTheme.SYSTEM -> isSystemInDarkTheme()
     }
 
-    val colorScheme = if (useDarkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
+    }
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.primary.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+        }
+    }
 
     MaterialTheme(
         colorScheme = colorScheme,

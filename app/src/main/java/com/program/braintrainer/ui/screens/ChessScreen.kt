@@ -35,6 +35,7 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.*
+import com.program.braintrainer.chess.model.data.AppSettings
 import com.program.braintrainer.chess.model.data.ProblemLoader
 import com.program.braintrainer.chess.model.data.SettingsManager
 import com.program.braintrainer.chess.parser.FenParser
@@ -49,6 +50,7 @@ import com.program.braintrainer.ui.theme.BrainTrainerTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
@@ -126,6 +128,9 @@ fun ChessScreen(
     val achievementManager = remember { AchievementManager(context, settingsManager) }
     val scoringParams = remember { ScoringParams() }
 
+    // --- ČITANJE PREMIUM STATUSA ---
+    val isPremium by settingsManager.settingsFlow.map { it.isPremiumUser }.collectAsState(initial = false)
+
     // --- STANJE ZA REKLAME ---
     var interstitialAd by remember { mutableStateOf<InterstitialAd?>(null) }
     var isAdLoading by remember { mutableStateOf(false) }
@@ -134,26 +139,27 @@ fun ChessScreen(
     var doubleXpButtonEnabled by remember { mutableStateOf(true) }
 
 
-    // === ISPRAVKA: Učitavanje pozicija u pozadini ===
+    // === Učitavanje pozicija u pozadini ===
     var problems by remember { mutableStateOf<List<Problem>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(key1 = module, key2 = difficulty) {
         isLoading = true
-        withContext(Dispatchers.IO) { // Prebacujemo se na pozadinsku nit za I/O operacije
+        withContext(Dispatchers.IO) {
             val loadedProblems = ProblemLoader(context).loadProblemsForModuleAndDifficulty(module, difficulty)
             problems = loadedProblems
         }
-        isLoading = false // Vraćamo se na glavnu nit i isključujemo učitavanje
+        isLoading = false
     }
-    // ================================================
 
-    // --- UČITAVANJE MEĐUPROSTORNE REKLAME UNAPRED ---
-    LaunchedEffect(Unit) {
-        loadInterstitialAd(context,
-            onAdLoaded = { ad -> interstitialAd = ad },
-            onAdFailedToLoad = { interstitialAd = null }
-        )
+    // --- USLOVNO UČITAVANJE REKLAMA ---
+    LaunchedEffect(isPremium) {
+        if (!isPremium) {
+            loadInterstitialAd(context,
+                onAdLoaded = { ad -> interstitialAd = ad },
+                onAdFailedToLoad = { interstitialAd = null }
+            )
+        }
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -186,7 +192,6 @@ fun ChessScreen(
     }
     val currentSessionProblemIndex = if (problemsInSession.isNotEmpty()) currentProblemIndex % problemsInSession.size else 0
 
-    // Efekat koji se pokreće kada se učitaju zagonetke ili promeni indeks
     LaunchedEffect(problemsInSession, currentProblemIndex) {
         if (problemsInSession.isNotEmpty()) {
             val problem = problemsInSession[currentProblemIndex]
@@ -194,7 +199,6 @@ fun ChessScreen(
             val (board, _) = FenParser.parseFenToBoard(problem.fen)
             currentBoard = board
             selectedSquare = board.pieces.entries.firstOrNull { it.value.color == ChessColor.WHITE }?.key
-            // Resetovanje stanja za novu zagonetku
             elapsedTimeInSeconds = 0
             isTimerRunning = true
             defendedSquareMistakes = 0
@@ -241,35 +245,39 @@ fun ChessScreen(
 
     val onHintClick: () -> Unit = {
         if (!isAdLoading) {
-            isAdLoading = true
-            stopTimer()
-            loadRewardedAd(context, "ca-app-pub-3940256099942544/5224354917",
-                onAdLoaded = { ad ->
-                    isAdLoading = false
-                    val activity = context as? Activity
-                    if (activity != null) {
-                        ad.fullScreenContentCallback = object : FullScreenContentCallback() {
-                            override fun onAdDismissedFullScreenContent() {
-                                if (hintRewardEarned) {
-                                    showHint()
-                                    hintRewardEarned = false
-                                } else {
-                                    startTimer()
+            if (!isPremium) {
+                isAdLoading = true
+                stopTimer()
+                loadRewardedAd(context, "ca-app-pub-3940256099942544/5224354917",
+                    onAdLoaded = { ad ->
+                        isAdLoading = false
+                        val activity = context as? Activity
+                        if (activity != null) {
+                            ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+                                override fun onAdDismissedFullScreenContent() {
+                                    if (hintRewardEarned) {
+                                        showHint()
+                                        hintRewardEarned = false
+                                    } else {
+                                        startTimer()
+                                    }
                                 }
+                                override fun onAdFailedToShowFullScreenContent(p0: AdError) { startTimer() }
                             }
-                            override fun onAdFailedToShowFullScreenContent(p0: AdError) { startTimer() }
+                            ad.show(activity) { hintRewardEarned = true }
+                        } else {
+                            startTimer()
                         }
-                        ad.show(activity) { hintRewardEarned = true }
-                    } else {
+                    },
+                    onAdFailedToLoad = {
+                        isAdLoading = false
+                        coroutineScope.launch { snackbarHostState.showSnackbar("Reklama nije dostupna.") }
                         startTimer()
                     }
-                },
-                onAdFailedToLoad = {
-                    isAdLoading = false
-                    coroutineScope.launch { snackbarHostState.showSnackbar("Reklama nije dostupna.") }
-                    startTimer()
-                }
-            )
+                )
+            } else {
+                showHint()
+            }
         }
     }
 
@@ -313,6 +321,8 @@ fun ChessScreen(
             }
         }
 
+        var detailedMessage = ""
+
         val isPerfect = defendedSquareMistakes == 0 && playerMoveCount <= (currentProblem?.solution?.moves?.size ?: playerMoveCount)
 
         if (isSuccess && !usedSolution) {
@@ -354,7 +364,7 @@ fun ChessScreen(
             return
         }
 
-        var detailedMessage = "Zagonetka rešena!\n\n"
+        detailedMessage = "Zagonetka rešena!\n\n"
         var finalPoints = 0
         if (!usedSolution) {
             val basePoints = when (difficulty) {
@@ -398,6 +408,12 @@ fun ChessScreen(
             lastAwardedXp = finalPoints
 
             detailedMessage += "\n🏆 Osvojeno XP: $finalPoints"
+
+            if (isPremium && lastAwardedXp > 0) {
+                scoreManager.addXp(lastAwardedXp)
+                val bonusMessage = "\n\n🔥 Premium bonus: +$lastAwardedXp"
+                detailedMessage += bonusMessage
+            }
         } else {
             correctStreak = 0
             lastAwardedXp = 0
@@ -409,7 +425,7 @@ fun ChessScreen(
 
     fun showInterstitialAdAndFinish() {
         val activity = context as? Activity
-        if (interstitialAd != null && activity != null) {
+        if (!isPremium && interstitialAd != null && activity != null) {
             interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() { onGameFinished() }
                 override fun onAdFailedToShowFullScreenContent(p0: AdError) { onGameFinished() }
@@ -628,7 +644,7 @@ fun ChessScreen(
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        if (lastAwardedXp > 0) {
+                        if (lastAwardedXp > 0 && !isPremium) {
                             TextButton(
                                 onClick = onDoubleXpClick,
                                 enabled = doubleXpButtonEnabled && !isAdLoading
@@ -685,17 +701,25 @@ fun GameInfoPanel(module: Module, difficulty: Difficulty, currentProblem: Proble
     val minutes = elapsedTime / 60
     val seconds = elapsedTime % 60
     val timeString = String.format("%02d:%02d", minutes, seconds)
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Mod: ${module.title}", style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
         Text(text = "Težina: ${difficulty.label}", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "🕒 Vreme: $timeString", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = if (problemsInSession.isNotEmpty()) "Zagonetka: ${currentSessionProblemIndex + 1}/${problemsInSession.size}" else "Učitavanje...", style = MaterialTheme.typography.bodyLarge)
+        Text(text = "Vreme: $timeString", style = MaterialTheme.typography.headlineSmall)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = if (problemsInSession.isNotEmpty()) "Zagonetka: ${currentSessionProblemIndex + 1}/${problemsInSession.size}" else "Učitavanje...",
+            style = MaterialTheme.typography.bodyLarge
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = "Na potezu: Beli", style = MaterialTheme.typography.bodyLarge)
         currentProblem?.let {
-            Text(text = "Cilj: ${it.description}", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 8.dp))
+            Text(
+                text = "Cilj: ${it.description}",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
@@ -827,7 +851,13 @@ fun getPieceDrawableResId(piece: Piece): Int {
 @Preview(showBackground = true, widthDp = 360, heightDp = 740, name = "Portrait Preview")
 @Composable
 fun PreviewChessScreenPortrait() {
-    BrainTrainerTheme {
+    BrainTrainerTheme(
+        appSettings = AppSettings(
+            isSoundEnabled = true,
+            appTheme = SettingsManager.AppTheme.SYSTEM,
+            isPremiumUser = false
+        )
+    ) {
         ChessScreen(module = Module.Module2, difficulty = Difficulty.EASY, onGameFinished = {})
     }
 }
@@ -835,7 +865,13 @@ fun PreviewChessScreenPortrait() {
 @Preview(showBackground = true, widthDp = 800, heightDp = 480, name = "Landscape Preview")
 @Composable
 fun PreviewChessScreenLandscape() {
-    BrainTrainerTheme {
+    BrainTrainerTheme(
+        appSettings = AppSettings(
+            isSoundEnabled = true,
+            appTheme = SettingsManager.AppTheme.SYSTEM,
+            isPremiumUser = false
+        )
+    ) {
         ChessScreen(module = Module.Module2, difficulty = Difficulty.EASY, onGameFinished = {})
     }
 }

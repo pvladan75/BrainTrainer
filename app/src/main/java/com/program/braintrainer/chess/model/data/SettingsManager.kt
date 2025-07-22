@@ -10,66 +10,56 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-// Definišemo DataStore instancu na nivou fajla
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
-/**
- * Menadžer za upravljanje podešavanjima aplikacije koristeći Jetpack DataStore.
- * @param context Kontekst aplikacije.
- */
-class SettingsManager(private val context: Context) {
-
-    // Definišemo ključeve za svako podešavanje koje čuvamo
-    companion object {
-        val SOUND_ENABLED_KEY = booleanPreferencesKey("sound_enabled")
-        val APP_THEME_KEY = stringPreferencesKey("app_theme")
-    }
-
-    /**
-     * Enum za definisanje mogućih tema aplikacije.
-     */
-    enum class AppTheme(val value: String) {
-        LIGHT("light"),
-        DARK("dark"),
-        SYSTEM("system")
-    }
-
-    /**
-     * Pruža Flow koji emituje trenutna podešavanja svaki put kada se promene.
-     */
-    val settingsFlow: Flow<AppSettings> = context.dataStore.data.map { preferences ->
-        val soundEnabled = preferences[SOUND_ENABLED_KEY] ?: true // Zvuk je uključen po defaultu
-        val theme = AppTheme.valueOf(
-            preferences[APP_THEME_KEY] ?: AppTheme.SYSTEM.name
-        )
-        AppSettings(soundEnabled, theme)
-    }
-
-    /**
-     * Asinhrono postavlja vrednost za zvučne efekte.
-     * @param isEnabled Da li su zvuci uključeni.
-     */
-    suspend fun setSoundEnabled(isEnabled: Boolean) {
-        context.dataStore.edit { settings ->
-            settings[SOUND_ENABLED_KEY] = isEnabled
-        }
-    }
-
-    /**
-     * Asinhrono postavlja izabranu temu aplikacije.
-     * @param theme Izabrana tema.
-     */
-    suspend fun setAppTheme(theme: AppTheme) {
-        context.dataStore.edit { settings ->
-            settings[APP_THEME_KEY] = theme.name
-        }
-    }
-}
 
 /**
  * Data klasa koja predstavlja sva podešavanja aplikacije.
  */
 data class AppSettings(
     val isSoundEnabled: Boolean,
-    val appTheme: SettingsManager.AppTheme
+    val appTheme: SettingsManager.AppTheme,
+    val isPremiumUser: Boolean // <-- DODATO
 )
+
+class SettingsManager(private val context: Context) {
+
+    companion object {
+        val SOUND_ENABLED_KEY = booleanPreferencesKey("sound_enabled")
+        val APP_THEME_KEY = stringPreferencesKey("app_theme")
+        val PREMIUM_USER_KEY = booleanPreferencesKey("is_premium_user") // <-- DODATO
+    }
+
+    enum class AppTheme(val value: String) {
+        LIGHT("light"),
+        DARK("dark"),
+        SYSTEM("system")
+    }
+
+    val settingsFlow: Flow<AppSettings> = context.dataStore.data.map { preferences ->
+        val soundEnabled = preferences[SOUND_ENABLED_KEY] ?: true
+        val theme = AppTheme.valueOf(
+            preferences[APP_THEME_KEY] ?: AppTheme.SYSTEM.name
+        )
+        val isPremiumUser = preferences[PREMIUM_USER_KEY] ?: false // <-- DODATO
+        AppSettings(soundEnabled, theme, isPremiumUser) // <-- DODATO
+    }
+
+    suspend fun setSoundEnabled(isEnabled: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[SOUND_ENABLED_KEY] = isEnabled
+        }
+    }
+
+    // --- DODATO: Funkcija za postavljanje premium statusa ---
+    suspend fun setPremiumUser(isPremium: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[PREMIUM_USER_KEY] = isPremium
+        }
+    }
+
+    suspend fun setAppTheme(theme: AppTheme) {
+        context.dataStore.edit { settings ->
+            settings[APP_THEME_KEY] = theme.name
+        }
+    }
+}

@@ -1,5 +1,6 @@
 package com.program.braintrainer.ui.screens.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -53,6 +54,14 @@ fun SettingsScreen(
                 onThemeChange = viewModel::onThemeChange
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // --- DODATA SEKCIJA ZA PREMIUM ---
+            PremiumSettingsRow(
+                isPremium = settings.isPremiumUser,
+                onPurchaseClick = viewModel::onPurchasePremium
+            )
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+            // --- KRAJ DODATE SEKCIJE ---
 
             // Opcija za resetovanje
             ResetProgressRow(onResetClick = { showResetDialog = true })
@@ -108,6 +117,7 @@ private fun ThemeSettingsGroup(selectedTheme: SettingsManager.AppTheme, onThemeC
         Text("Tema aplikacije", style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(8.dp))
 
+        // U novijim verzijama Kotlina, .entries je preporučen način za dobijanje svih vrednosti enuma
         val themes = SettingsManager.AppTheme.entries.toTypedArray()
         themes.forEach { theme ->
             Row(
@@ -139,6 +149,35 @@ private fun ThemeSettingsGroup(selectedTheme: SettingsManager.AppTheme, onThemeC
         }
     }
 }
+
+@Composable
+private fun PremiumSettingsRow(isPremium: Boolean, onPurchaseClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        if (isPremium) {
+            Text(
+                text = "Aktivirana je Premium verzija bez reklama.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+        } else {
+            Text("Ukloni reklame", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                "Kupovinom premium verzije uklanjate sve reklame i automatski dobijate duple XP poene za svaku rešenu zagonetku.",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = onPurchaseClick) {
+                Text("Kupi Premium")
+            }
+        }
+    }
+}
+
 
 @Composable
 private fun ResetProgressRow(onResetClick: () -> Unit) {

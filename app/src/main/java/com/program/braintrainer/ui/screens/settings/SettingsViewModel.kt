@@ -26,7 +26,12 @@ class SettingsViewModel(
     val settingsState: StateFlow<AppSettings> = settingsManager.settingsFlow.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = AppSettings(isSoundEnabled = true, appTheme = SettingsManager.AppTheme.SYSTEM)
+        // Ispravljena inicijalna vrednost da uključuje i premium status
+        initialValue = AppSettings(
+            isSoundEnabled = true,
+            appTheme = SettingsManager.AppTheme.SYSTEM,
+            isPremiumUser = false
+        )
     )
 
     /**
@@ -55,6 +60,17 @@ class SettingsViewModel(
         viewModelScope.launch {
             scoreManager.resetAllScores()
             // Ovde možete dodati i brisanje achievementa ako/kada se implementiraju
+        }
+    }
+
+    /**
+     * Poziva se kada korisnik klikne na "Kupi".
+     */
+    fun onPurchasePremium() {
+        // TODO: Ovde se pokreće Google Play Billing proces za kupovinu.
+        // Nakon uspešne kupovine, poziva se sledeća linija koda.
+        viewModelScope.launch {
+            settingsManager.setPremiumUser(true)
         }
     }
 }
