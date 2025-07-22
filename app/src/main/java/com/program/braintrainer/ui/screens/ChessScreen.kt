@@ -59,9 +59,9 @@ data class ScoringParams(
     val maxTimeForBonusHard: Int = 90,
     val penaltyPerMistake: Int = 5,
     val penaltyPerExtraMove: Int = 2,
-    val streakBonusEasy: Int = 5,
-    val streakBonusMedium: Int = 10,
-    val streakBonusHard: Int = 15
+    val streakBonusEasy: Int = 3,
+    val streakBonusMedium: Int = 8,
+    val streakBonusHard: Int = 20
 )
 // ===================================================================
 

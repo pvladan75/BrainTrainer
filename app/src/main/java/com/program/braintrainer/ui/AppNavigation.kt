@@ -3,6 +3,7 @@ package com.program.braintrainer.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -53,21 +54,21 @@ fun AppNavigation() {
         GameModeInfo(
             type = Module.Module1,
             title = Module.Module1.title,
-            description = "Crne figure spavaju, ali u svakom potezu - ukloni je bez straha da će te pojesti",
+            description = stringResource(R.string.modul1desc),
             color = Color(0xFFE57373),
             icon = R.drawable.ic_module1_target
         ),
         GameModeInfo(
             type = Module.Module2,
             title = Module.Module2.title,
-            description = "Crne figure vrebaju- izbegavaj polja koje crne figure napadaju",
+            description = stringResource(R.string.modul2desc),
             color = Color(0xFF64B5F6),
             icon = R.drawable.ic_module2_shield
         ),
         GameModeInfo(
             type = Module.Module3,
             title = Module.Module3.title,
-            description = "Ukloni sve branioce crnog kralja, pa i njega ukloni. Pazi, crne figure vrebaju ",
+            description = stringResource(R.string.modul3desc),
             color = Color(0xFF81C784),
             icon = R.drawable.ic_module3_king
         )

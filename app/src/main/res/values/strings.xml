@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">BrainTrainer</string>
+    <string name="modul1desc">"Crne figure spavaju, ali u svakom potezu - ukloni je bez straha da će te pojesti"</string>
+    <string name="modul2desc">"Crne figure vrebaju- izbegavaj polja koje crne figure napadaju</string>
+    <string name="modul3desc">"Ukloni sve branioce crnog kralja, pa i njega ukloni. Pazi, crne figure vrebaju"</string>
 </resources>
