@@ -2,6 +2,7 @@ package com.program.braintrainer.ui.screens
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.media.MediaPlayer
 import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
@@ -23,15 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.program.braintrainer.R
+import com.program.braintrainer.chess.model.*
 import com.program.braintrainer.chess.model.data.ProblemLoader
-import com.program.braintrainer.chess.model.Board
-import com.program.braintrainer.chess.model.Difficulty
-import com.program.braintrainer.chess.model.Module
-import com.program.braintrainer.chess.model.Move
-import com.program.braintrainer.chess.model.Piece
-import com.program.braintrainer.chess.model.PieceType
-import com.program.braintrainer.chess.model.Problem
-import com.program.braintrainer.chess.model.Square
+import com.program.braintrainer.chess.model.data.SettingsManager
 import com.program.braintrainer.chess.parser.FenParser
 import com.program.braintrainer.chess.solver.UniversalPuzzleSolver
 import com.program.braintrainer.gamification.AchievementManager
@@ -43,6 +38,7 @@ import com.program.braintrainer.score.ScoreManager
 import com.program.braintrainer.ui.theme.BrainTrainerTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import com.program.braintrainer.chess.model.Color as ChessColor
@@ -73,16 +69,21 @@ fun ChessScreen(
     onGameFinished: () -> Unit
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val problemLoader = remember { ProblemLoader(context) }
     val scoringParams = remember { ScoringParams() }
+
+    // --- ISPRAVKA: Inicijalizujemo sve menadžere ovde ---
+    val settingsManager = remember { SettingsManager(context) }
+    val scoreManager = remember { ScoreManager(context) }
+    // AchievementManager sada zahteva i settingsManager
+    val achievementManager = remember { AchievementManager(context, settingsManager) }
+
     val problems: List<Problem> = remember(module, difficulty) {
         problemLoader.loadProblemsForModuleAndDifficulty(module, difficulty)
     }
 
-    val scoreManager = remember { ScoreManager(context) }
-    val achievementManager = remember { AchievementManager(context) }
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
     var currentProblemIndex by remember { mutableIntStateOf(0) }
     var currentProblem by remember { mutableStateOf<Problem?>(null) }
@@ -199,6 +200,15 @@ fun ChessScreen(
 
     fun checkGameStatus(isSuccess: Boolean) {
         stopTimer()
+
+        // --- ISPRAVKA: Zvuk se proverava unutar coroutine ---
+        coroutineScope.launch {
+            val areSoundsEnabled = settingsManager.settingsFlow.first().isSoundEnabled
+            if (areSoundsEnabled) {
+                val soundToPlay = if (isSuccess && !usedSolution) R.raw.succes else R.raw.failed
+                MediaPlayer.create(context, soundToPlay).start()
+            }
+        }
 
         val isPerfect = defendedSquareMistakes == 0 && playerMoveCount <= (currentProblem?.solution?.moves?.size ?: playerMoveCount)
 
@@ -480,18 +490,29 @@ fun ChessScreen(
 
     val currentlyHighlightedHintMove = if (isShowingHint) hintMoves.getOrNull(hintMoveIndex) else null
 
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)) {
         val configuration = LocalConfiguration.current
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Row(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
                 GameInfoPanel(module, difficulty, currentProblem, problemsInSession, currentSessionProblemIndex, Modifier.weight(1f), elapsedTimeInSeconds)
-                ChessBoardComposable(currentBoard, selectedSquare, onSquareClick, currentlyHighlightedHintMove, modifier = Modifier.weight(1.2f).fillMaxHeight().aspectRatio(1f))
+                ChessBoardComposable(currentBoard, selectedSquare, onSquareClick, currentlyHighlightedHintMove, modifier = Modifier
+                    .weight(1.2f)
+                    .fillMaxHeight()
+                    .aspectRatio(1f))
                 GameControlsPanel(showSolutionPath, isPlayingSolution, solutionMoveIndex, currentProblem, onShowSolution, onNextPuzzle, onPreviousMove, { isPlayingSolution = !isPlayingSolution }, onNextMove, onHintClick, onSurrender, modifier = Modifier.weight(1f))
             }
         } else {
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceAround) {
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceAround) {
                 GameInfoPanel(module, difficulty, currentProblem, problemsInSession, currentSessionProblemIndex, elapsedTime = elapsedTimeInSeconds)
-                ChessBoardComposable(currentBoard, selectedSquare, onSquareClick, currentlyHighlightedHintMove, modifier = Modifier.fillMaxWidth(0.95f).aspectRatio(1f))
+                ChessBoardComposable(currentBoard, selectedSquare, onSquareClick, currentlyHighlightedHintMove, modifier = Modifier
+                    .fillMaxWidth(0.95f)
+                    .aspectRatio(1f))
                 GameControlsPanel(showSolutionPath, isPlayingSolution, solutionMoveIndex, currentProblem, onShowSolution, onNextPuzzle, onPreviousMove, { isPlayingSolution = !isPlayingSolution }, onNextMove, onHintClick, onSurrender)
             }
         }
@@ -513,7 +534,7 @@ fun ChessScreen(
     }
 }
 
-// ... ostatak fajla je nepromenjen ...
+// ... ostatak fajla (NoMoreMovesDialog, GameInfoPanel, GameControlsPanel, itd.) ostaje isti ...
 @Composable
 fun NoMoreMovesDialog(onShowSolution: () -> Unit, onNewGame: () -> Unit) {
     AlertDialog(onDismissRequest = { }, title = { Text("Nema više poteza") }, text = { Text("Nažalost, ostali ste bez mogućih poteza kojima biste pojeli preostale crne figure.") }, dismissButton = { TextButton(onClick = onShowSolution) { Text("Pregled rešenja") } }, confirmButton = { TextButton(onClick = onNewGame) { Text("Nova zagonetka") } })
@@ -585,7 +606,9 @@ fun ChessBoardComposable(
     highlightedHintMove: Move?,
     modifier: Modifier = Modifier
 ) {
-    BoxWithConstraints(modifier = modifier.background(Color.DarkGray).aspectRatio(1f)) {
+    BoxWithConstraints(modifier = modifier
+        .background(Color.DarkGray)
+        .aspectRatio(1f)) {
         val squareSize = this.maxWidth / 8
         Column {
             for (rank in 7 downTo 0) {
@@ -631,7 +654,9 @@ fun ChessBoardComposable(
 @Composable
 fun DefendedSquareDialog(board: Board, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
-        Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 Text("Branjeno Polje!", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(bottom = 8.dp))
                 Text("Ne možete stati na polje koje napada protivnička figura.", textAlign = TextAlign.Center, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(bottom = 16.dp))

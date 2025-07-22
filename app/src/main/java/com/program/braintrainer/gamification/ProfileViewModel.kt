@@ -1,39 +1,56 @@
 package com.program.braintrainer.gamification
 
+import android.content.Context
+import android.media.MediaPlayer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
+import com.program.braintrainer.chess.model.data.SettingsManager
 import com.program.braintrainer.score.ScoreManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 data class ProfileUiState(
     val currentRank: Rank,
     val nextRank: Rank?,
     val totalXp: Int,
-    // Lista dostignuća potrebnih za sledeći rang, sa napretkom
     val requirementsForNextRank: List<AchievementProgress> = emptyList(),
     val canAdvance: Boolean = false
 )
 
 class ProfileViewModel(
     private val scoreManager: ScoreManager,
-    private val achievementManager: AchievementManager
+    private val achievementManager: AchievementManager,
+    private val context: Context,
+    private val settingsManager: SettingsManager
 ) : ViewModel() {
 
+    private var previousRank: Rank? = null
+
     val uiState: StateFlow<ProfileUiState?> =
-        // Kombinujemo podatke iz dva flow-a: XP (implicitno kroz ScoreManager) i otključana dostignuća
         achievementManager.unlockedAchievementsFlow.map { unlockedIds ->
             val totalXp = scoreManager.getTotalXp()
-            // KORISTIMO NOVU, ISPRAVNU FUNKCIJU ZA ODREĐIVANJE RANGA
             val currentRank = RankManager.determineRank(totalXp, unlockedIds)
+
+            if (previousRank != null && currentRank.title != previousRank!!.title) {
+                viewModelScope.launch {
+                    // --- ISPRAVKA: Provera da li je zvuk uključen ---
+                    if (settingsManager.settingsFlow.first().isSoundEnabled) {
+                        MediaPlayer.create(context, R.raw.rank_up).start()
+                    }
+                }
+            }
+            previousRank = currentRank
+
             val nextRank = RankManager.getNextRank(currentRank)
 
             val requirements = nextRank?.let {
-                // Zahtevi za sledeći rang su dostignuća definisana u TRENUTNOM rangu
                 currentRank.requiredAchievements.map { achievementId ->
                     val achievement = AchievementsList.allAchievements.find { it.id == achievementId }!!
                     val (current, target) = getProgressForAchievement(achievementId)
@@ -63,11 +80,6 @@ class ProfileViewModel(
             initialValue = null
         )
 
-    /**
-     * Pomoćna funkcija koja vraća trenutni i ciljni napredak za dato dostignuće.
-     * U naprednijoj arhitekturi, ova logika bi bila izdvojena u zajednički servis
-     * da se ne bi ponavljala u AchievementsViewModel-u.
-     */
     private fun getProgressForAchievement(id: AchievementId): Pair<Int, Int> {
         return when (id) {
             // Početnik

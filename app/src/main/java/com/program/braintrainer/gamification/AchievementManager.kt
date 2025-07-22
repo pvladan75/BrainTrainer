@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import android.media.MediaPlayer
+import com.program.braintrainer.R
+import com.program.braintrainer.chess.model.data.SettingsManager
 
 private val Context.achievementDataStore: DataStore<Preferences> by preferencesDataStore(name = "achievements")
 
@@ -34,7 +37,8 @@ data class PuzzleResultData(
 /**
  * Menadžer koji upravlja logikom dostignuća.
  */
-class AchievementManager(private val context: Context) {
+class AchievementManager(private val context: Context,
+                         private val settingsManager: SettingsManager) {
 
     companion object {
         val UNLOCKED_ACHIEVEMENTS_KEY = stringSetPreferencesKey("unlocked_achievements")
@@ -160,6 +164,10 @@ class AchievementManager(private val context: Context) {
         }
         AchievementsList.allAchievements.find { it.id == id }?.let {
             _newlyUnlockedAchievementFlow.tryEmit(it)
+            val areSoundsEnabled = settingsManager.settingsFlow.first().isSoundEnabled
+            if (areSoundsEnabled) {
+                MediaPlayer.create(context, R.raw.achievement_unlocked).start()
+            }
         }
     }
 }
