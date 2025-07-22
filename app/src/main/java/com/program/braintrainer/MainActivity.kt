@@ -9,10 +9,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.program.braintrainer.ui.AppNavigation // Importujemo našu navigaciju
 import com.program.braintrainer.ui.theme.BrainTrainerTheme
+import com.google.android.gms.ads.MobileAds
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+        MobileAds.initialize(this) {}
         setContent {
             BrainTrainerTheme {
                 Surface(
@@ -24,5 +27,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
     }
 }

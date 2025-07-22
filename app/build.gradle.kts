@@ -63,4 +63,5 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.material.icons.extended.android)
+    implementation(libs.play.services.ads)
 }
