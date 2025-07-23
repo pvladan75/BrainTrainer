@@ -64,4 +64,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.material.icons.extended.android)
     implementation(libs.play.services.ads)
+    implementation(libs.billing)
+    implementation(libs.billing.ktx)
 }

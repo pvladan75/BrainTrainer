@@ -6,19 +6,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.program.braintrainer.chess.model.data.SettingsManager
 import com.program.braintrainer.score.ScoreManager
 
-/**
- * Fabrika (Factory) za kreiranje instance SettingsViewModel-a.
- * Ovo je neophodno jer ViewModel ima zavisnosti (settingsManager, scoreManager)
- * koje mu se moraju proslediti prilikom kreiranja.
- */
 class SettingsViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
-            // Kreiramo instance menadžera i prosleđujemo ih u ViewModel
             val settingsManager = SettingsManager(context.applicationContext)
             val scoreManager = ScoreManager(context.applicationContext)
             @Suppress("UNCHECKED_CAST")
-            return SettingsViewModel(settingsManager, scoreManager) as T
+            return SettingsViewModel(settingsManager, scoreManager, context.applicationContext) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

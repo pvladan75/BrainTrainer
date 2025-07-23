@@ -12,13 +12,10 @@ import kotlinx.coroutines.flow.map
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-/**
- * Data klasa koja predstavlja sva podešavanja aplikacije.
- */
 data class AppSettings(
     val isSoundEnabled: Boolean,
     val appTheme: SettingsManager.AppTheme,
-    val isPremiumUser: Boolean // <-- DODATO
+    val isPremiumUser: Boolean
 )
 
 class SettingsManager(private val context: Context) {
@@ -26,7 +23,7 @@ class SettingsManager(private val context: Context) {
     companion object {
         val SOUND_ENABLED_KEY = booleanPreferencesKey("sound_enabled")
         val APP_THEME_KEY = stringPreferencesKey("app_theme")
-        val PREMIUM_USER_KEY = booleanPreferencesKey("is_premium_user") // <-- DODATO
+        val PREMIUM_USER_KEY = booleanPreferencesKey("is_premium_user")
     }
 
     enum class AppTheme(val value: String) {
@@ -40,8 +37,8 @@ class SettingsManager(private val context: Context) {
         val theme = AppTheme.valueOf(
             preferences[APP_THEME_KEY] ?: AppTheme.SYSTEM.name
         )
-        val isPremiumUser = preferences[PREMIUM_USER_KEY] ?: false // <-- DODATO
-        AppSettings(soundEnabled, theme, isPremiumUser) // <-- DODATO
+        val isPremiumUser = preferences[PREMIUM_USER_KEY] ?: false
+        AppSettings(soundEnabled, theme, isPremiumUser)
     }
 
     suspend fun setSoundEnabled(isEnabled: Boolean) {
@@ -50,7 +47,6 @@ class SettingsManager(private val context: Context) {
         }
     }
 
-    // --- DODATO: Funkcija za postavljanje premium statusa ---
     suspend fun setPremiumUser(isPremium: Boolean) {
         context.dataStore.edit { settings ->
             settings[PREMIUM_USER_KEY] = isPremium

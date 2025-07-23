@@ -1,5 +1,6 @@
 [versions]
 agp = "8.10.1"
+billing = "8.0.0"
 datastorePreferences = "1.1.7"
 kotlin = "2.0.21" # Verzija koju ti koristiš
 coreKtx = "1.16.0"
@@ -22,6 +23,8 @@ playServicesAds = "24.4.0"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-material-icons-extended-android = { module = "androidx.compose.material:material-icons-extended-android", version.ref = "materialIconsExtendedAndroid" }
+billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
+billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billing" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

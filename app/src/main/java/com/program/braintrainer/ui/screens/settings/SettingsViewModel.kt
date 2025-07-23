@@ -1,8 +1,11 @@
 package com.program.braintrainer.ui.screens.settings
 
+import android.app.Activity
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.program.braintrainer.chess.model.data.AppSettings
+import com.program.braintrainer.chess.model.data.BillingClientManager
 import com.program.braintrainer.chess.model.data.SettingsManager
 import com.program.braintrainer.score.ScoreManager
 import kotlinx.coroutines.flow.SharingStarted
@@ -10,23 +13,31 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel za SettingsScreen.
- * Upravlja stanjem UI-a i komunicira sa SettingsManager-om i ScoreManager-om.
- *
- * @param settingsManager Instanca za upravljanje podešavanjima.
- * @param scoreManager Instanca za upravljanje rezultatima (za resetovanje).
- */
 class SettingsViewModel(
     private val settingsManager: SettingsManager,
-    private val scoreManager: ScoreManager
+    private val scoreManager: ScoreManager,
+    context: Context // Kontekst se prosleđuje spolja, npr. iz Hilt/Koin ili Factory-ja
 ) : ViewModel() {
 
-    // Učitavamo podešavanja i pretvaramo ih u StateFlow da bi UI mogao da reaguje na promene.
+    private val billingClientManager: BillingClientManager
+
+    init {
+        // ISPRAVKA: Prosleđen je 'viewModelScope' kao 'externalScope'
+        billingClientManager = BillingClientManager(
+            context = context,
+            externalScope = viewModelScope,
+            onPurchaseSuccess = {
+                // Nakon uspešne kupovine, ažuriramo status korisnika
+                viewModelScope.launch {
+                    settingsManager.setPremiumUser(true)
+                }
+            }
+        )
+    }
+
     val settingsState: StateFlow<AppSettings> = settingsManager.settingsFlow.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        // Ispravljena inicijalna vrednost da uključuje i premium status
         initialValue = AppSettings(
             isSoundEnabled = true,
             appTheme = SettingsManager.AppTheme.SYSTEM,
@@ -35,42 +46,42 @@ class SettingsViewModel(
     )
 
     /**
-     * Poziva se kada korisnik promeni stanje prekidača za zvuk.
+     * Proverava postojeće kupovine. Treba pozvati kada se UI vraća u prvi plan (onResume).
+     * Ovo je ključno za obradu kupovina koje su se desile van aplikacije.
      */
+    fun queryExistingPurchasesOnResume() {
+        viewModelScope.launch {
+            billingClientManager.queryExistingPurchases()
+        }
+    }
+
     fun onSoundToggle(isEnabled: Boolean) {
         viewModelScope.launch {
             settingsManager.setSoundEnabled(isEnabled)
         }
     }
 
-    /**
-     * Poziva se kada korisnik izabere novu temu.
-     */
     fun onThemeChange(theme: SettingsManager.AppTheme) {
         viewModelScope.launch {
             settingsManager.setAppTheme(theme)
         }
     }
 
-    /**
-     * Poziva se kada korisnik potvrdi resetovanje napretka.
-     * Briše sve sačuvane rezultate.
-     */
     fun onResetProgressConfirmed() {
         viewModelScope.launch {
             scoreManager.resetAllScores()
-            // Ovde možete dodati i brisanje achievementa ako/kada se implementiraju
         }
     }
 
-    /**
-     * Poziva se kada korisnik klikne na "Kupi".
-     */
-    fun onPurchasePremium() {
-        // TODO: Ovde se pokreće Google Play Billing proces za kupovinu.
-        // Nakon uspešne kupovine, poziva se sledeća linija koda.
+    fun onPurchasePremium(activity: Activity) {
         viewModelScope.launch {
-            settingsManager.setPremiumUser(true)
+            billingClientManager.launchPurchaseFlow(activity)
         }
+    }
+
+    // Dobra praksa je da se oslobode resursi kada ViewModel više nije potreban
+    override fun onCleared() {
+        super.onCleared()
+        billingClientManager.destroy()
     }
 }

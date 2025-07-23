@@ -1,5 +1,6 @@
 package com.program.braintrainer.ui.screens.settings
 
+import android.app.Activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
@@ -10,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.program.braintrainer.chess.model.data.SettingsManager
@@ -21,6 +23,7 @@ fun SettingsScreen(
     onBackPress: () -> Unit
 ) {
     val settings by viewModel.settingsState.collectAsState()
+    val context = LocalContext.current
     var showResetDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -41,33 +44,31 @@ fun SettingsScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // Opcija za zvuk
             SoundSettingsRow(
                 isSoundEnabled = settings.isSoundEnabled,
                 onSoundToggle = viewModel::onSoundToggle
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-            // Opcija za temu
             ThemeSettingsGroup(
                 selectedTheme = settings.appTheme,
                 onThemeChange = viewModel::onThemeChange
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-            // --- DODATA SEKCIJA ZA PREMIUM ---
             PremiumSettingsRow(
                 isPremium = settings.isPremiumUser,
-                onPurchaseClick = viewModel::onPurchasePremium
+                onPurchaseClick = {
+                    (context as? Activity)?.let { activity ->
+                        viewModel.onPurchasePremium(activity)
+                    }
+                }
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            // --- KRAJ DODATE SEKCIJE ---
 
-            // Opcija za resetovanje
             ResetProgressRow(onResetClick = { showResetDialog = true })
         }
 
-        // Dijalog za potvrdu resetovanja
         if (showResetDialog) {
             AlertDialog(
                 onDismissRequest = { showResetDialog = false },
@@ -117,7 +118,6 @@ private fun ThemeSettingsGroup(selectedTheme: SettingsManager.AppTheme, onThemeC
         Text("Tema aplikacije", style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(8.dp))
 
-        // U novijim verzijama Kotlina, .entries je preporučen način za dobijanje svih vrednosti enuma
         val themes = SettingsManager.AppTheme.entries.toTypedArray()
         themes.forEach { theme ->
             Row(
@@ -134,7 +134,7 @@ private fun ThemeSettingsGroup(selectedTheme: SettingsManager.AppTheme, onThemeC
             ) {
                 RadioButton(
                     selected = (theme == selectedTheme),
-                    onClick = null // null jer je selectable već na Row
+                    onClick = null
                 )
                 Text(
                     text = when (theme) {
