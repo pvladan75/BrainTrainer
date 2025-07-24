@@ -38,7 +38,7 @@ class ProfileViewModel(
             val totalXp = scoreManager.getTotalXp()
             val currentRank = RankManager.determineRank(totalXp, unlockedIds)
 
-            if (previousRank != null && currentRank.title != previousRank!!.title) {
+            if (previousRank != null && currentRank.id != previousRank!!.id) {
                 viewModelScope.launch {
                     if (settingsManager.settingsFlow.first().isSoundEnabled) {
                         MediaPlayer.create(context, R.raw.rank_up).start()
@@ -50,10 +50,8 @@ class ProfileViewModel(
             val nextRank = RankManager.getNextRank(currentRank)
 
             val requirements = nextRank?.let {
-                // IZMENA: Prvo dobijamo prevedenu listu svih dostignuća
                 val allAchievements = getAchievementsList(context)
                 currentRank.requiredAchievements.map { achievementId ->
-                    // Zatim pronalazimo potrebno dostignuće u toj listi
                     val achievement = allAchievements.find { it.id == achievementId }!!
                     val (current, target) = getProgressForAchievement(achievementId)
                     AchievementProgress(
@@ -84,36 +82,22 @@ class ProfileViewModel(
 
     private fun getProgressForAchievement(id: AchievementId): Pair<Int, Int> {
         return when (id) {
-            // Početnik
             AchievementId.FIRST_PUZZLE_SOLVED -> Pair(scoreManager.getTotalPuzzlesSolved(), 1)
             AchievementId.SOLVE_10_M1 -> Pair(scoreManager.getSolvedInModule(Module.Module1), 10)
             AchievementId.STREAK_3_PERFECT -> Pair(scoreManager.getPerfectStreak(), 3)
-
-
-            // Učenik
             AchievementId.SOLVE_5_M1_MEDIUM -> Pair(scoreManager.getSolvedCount(Module.Module1, Difficulty.MEDIUM), 5)
-
             AchievementId.SOLVE_10_M2_PERFECT -> Pair(scoreManager.getPerfectSolvedCount(Module.Module2, Difficulty.EASY), 10)
-
-            // Amater
             AchievementId.SOLVE_5_HARD -> Pair(
                 scoreManager.getSolvedCount(Module.Module1, Difficulty.HARD) +
                         scoreManager.getSolvedCount(Module.Module2, Difficulty.HARD) +
                         scoreManager.getSolvedCount(Module.Module3, Difficulty.HARD), 5
             )
             AchievementId.SOLVE_5_M2_MEDIUM -> Pair(scoreManager.getSolvedCount(Module.Module2, Difficulty.MEDIUM), 5)
-
             AchievementId.SOLVE_10_M3 -> Pair(scoreManager.getSolvedInModule(Module.Module3), 10)
-
-            // Iskusni Igrač
             AchievementId.SOLVE_5_M2_HARD -> Pair(scoreManager.getSolvedCount(Module.Module2, Difficulty.HARD), 5)
             AchievementId.SOLVE_5_M3_MEDIUM -> Pair(scoreManager.getSolvedCount(Module.Module3, Difficulty.MEDIUM), 5)
-
-
-            // Majstor
             AchievementId.SOLVE_20_M3_HARD_PERFECT -> Pair(scoreManager.getPerfectSolvedCount(Module.Module3, Difficulty.HARD), 20)
             AchievementId.SOLVE_20_M2_HARD_PERFECT -> Pair(scoreManager.getPerfectSolvedCount(Module.Module2, Difficulty.HARD), 20)
-
         }
     }
 }

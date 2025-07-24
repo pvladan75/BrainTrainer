@@ -15,6 +15,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.program.braintrainer.R
 import com.program.braintrainer.gamification.ProfileViewModel
+import com.program.braintrainer.gamification.Rank
+import com.program.braintrainer.gamification.RankId
+
+@Composable
+private fun getLocalizedRankTitle(rank: Rank): String {
+    val rankId = when (rank.id) {
+        RankId.BEGINNER -> R.string.rank_beginner
+        RankId.STUDENT -> R.string.rank_student
+        RankId.AMATEUR -> R.string.rank_amateur
+        RankId.EXPERIENCED -> R.string.rank_experienced
+        RankId.MASTER -> R.string.rank_master
+        RankId.GRANDMASTER -> R.string.rank_grandmaster
+    }
+    return stringResource(id = rankId)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +45,6 @@ fun ProfileScreen(
                 title = { Text(stringResource(id = R.string.profile_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackPress) {
-                        // ISPRAVKA 1: Korišćenje AutoMirrored ikone
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.content_desc_back))
                     }
                 }
@@ -47,7 +61,7 @@ fun ProfileScreen(
             ) {
                 item {
                     RankHeader(
-                        rankTitle = state.currentRank.title,
+                        rankTitle = getLocalizedRankTitle(rank = state.currentRank),
                         totalXp = state.totalXp
                     )
                     Spacer(modifier = Modifier.height(24.dp))
@@ -56,11 +70,10 @@ fun ProfileScreen(
                 if (state.nextRank != null) {
                     item {
                         Text(
-                            text = stringResource(id = R.string.profile_requirements_for_rank, state.nextRank.title),
+                            text = stringResource(id = R.string.profile_requirements_for_rank, getLocalizedRankTitle(rank = state.nextRank)),
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
-                        // ISPRAVKA 2: Divider je preimenovan u HorizontalDivider
                         HorizontalDivider()
                     }
 
@@ -145,6 +158,5 @@ private fun RequirementItem(
             )
         }
     }
-    // ISPRAVKA 3: I ovde je Divider preimenovan u HorizontalDivider
     HorizontalDivider()
 }

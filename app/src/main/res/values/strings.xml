@@ -57,10 +57,7 @@
     <string name="info_panel_time">Vreme: %1$s</string>
     <string name="info_panel_puzzle_progress">Zagonetka: %1$d/%2$d</string>
     <string name="info_panel_loading">Učitavanje…</string>
-    <string name="info_panel_turn">Na potezu: Beli</string>
-    <string name="info_panel_goal">Cilj: %1$s</string>
     <string name="solution_controls_title">Rešenje iz JSON-a:</string>
-
     <string name="achievement_first_steps_title">Prvi Koraci</string>
     <string name="achievement_first_steps_desc">Reši svoju prvu zagonetku.</string>
     <string name="achievement_m1_explorer_title">Istraživač Modula 1</string>
@@ -85,14 +82,12 @@
     <string name="achievement_virtuoso_desc">Reši 20 zadataka na nivou Teško u Modulu 3 bez greške.</string>
     <string name="achievement_domination_title">Dominacija</string>
     <string name="achievement_domination_desc">Reši 20 zadataka težine Teško u Modulu 2 bez greške.</string>
-
     <string name="content_desc_achievements">Dostignuća</string>
     <string name="content_desc_profile">Moj Profil</string>
     <string name="content_desc_settings">Podešavanja</string>
     <string name="main_select_difficulty">Izaberi težinu:</string>
     <string name="main_welcome_header">♟ Vežbe uma kroz razonodu!</string>
     <string name="main_welcome_subheader">Tri vežbe na tri nivoa težine - treniraj um kroz zabavu</string>
-
     <string name="profile_title">Moj Profil i Rang</string>
     <string name="profile_requirements_for_rank">Uslovi za rang: %1$s</string>
     <string name="profile_requirement_xp">Sakupi %1$d XP poena</string>
@@ -101,7 +96,6 @@
     <string name="profile_total_xp">Ukupno XP: %1$d</string>
     <string name="content_desc_completed">Završeno</string>
     <string name="content_desc_not_completed">Nije završeno</string>
-
     <string name="settings_title">Podešavanja</string>
     <string name="dialog_title_confirmation">Potvrda</string>
     <string name="dialog_reset_progress_text">Da li ste sigurni da želite da obrišete sav napredak i rezultate? Ova akcija je nepovratna.</string>
@@ -118,8 +112,23 @@
     <string name="settings_reset_progress">Resetuj napredak</string>
     <string name="settings_reset_description">Briše sve sačuvane rezultate.</string>
     <string name="settings_button_reset">Resetuj</string>
-
     <string name="achievements_title">Dostignuća</string>
     <string name="content_desc_unlocked">Otključano</string>
     <string name="content_desc_locked">Zaključano</string>
+    <string name="goal_module_1">Cilj: Ukloni sve protivničke figure sa table uz uslov: u svakom potezu moraš da uzmeš po jednu crnu figuru.</string>
+    <string name="goal_module_2">Cilj: Ukloni sve figure, izbegavajući polja koja napadaju crne figure.</string>
+    <string name="goal_module_3">Cilj: Pojedi crnog kralja izbegavajući polja koja napadaju crne figure.</string>
+    <string name="info_panel_moves_progress">Potezi: %1$d / %2$d</string>
+    <string name="button_restart">Ponovi</string>
+
+    <string name="difficulty_easy">Lako</string>
+    <string name="difficulty_medium">Srednje</string>
+    <string name="difficulty_hard">Teško</string>
+
+    <string name="rank_beginner">Početnik</string>
+    <string name="rank_student">Učenik</string>
+    <string name="rank_amateur">Amater</string>
+    <string name="rank_experienced">Iskusni Igrač</string>
+    <string name="rank_master">Majstor</string>
+    <string name="rank_grandmaster">Velemajstor</string>
 </resources>

@@ -3,13 +3,22 @@ package com.program.braintrainer.gamification
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 
+enum class RankId {
+    BEGINNER,
+    STUDENT,
+    AMATEUR,
+    EXPERIENCED,
+    MASTER,
+    GRANDMASTER
+}
+
 data class UnlockedContent(
     val module: Module,
     val availableDifficulties: List<Difficulty>
 )
 
 data class Rank(
-    val title: String,
+    val id: RankId,
     val requiredXp: Int,
     val requiredAchievements: List<AchievementId>,
     val unlockedContent: List<UnlockedContent>
@@ -17,9 +26,9 @@ data class Rank(
 
 object RankManager {
 
-    private val ranks = listOf(
+    val ranks = listOf(
         Rank(
-            title = "Početnik",
+            id = RankId.BEGINNER,
             requiredXp = 0,
             requiredAchievements = listOf(
                 AchievementId.FIRST_PUZZLE_SOLVED,
@@ -33,7 +42,7 @@ object RankManager {
             )
         ),
         Rank(
-            title = "Učenik",
+            id = RankId.STUDENT,
             requiredXp = 1000,
             requiredAchievements = listOf(
                 AchievementId.SOLVE_5_M1_MEDIUM,
@@ -46,7 +55,7 @@ object RankManager {
             )
         ),
         Rank(
-            title = "Amater",
+            id = RankId.AMATEUR,
             requiredXp = 3000,
             requiredAchievements = listOf(
                 AchievementId.SOLVE_5_HARD,
@@ -60,7 +69,7 @@ object RankManager {
             )
         ),
         Rank(
-            title = "Iskusni Igrač",
+            id = RankId.EXPERIENCED,
             requiredXp = 7000,
             requiredAchievements = listOf(
                 AchievementId.SOLVE_5_M2_HARD,
@@ -73,7 +82,7 @@ object RankManager {
             )
         ),
         Rank(
-            title = "Majstor",
+            id = RankId.MASTER,
             requiredXp = 15000,
             requiredAchievements = listOf(
                 AchievementId.SOLVE_20_M3_HARD_PERFECT,
@@ -86,7 +95,7 @@ object RankManager {
             )
         ),
         Rank(
-            title = "Velemajstor",
+            id = RankId.GRANDMASTER,
             requiredXp = 30000,
             requiredAchievements = emptyList(),
             unlockedContent = listOf(
@@ -118,8 +127,8 @@ object RankManager {
     }
 
     fun getNextRank(currentRank: Rank): Rank? {
-        val currentIndex = ranks.indexOf(currentRank)
-        return if (currentIndex < ranks.size - 1) {
+        val currentIndex = ranks.indexOfFirst { it.id == currentRank.id }
+        return if (currentIndex != -1 && currentIndex < ranks.size - 1) {
             ranks[currentIndex + 1]
         } else {
             null

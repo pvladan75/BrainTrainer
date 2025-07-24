@@ -29,6 +29,15 @@ import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.gamification.RankManager
 import com.program.braintrainer.score.ScoreManager
 
+@Composable
+private fun getLocalizedDifficultyLabel(difficulty: Difficulty): String {
+    return when (difficulty) {
+        Difficulty.EASY -> stringResource(id = R.string.difficulty_easy)
+        Difficulty.MEDIUM -> stringResource(id = R.string.difficulty_medium)
+        Difficulty.HARD -> stringResource(id = R.string.difficulty_hard)
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
@@ -102,8 +111,6 @@ fun MainScreen(
                     }
                 }
             }
-
-
         }
     }
 }
@@ -153,7 +160,6 @@ fun GameModeCard(
                 )
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // ISPRAVKA: Divider je preimenovan u HorizontalDivider
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                 Text(
                     text = stringResource(id = R.string.main_select_difficulty),
@@ -171,7 +177,7 @@ fun GameModeCard(
                             onClick = { onDifficultySelected(difficulty) },
                             enabled = isEnabled
                         ) {
-                            Text(text = difficulty.label)
+                            Text(text = getLocalizedDifficultyLabel(difficulty))
                         }
                     }
                 }

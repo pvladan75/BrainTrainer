@@ -56,6 +56,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
 import com.program.braintrainer.chess.model.Color as ChessColor
+import com.program.braintrainer.chess.model.Difficulty
 
 // ===================================================================
 // ===         CENTRALNO MESTO ZA PODEŠAVANJE BODOVANJA            ===
@@ -84,7 +85,14 @@ private fun getLocalizedModuleTitle(module: Module): String {
         Module.Module3 -> stringResource(id = R.string.module_3_title)
     }
 }
-
+@Composable
+private fun getLocalizedDifficultyLabel(difficulty: Difficulty): String {
+    return when (difficulty) {
+        Difficulty.EASY -> stringResource(id = R.string.difficulty_easy)
+        Difficulty.MEDIUM -> stringResource(id = R.string.difficulty_medium)
+        Difficulty.HARD -> stringResource(id = R.string.difficulty_hard)
+    }
+}
 
 // --- FUNKCIJE ZA UČITAVANJE REKLAMA ---
 
@@ -140,18 +148,14 @@ fun ChessScreen(
     val achievementManager = remember { AchievementManager(context, settingsManager) }
     val scoringParams = remember { ScoringParams() }
 
-    // --- ČITANJE PREMIUM STATUSA ---
     val isPremium by settingsManager.settingsFlow.map { it.isPremiumUser }.collectAsState(initial = false)
 
-    // --- STANJE ZA REKLAME ---
     var interstitialAd by remember { mutableStateOf<InterstitialAd?>(null) }
     var isAdLoading by remember { mutableStateOf(false) }
     var hintRewardEarned by remember { mutableStateOf(false) }
     var doubleXpRewardEarned by remember { mutableStateOf(false) }
     var doubleXpButtonEnabled by remember { mutableStateOf(true) }
 
-
-    // === Učitavanje pozicija u pozadini ===
     var problems by remember { mutableStateOf<List<Problem>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
@@ -164,7 +168,6 @@ fun ChessScreen(
         isLoading = false
     }
 
-    // --- USLOVNO UČITAVANJE REKLAMA ---
     LaunchedEffect(isPremium) {
         if (!isPremium) {
             loadInterstitialAd(context,
@@ -204,19 +207,25 @@ fun ChessScreen(
     }
     val currentSessionProblemIndex = if (problemsInSession.isNotEmpty()) currentProblemIndex % problemsInSession.size else 0
 
+    fun resetPuzzleState() {
+        currentProblem?.let {
+            val (board, _) = FenParser.parseFenToBoard(it.fen)
+            currentBoard = board
+            selectedSquare = board.pieces.entries.firstOrNull { p -> p.value.color == ChessColor.WHITE }?.key
+            playerMoveCount = 0
+            defendedSquareMistakes = 0
+            isShowingHint = false
+            hintMoves = emptyList()
+        }
+    }
+
     LaunchedEffect(problemsInSession, currentProblemIndex) {
         if (problemsInSession.isNotEmpty()) {
             val problem = problemsInSession[currentProblemIndex]
             currentProblem = problem
-            val (board, _) = FenParser.parseFenToBoard(problem.fen)
-            currentBoard = board
-            selectedSquare = board.pieces.entries.firstOrNull { it.value.color == ChessColor.WHITE }?.key
+            resetPuzzleState()
             elapsedTimeInSeconds = 0
             isTimerRunning = true
-            defendedSquareMistakes = 0
-            playerMoveCount = 0
-            isShowingHint = false
-            hintMoves = emptyList()
             showSolutionPath = false
             solutionMoveIndex = -1
             isPlayingSolution = false
@@ -228,7 +237,6 @@ fun ChessScreen(
             doubleXpButtonEnabled = true
         }
     }
-
 
     fun stopTimer() { isTimerRunning = false }
     fun startTimer() { isTimerRunning = true }
@@ -477,6 +485,11 @@ fun ChessScreen(
         }
     }
 
+    val onRestartPuzzle: () -> Unit = {
+        resetPuzzleState()
+        startTimer()
+    }
+
     val onPreviousMove: () -> Unit = {
         isPlayingSolution = false
         val solutionMoves = currentProblem?.solution?.moves
@@ -504,17 +517,37 @@ fun ChessScreen(
         }
     }
 
+    // *** IZMENA: Pomoćna funkcija za izvršavanje jednog poteza rešenja ***
+    fun playNextSolutionMove() {
+        val solutionMoves = currentProblem?.solution?.moves
+        if (solutionMoves != null) {
+            val nextMoveIndex = if (solutionMoveIndex == -1) 0 else solutionMoveIndex
+            if (nextMoveIndex < solutionMoves.size) {
+                val (start, end) = FenParser.parseMove(solutionMoves[nextMoveIndex])
+                currentBoard.applyMove(start, end)?.let { newBoard ->
+                    currentBoard = newBoard
+                    solutionMoveIndex = nextMoveIndex + 1
+                    selectedSquare = end
+                }
+            }
+        }
+    }
+
+    // *** IZMENA: onNextMove sada zaustavlja automatsku reprodukciju ***
     val onNextMove: () -> Unit = {
         isPlayingSolution = false
-        val solutionMoves = currentProblem?.solution?.moves
-        if (solutionMoves != null && solutionMoveIndex < solutionMoves.size) {
-            val nextMoveIndex = if (solutionMoveIndex == -1) 0 else solutionMoveIndex
-            val (start, end) = FenParser.parseMove(solutionMoves[nextMoveIndex])
-            currentBoard.applyMove(start, end)?.let { newBoard ->
-                currentBoard = newBoard
-                solutionMoveIndex = nextMoveIndex + 1
-                selectedSquare = end
+        playNextSolutionMove()
+    }
+
+    // *** IZMENA: Novi LaunchedEffect za automatsku reprodukciju ***
+    LaunchedEffect(isPlayingSolution, currentProblem) {
+        if (isPlayingSolution) {
+            val solutionMoves = currentProblem?.solution?.moves
+            while (isPlayingSolution && solutionMoves != null && solutionMoveIndex < solutionMoves.size) {
+                playNextSolutionMove()
+                delay(1500L) // Pauza od 1.5s
             }
+            isPlayingSolution = false // Automatski pauziraj na kraju
         }
     }
 
@@ -616,27 +649,81 @@ fun ChessScreen(
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else {
+            val optimalMoves = currentProblem?.solution?.moves?.size ?: 0
             val configuration = LocalConfiguration.current
-            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+            val isRestartEnabled = !usedSolution && !showGameResultDialog && !showNoMoreMovesDialog
+
+            if (isLandscape) {
                 Row(modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
-                    GameInfoPanel(module, difficulty, currentProblem, problemsInSession, currentSessionProblemIndex, Modifier.weight(1f), elapsedTimeInSeconds)
+                    GameInfoPanel(
+                        module = module,
+                        difficulty = difficulty,
+                        problemsInSession = problemsInSession,
+                        currentSessionProblemIndex = currentSessionProblemIndex,
+                        elapsedTime = elapsedTimeInSeconds,
+                        optimalMoves = optimalMoves,
+                        playerMoveCount = playerMoveCount,
+                        isLandscape = true,
+                        modifier = Modifier.weight(1f)
+                    )
                     ChessBoardComposable(currentBoard, selectedSquare, onSquareClick, currentlyHighlightedHintMove, modifier = Modifier
                         .weight(1.2f)
                         .fillMaxHeight()
                         .aspectRatio(1f))
-                    GameControlsPanel(showSolutionPath, isPlayingSolution, solutionMoveIndex, currentProblem, onShowSolution, onNextPuzzle, onPreviousMove, { isPlayingSolution = !isPlayingSolution }, onNextMove, onHintClick, onSurrender, modifier = Modifier.weight(1f))
+                    GameControlsPanel(
+                        showSolutionPath = showSolutionPath,
+                        isPlayingSolution = isPlayingSolution,
+                        solutionMoveIndex = solutionMoveIndex,
+                        currentProblem = currentProblem,
+                        onShowSolutionClick = onShowSolution,
+                        onNextPuzzleClick = onNextPuzzle,
+                        onPreviousMoveClick = onPreviousMove,
+                        onPlayPauseClick = { isPlayingSolution = !isPlayingSolution },
+                        onNextMoveClick = onNextMove,
+                        onHintClick = onHintClick,
+                        onSurrenderClick = onSurrender,
+                        onRestartClick = onRestartPuzzle,
+                        isRestartEnabled = isRestartEnabled,
+                        isLandscape = true,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             } else {
                 Column(modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceAround) {
-                    GameInfoPanel(module, difficulty, currentProblem, problemsInSession, currentSessionProblemIndex, elapsedTime = elapsedTimeInSeconds)
+                    GameInfoPanel(
+                        module = module,
+                        difficulty = difficulty,
+                        problemsInSession = problemsInSession,
+                        currentSessionProblemIndex = currentSessionProblemIndex,
+                        elapsedTime = elapsedTimeInSeconds,
+                        optimalMoves = optimalMoves,
+                        playerMoveCount = playerMoveCount,
+                        isLandscape = false
+                    )
                     ChessBoardComposable(currentBoard, selectedSquare, onSquareClick, currentlyHighlightedHintMove, modifier = Modifier
                         .fillMaxWidth(0.95f)
                         .aspectRatio(1f))
-                    GameControlsPanel(showSolutionPath, isPlayingSolution, solutionMoveIndex, currentProblem, onShowSolution, onNextPuzzle, onPreviousMove, { isPlayingSolution = !isPlayingSolution }, onNextMove, onHintClick, onSurrender)
+                    GameControlsPanel(
+                        showSolutionPath = showSolutionPath,
+                        isPlayingSolution = isPlayingSolution,
+                        solutionMoveIndex = solutionMoveIndex,
+                        currentProblem = currentProblem,
+                        onShowSolutionClick = onShowSolution,
+                        onNextPuzzleClick = onNextPuzzle,
+                        onPreviousMoveClick = onPreviousMove,
+                        onPlayPauseClick = { isPlayingSolution = !isPlayingSolution },
+                        onNextMoveClick = onNextMove,
+                        onHintClick = onHintClick,
+                        onSurrenderClick = onSurrender,
+                        onRestartClick = onRestartPuzzle,
+                        isRestartEnabled = isRestartEnabled,
+                        isLandscape = false
+                    )
                 }
             }
         }
@@ -709,33 +796,79 @@ fun NoMoreMovesDialog(onShowSolution: () -> Unit, onNewGame: () -> Unit) {
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun GameInfoPanel(module: Module, difficulty: Difficulty, currentProblem: Problem?, problemsInSession: List<Problem>, currentSessionProblemIndex: Int, modifier: Modifier = Modifier, elapsedTime: Int) {
+fun GameInfoPanel(
+    module: Module,
+    difficulty: Difficulty,
+    problemsInSession: List<Problem>,
+    currentSessionProblemIndex: Int,
+    elapsedTime: Int,
+    optimalMoves: Int,
+    playerMoveCount: Int,
+    isLandscape: Boolean,
+    modifier: Modifier = Modifier
+) {
     val minutes = elapsedTime / 60
     val seconds = elapsedTime % 60
     val timeString = String.format("%02d:%02d", minutes, seconds)
+
+    val goalTextResId = when (module) {
+        Module.Module1 -> R.string.goal_module_1
+        Module.Module2 -> R.string.goal_module_2
+        Module.Module3 -> R.string.goal_module_3
+    }
+
+    val infoTextStyle = MaterialTheme.typography.bodyLarge
+    val goalTextStyle = MaterialTheme.typography.titleMedium
+
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        // ISPRAVKA: Ovde se sada poziva nova funkcija za dobijanje naziva modula
-        Text(text = stringResource(R.string.info_panel_module, getLocalizedModuleTitle(module = module)), style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
-        Text(text = stringResource(R.string.info_panel_difficulty, difficulty.label), style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text = stringResource(R.string.info_panel_time, timeString), style = MaterialTheme.typography.headlineSmall)
-        Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = if (problemsInSession.isNotEmpty()) stringResource(R.string.info_panel_puzzle_progress, currentSessionProblemIndex + 1, problemsInSession.size) else stringResource(R.string.info_panel_loading),
-            style = MaterialTheme.typography.bodyLarge
+            text = getLocalizedModuleTitle(module = module),
+            style = infoTextStyle,
+            textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text = stringResource(R.string.info_panel_turn), style = MaterialTheme.typography.bodyLarge)
-        currentProblem?.let {
+        Text(
+            text = getLocalizedDifficultyLabel(difficulty = difficulty),
+            style = infoTextStyle
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(if (isLandscape) 1f else 0.8f),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
-                text = stringResource(R.string.info_panel_goal, it.description),
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 8.dp)
+                text = if (problemsInSession.isNotEmpty()) stringResource(
+                    R.string.info_panel_puzzle_progress,
+                    currentSessionProblemIndex + 1,
+                    problemsInSession.size
+                ) else stringResource(R.string.info_panel_loading),
+                style = infoTextStyle
+            )
+            Text(
+                text = stringResource(R.string.info_panel_time, timeString),
+                style = infoTextStyle
             )
         }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (optimalMoves > 0) {
+            Text(
+                text = stringResource(R.string.info_panel_moves_progress, playerMoveCount, optimalMoves),
+                style = infoTextStyle
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(id = goalTextResId),
+            style = goalTextStyle,
+            textAlign = TextAlign.Center
+        )
     }
 }
+
 
 @Composable
 fun GameControlsPanel(
@@ -750,19 +883,51 @@ fun GameControlsPanel(
     onNextMoveClick: () -> Unit,
     onHintClick: () -> Unit,
     onSurrenderClick: () -> Unit,
+    onRestartClick: () -> Unit,
+    isRestartEnabled: Boolean,
+    isLandscape: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.padding(horizontal = 8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Button(onClick = onShowSolutionClick) { Text(if (showSolutionPath) stringResource(R.string.button_hide) else stringResource(R.string.button_solution)) }
-            Button(onClick = onHintClick) { Text(stringResource(R.string.button_hint)) }
-            Button(onClick = onNextPuzzleClick) { Text(stringResource(R.string.button_next)) }
+    Column(
+        modifier = modifier.padding(horizontal = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        if (isLandscape) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(onClick = onShowSolutionClick) { Text(if (showSolutionPath) stringResource(R.string.button_hide) else stringResource(R.string.button_solution)) }
+                Button(onClick = onHintClick) { Text(stringResource(R.string.button_hint)) }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(onClick = onRestartClick, enabled = isRestartEnabled) { Text(stringResource(R.string.button_restart)) }
+                Button(onClick = onNextPuzzleClick) { Text(stringResource(R.string.button_next)) }
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(onClick = onShowSolutionClick) { Text(if (showSolutionPath) stringResource(R.string.button_hide) else stringResource(R.string.button_solution)) }
+                Button(onClick = onHintClick) { Text(stringResource(R.string.button_hint)) }
+                Button(onClick = onNextPuzzleClick) { Text(stringResource(R.string.button_next)) }
+            }
         }
 
         if (showSolutionPath) {
             Spacer(modifier = Modifier.height(12.dp))
             Text(stringResource(R.string.solution_controls_title), style = MaterialTheme.typography.labelMedium)
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Button(onClick = onPreviousMoveClick, enabled = solutionMoveIndex > 0) { Text(stringResource(R.string.button_previous_move)) }
                 Button(onClick = onPlayPauseClick, enabled = currentProblem?.solution?.moves?.isNotEmpty() == true) { Text(if (isPlayingSolution) stringResource(R.string.button_pause) else stringResource(R.string.button_play)) }
                 Button(onClick = onNextMoveClick, enabled = currentProblem?.solution?.moves?.isNotEmpty() == true && solutionMoveIndex < (currentProblem.solution.moves.size)) { Text(stringResource(R.string.button_next_move)) }
@@ -770,9 +935,32 @@ fun GameControlsPanel(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onSurrenderClick, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text(stringResource(R.string.button_surrender)) }
+
+        if (isLandscape) {
+            Button(
+                onClick = onSurrenderClick,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            ) {
+                Text(stringResource(R.string.button_surrender))
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(onClick = onRestartClick, enabled = isRestartEnabled) { Text(stringResource(R.string.button_restart)) }
+                Button(
+                    onClick = onSurrenderClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text(stringResource(R.string.button_surrender))
+                }
+            }
+        }
     }
 }
+
 
 @Composable
 fun ChessBoardComposable(
