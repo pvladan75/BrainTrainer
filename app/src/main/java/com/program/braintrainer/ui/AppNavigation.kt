@@ -24,7 +24,6 @@ import com.program.braintrainer.ui.screens.settings.SettingsViewModelFactory
 object Routes {
     const val MAIN_MENU = "main_menu"
     const val SETTINGS = "settings"
-    // const val HIGH_SCORES = "high_scores" // <-- UKLONJENO
     const val PROFILE = "profile"
     const val ACHIEVEMENTS = "achievements"
     const val CHESS_GAME = "chess_game/{moduleType}/{difficultyType}"
@@ -34,6 +33,18 @@ object Routes {
      */
     fun createChessGameRoute(module: Module, difficulty: Difficulty): String {
         return "chess_game/${module.name}/${difficulty.name}"
+    }
+}
+
+/**
+ * Pomoćna funkcija za dobijanje prevedenih naziva modula.
+ */
+@Composable
+private fun getLocalizedModuleTitle(module: Module): String {
+    return when (module) {
+        Module.Module1 -> stringResource(id = R.string.module_1_title)
+        Module.Module2 -> stringResource(id = R.string.module_2_title)
+        Module.Module3 -> stringResource(id = R.string.module_3_title)
     }
 }
 
@@ -48,21 +59,21 @@ fun AppNavigation() {
     val gameModes = listOf(
         GameModeInfo(
             type = Module.Module1,
-            title = Module.Module1.title,
+            title = getLocalizedModuleTitle(module = Module.Module1), // IZMENA
             description = stringResource(R.string.modul1desc),
             color = Color(0xFFE57373),
             icon = R.drawable.ic_module1_target
         ),
         GameModeInfo(
             type = Module.Module2,
-            title = Module.Module2.title,
+            title = getLocalizedModuleTitle(module = Module.Module2), // IZMENA
             description = stringResource(R.string.modul2desc),
             color = Color(0xFF64B5F6),
             icon = R.drawable.ic_module2_shield
         ),
         GameModeInfo(
             type = Module.Module3,
-            title = Module.Module3.title,
+            title = getLocalizedModuleTitle(module = Module.Module3), // IZMENA
             description = stringResource(R.string.modul3desc),
             color = Color(0xFF81C784),
             icon = R.drawable.ic_module3_king
@@ -78,7 +89,6 @@ fun AppNavigation() {
                     navController.navigate(Routes.createChessGameRoute(module, difficulty))
                 },
                 onNavigateToSettings = { navController.navigate(Routes.SETTINGS) },
-                // onNavigateToHighScores = { navController.navigate(Routes.HIGH_SCORES) }, // <-- UKLONJENO
                 onNavigateToProfile = { navController.navigate(Routes.PROFILE) },
                 onNavigateToAchievements = { navController.navigate(Routes.ACHIEVEMENTS) }
             )
@@ -99,9 +109,10 @@ fun AppNavigation() {
         }
 
         composable(Routes.ACHIEVEMENTS) {
+            // ISPRAVKA: Uklonjen je 'viewModel' parametar iz poziva.
+            // AchievementsScreen sada sam kreira svoj ViewModel.
             AchievementsScreen(
-                navController = navController,
-                viewModel = viewModel(factory = AchievementsViewModelFactory(context))
+                navController = navController
             )
         }
 
@@ -119,10 +130,5 @@ fun AppNavigation() {
                 )
             }
         }
-
-        // --- CEO OVAJ BLOK JE UKLONJEN ---
-        // composable(Routes.HIGH_SCORES) {
-        //     HighScoresScreen(navController = navController)
-        // }
     }
 }

@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
@@ -18,28 +18,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.program.braintrainer.R
 import com.program.braintrainer.gamification.AchievementProgress
 import com.program.braintrainer.gamification.AchievementsViewModel
+import com.program.braintrainer.gamification.AchievementsViewModelFactory
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AchievementsScreen(
-    navController: NavController,
-    viewModel: AchievementsViewModel
+    navController: NavController
+    // ViewModel se sada kreira unutar ekrana uz pomoć fabrike
 ) {
+    val context = LocalContext.current
+    val viewModel: AchievementsViewModel = viewModel(factory = AchievementsViewModelFactory(context))
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Dostignuća", style = MaterialTheme.typography.titleLarge) },
+                title = { Text(stringResource(id = R.string.achievements_title), style = MaterialTheme.typography.titleLarge) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Nazad")
+                        // ISPRAVKA: Korišćenje AutoMirrored ikone
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.content_desc_back))
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -138,7 +146,7 @@ fun AchievementIcon(isUnlocked: Boolean) {
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = if (isUnlocked) "Otključano" else "Zaključano",
+            contentDescription = if (isUnlocked) stringResource(id = R.string.content_desc_unlocked) else stringResource(id = R.string.content_desc_locked),
             tint = tint,
             modifier = Modifier.size(24.dp)
         )
@@ -169,7 +177,7 @@ fun ProgressSection(progress: AchievementProgress) {
             horizontalArrangement = Arrangement.End
         ) {
             Text(
-                text = "${progress.currentProgress}/${progress.target}",
+                text = stringResource(id = R.string.profile_progress_format, progress.currentProgress, progress.target),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )

@@ -1,7 +1,6 @@
 package com.program.braintrainer.ui.screens.settings
 
 import android.app.Activity
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -12,8 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.data.SettingsManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,10 +30,10 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Podešavanja") },
+                title = { Text(stringResource(id = R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackPress) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Nazad")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.content_desc_back))
                     }
                 }
             )
@@ -72,8 +73,8 @@ fun SettingsScreen(
         if (showResetDialog) {
             AlertDialog(
                 onDismissRequest = { showResetDialog = false },
-                title = { Text("Potvrda") },
-                text = { Text("Da li ste sigurni da želite da obrišete sav napredak i rezultate? Ova akcija je nepovratna.") },
+                title = { Text(stringResource(id = R.string.dialog_title_confirmation)) },
+                text = { Text(stringResource(id = R.string.dialog_reset_progress_text)) },
                 confirmButton = {
                     Button(
                         onClick = {
@@ -82,12 +83,12 @@ fun SettingsScreen(
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                     ) {
-                        Text("Obriši")
+                        Text(stringResource(id = R.string.button_delete))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showResetDialog = false }) {
-                        Text("Otkaži")
+                        Text(stringResource(id = R.string.button_cancel))
                     }
                 }
             )
@@ -104,7 +105,7 @@ private fun SoundSettingsRow(isSoundEnabled: Boolean, onSoundToggle: (Boolean) -
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text("Zvučni efekti", style = MaterialTheme.typography.bodyLarge)
+        Text(stringResource(id = R.string.settings_sound_effects), style = MaterialTheme.typography.bodyLarge)
         Switch(
             checked = isSoundEnabled,
             onCheckedChange = onSoundToggle
@@ -115,7 +116,7 @@ private fun SoundSettingsRow(isSoundEnabled: Boolean, onSoundToggle: (Boolean) -
 @Composable
 private fun ThemeSettingsGroup(selectedTheme: SettingsManager.AppTheme, onThemeChange: (SettingsManager.AppTheme) -> Unit) {
     Column(Modifier.selectableGroup()) {
-        Text("Tema aplikacije", style = MaterialTheme.typography.bodyLarge)
+        Text(stringResource(id = R.string.settings_app_theme), style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(8.dp))
 
         val themes = SettingsManager.AppTheme.entries.toTypedArray()
@@ -138,9 +139,9 @@ private fun ThemeSettingsGroup(selectedTheme: SettingsManager.AppTheme, onThemeC
                 )
                 Text(
                     text = when (theme) {
-                        SettingsManager.AppTheme.LIGHT -> "Svetla"
-                        SettingsManager.AppTheme.DARK -> "Tamna"
-                        SettingsManager.AppTheme.SYSTEM -> "Sistemska podrazumevana"
+                        SettingsManager.AppTheme.LIGHT -> stringResource(id = R.string.settings_theme_light)
+                        SettingsManager.AppTheme.DARK -> stringResource(id = R.string.settings_theme_dark)
+                        SettingsManager.AppTheme.SYSTEM -> stringResource(id = R.string.settings_theme_system)
                     },
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(start = 16.dp)
@@ -159,20 +160,20 @@ private fun PremiumSettingsRow(isPremium: Boolean, onPurchaseClick: () -> Unit) 
     ) {
         if (isPremium) {
             Text(
-                text = "Aktivirana je Premium verzija bez reklama.",
+                text = stringResource(id = R.string.settings_premium_activated),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.primary
             )
         } else {
-            Text("Ukloni reklame", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(id = R.string.settings_remove_ads), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                "Kupovinom premium verzije uklanjate sve reklame i automatski dobijate duple XP poene za svaku rešenu zagonetku.",
+                stringResource(id = R.string.settings_premium_description),
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = onPurchaseClick) {
-                Text("Kupi Premium")
+                Text(stringResource(id = R.string.settings_buy_premium))
             }
         }
     }
@@ -188,9 +189,9 @@ private fun ResetProgressRow(onResetClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text("Resetuj napredak", style = MaterialTheme.typography.bodyLarge)
+            Text(stringResource(id = R.string.settings_reset_progress), style = MaterialTheme.typography.bodyLarge)
             Text(
-                "Briše sve sačuvane rezultate.",
+                stringResource(id = R.string.settings_reset_description),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -199,7 +200,7 @@ private fun ResetProgressRow(onResetClick: () -> Unit) {
             onClick = onResetClick,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.errorContainer)
         ) {
-            Text("Resetuj", color = MaterialTheme.colorScheme.onErrorContainer)
+            Text(stringResource(id = R.string.settings_button_reset), color = MaterialTheme.colorScheme.onErrorContainer)
         }
     }
 }

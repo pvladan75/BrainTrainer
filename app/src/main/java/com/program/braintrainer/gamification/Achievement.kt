@@ -1,5 +1,8 @@
 package com.program.braintrainer.gamification
 
+import android.content.Context
+import com.program.braintrainer.R
+
 /**
  * Enum koji jedinstveno identifikuje svako dostignuće.
  */
@@ -37,30 +40,32 @@ data class Achievement(
 )
 
 /**
- * Singleton objekat koji sadrži listu svih mogućih dostignuća u igri.
+ * Funkcija koja vraća listu svih mogućih dostignuća sa lokalizovanim tekstom.
+ * @param context Kontekst aplikacije potreban za pristup string resursima.
+ * @return Lista svih Achievement objekata.
  */
-object AchievementsList {
-    val allAchievements = listOf(
+fun getAchievementsList(context: Context): List<Achievement> {
+    return listOf(
         // --- Početnik ---
-        Achievement(AchievementId.FIRST_PUZZLE_SOLVED, "Prvi Koraci", "Reši svoju prvu zagonetku."),
-        Achievement(AchievementId.SOLVE_10_M1, "Istraživač Modula 1", "Reši 10 zadataka u Modulu 1."),
-        Achievement(AchievementId.STREAK_3_PERFECT, "U Nizu", "Reši 3 uzastopna zadatka bez greške."),
+        Achievement(AchievementId.FIRST_PUZZLE_SOLVED, context.getString(R.string.achievement_first_steps_title), context.getString(R.string.achievement_first_steps_desc)),
+        Achievement(AchievementId.SOLVE_10_M1, context.getString(R.string.achievement_m1_explorer_title), context.getString(R.string.achievement_m1_explorer_desc)),
+        Achievement(AchievementId.STREAK_3_PERFECT, context.getString(R.string.achievement_on_a_streak_title), context.getString(R.string.achievement_on_a_streak_desc)),
 
         // --- Učenik ---
-        Achievement(AchievementId.SOLVE_5_M1_MEDIUM, "Srednja Klasa", "Reši 5 srednjih zadataka u Modulu 1."),
-        Achievement(AchievementId.SOLVE_10_M2_PERFECT, "Oprezni Istraživač", "Reši 10 lakih zadataka u modulu 2 bez greške."),
+        Achievement(AchievementId.SOLVE_5_M1_MEDIUM, context.getString(R.string.achievement_middle_class_title), context.getString(R.string.achievement_middle_class_desc)),
+        Achievement(AchievementId.SOLVE_10_M2_PERFECT, context.getString(R.string.achievement_careful_explorer_title), context.getString(R.string.achievement_careful_explorer_desc)),
 
         // --- Amater ---
-        Achievement(AchievementId.SOLVE_5_HARD, "Izazov Prihvaćen", "Reši 5 zadataka na nivou Teško."),
-        Achievement(AchievementId.SOLVE_5_M2_MEDIUM, "Takmičar", "Reši 5 zadataka srednje težine u Modulu 2."),
-        Achievement(AchievementId.SOLVE_10_M3, "Kraljev Gambit", "Reši 10 zadataka u Modulu 3."),
+        Achievement(AchievementId.SOLVE_5_HARD, context.getString(R.string.achievement_challenge_accepted_title), context.getString(R.string.achievement_challenge_accepted_desc)),
+        Achievement(AchievementId.SOLVE_5_M2_MEDIUM, context.getString(R.string.achievement_competitor_title), context.getString(R.string.achievement_competitor_desc)),
+        Achievement(AchievementId.SOLVE_10_M3, context.getString(R.string.achievement_kings_gambit_title), context.getString(R.string.achievement_kings_gambit_desc)),
 
         // --- Iskusni Igrač ---
-        Achievement(AchievementId.SOLVE_5_M2_HARD, "Strateg", "Reši 5 zadataka na nivou Teško u Modulu 2."),
-        Achievement(AchievementId.SOLVE_5_M3_MEDIUM, "Kraljev Lovac", "Reši 5 zadataka srednje težine u Modulu 3."),
+        Achievement(AchievementId.SOLVE_5_M2_HARD, context.getString(R.string.achievement_strategist_title), context.getString(R.string.achievement_strategist_desc)),
+        Achievement(AchievementId.SOLVE_5_M3_MEDIUM, context.getString(R.string.achievement_kings_hunter_title), context.getString(R.string.achievement_kings_hunter_desc)),
 
         // --- Majstor ---
-        Achievement(AchievementId.SOLVE_20_M3_HARD_PERFECT, "Virtuoz", "Reši 20 zadataka na nivou Teško u Modulu 3 bez greške."),
-        Achievement(AchievementId.SOLVE_20_M2_HARD_PERFECT, "Dominacija", "Reši 20 zadataka težine Teško u Modulu 2 bez greške.")
+        Achievement(AchievementId.SOLVE_20_M3_HARD_PERFECT, context.getString(R.string.achievement_virtuoso_title), context.getString(R.string.achievement_virtuoso_desc)),
+        Achievement(AchievementId.SOLVE_20_M2_HARD_PERFECT, context.getString(R.string.achievement_domination_title), context.getString(R.string.achievement_domination_desc))
     )
 }

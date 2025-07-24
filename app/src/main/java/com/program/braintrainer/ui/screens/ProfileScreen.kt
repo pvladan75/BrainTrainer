@@ -4,15 +4,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.program.braintrainer.gamification.AchievementProgress
+import com.program.braintrainer.R
 import com.program.braintrainer.gamification.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,10 +27,11 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Moj Profil i Rang") },
+                title = { Text(stringResource(id = R.string.profile_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackPress) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Nazad")
+                        // ISPRAVKA 1: Korišćenje AutoMirrored ikone
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.content_desc_back))
                     }
                 }
             )
@@ -43,7 +45,6 @@ fun ProfileScreen(
                 contentPadding = PaddingValues(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Zaglavlje sa rangom i XP poenima
                 item {
                     RankHeader(
                         rankTitle = state.currentRank.title,
@@ -52,38 +53,36 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                // Sekcija sa uslovima za sledeći rang
                 if (state.nextRank != null) {
                     item {
                         Text(
-                            text = "Uslovi za rang: ${state.nextRank.title}",
+                            text = stringResource(id = R.string.profile_requirements_for_rank, state.nextRank.title),
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
-                        Divider()
+                        // ISPRAVKA 2: Divider je preimenovan u HorizontalDivider
+                        HorizontalDivider()
                     }
 
-                    // Prikaz potrebnih XP poena
                     item {
                         RequirementItem(
-                            description = "Sakupi ${state.nextRank.requiredXp} XP poena",
+                            description = stringResource(id = R.string.profile_requirement_xp, state.nextRank.requiredXp),
                             isCompleted = state.totalXp >= state.nextRank.requiredXp,
-                            progressText = "${state.totalXp} / ${state.nextRank.requiredXp}"
+                            progressText = stringResource(id = R.string.profile_progress_format, state.totalXp, state.nextRank.requiredXp)
                         )
                     }
 
-                    // Prikaz potrebnih dostignuća
                     items(state.requirementsForNextRank) { achievementProgress ->
                         RequirementItem(
                             description = achievementProgress.achievement.description,
                             isCompleted = achievementProgress.isUnlocked,
-                            progressText = "${achievementProgress.currentProgress} / ${achievementProgress.target}"
+                            progressText = stringResource(id = R.string.profile_progress_format, achievementProgress.currentProgress, achievementProgress.target)
                         )
                     }
                 } else {
                     item {
                         Text(
-                            text = "🎉 Čestitamo! Dostigli ste najviši rang! 🎉",
+                            text = stringResource(id = R.string.profile_congrats_max_rank),
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -101,7 +100,6 @@ fun ProfileScreen(
 
 @Composable
 private fun RankHeader(rankTitle: String, totalXp: Int) {
-    // Ikonica je za sada uklonjena
     Text(
         text = rankTitle,
         style = MaterialTheme.typography.displaySmall,
@@ -109,7 +107,7 @@ private fun RankHeader(rankTitle: String, totalXp: Int) {
     )
     Spacer(modifier = Modifier.height(8.dp))
     Text(
-        text = "Ukupno XP: $totalXp",
+        text = stringResource(id = R.string.profile_total_xp, totalXp),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant
     )
@@ -129,7 +127,7 @@ private fun RequirementItem(
     ) {
         Icon(
             imageVector = Icons.Default.CheckCircle,
-            contentDescription = if (isCompleted) "Završeno" else "Nije završeno",
+            contentDescription = if (isCompleted) stringResource(id = R.string.content_desc_completed) else stringResource(id = R.string.content_desc_not_completed),
             tint = if (isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
             modifier = Modifier.size(24.dp)
         )
@@ -139,7 +137,6 @@ private fun RequirementItem(
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyLarge
         )
-        // Prikazujemo napredak samo ako zadatak nije završen
         if (!isCompleted) {
             Text(
                 text = progressText,
@@ -148,5 +145,6 @@ private fun RequirementItem(
             )
         }
     }
+    // ISPRAVKA 3: I ovde je Divider preimenovan u HorizontalDivider
     HorizontalDivider()
 }

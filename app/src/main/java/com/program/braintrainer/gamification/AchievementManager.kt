@@ -162,7 +162,8 @@ class AchievementManager(private val context: Context,
             val currentUnlocked = settings[UNLOCKED_ACHIEVEMENTS_KEY] ?: emptySet()
             settings[UNLOCKED_ACHIEVEMENTS_KEY] = currentUnlocked + id.name
         }
-        AchievementsList.allAchievements.find { it.id == id }?.let {
+        // IZMENA: Pozivamo novu funkciju da dobijemo prevedenu listu
+        getAchievementsList(context).find { it.id == id }?.let {
             _newlyUnlockedAchievementFlow.tryEmit(it)
             val areSoundsEnabled = settingsManager.settingsFlow.first().isSoundEnabled
             if (areSoundsEnabled) {

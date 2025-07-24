@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -73,6 +74,17 @@ data class ScoringParams(
     val streakBonusHard: Int = 20
 )
 // ===================================================================
+
+// --- Pomoćna funkcija za dobijanje prevedenih naziva modula ---
+@Composable
+private fun getLocalizedModuleTitle(module: Module): String {
+    return when (module) {
+        Module.Module1 -> stringResource(id = R.string.module_1_title)
+        Module.Module2 -> stringResource(id = R.string.module_2_title)
+        Module.Module3 -> stringResource(id = R.string.module_3_title)
+    }
+}
+
 
 // --- FUNKCIJE ZA UČITAVANJE REKLAMA ---
 
@@ -236,7 +248,7 @@ fun ChessScreen(
                     hintMoveIndex = 0
                     isShowingHint = true
                 } else {
-                    snackbarHostState.showSnackbar("Solver nije uspeo da pronađe rešenje.")
+                    snackbarHostState.showSnackbar(context.getString(R.string.snackbar_solver_failed))
                     startTimer()
                 }
             }
@@ -271,7 +283,7 @@ fun ChessScreen(
                     },
                     onAdFailedToLoad = {
                         isAdLoading = false
-                        coroutineScope.launch { snackbarHostState.showSnackbar("Reklama nije dostupna.") }
+                        coroutineScope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_ad_not_available)) }
                         startTimer()
                     }
                 )
@@ -293,7 +305,7 @@ fun ChessScreen(
                             override fun onAdDismissedFullScreenContent() {
                                 if (doubleXpRewardEarned) {
                                     scoreManager.addXp(lastAwardedXp)
-                                    val bonusMessage = "\n\n🔥 Bonus reklama: +$lastAwardedXp"
+                                    val bonusMessage = context.getString(R.string.game_result_ad_bonus, lastAwardedXp)
                                     gameResultMessage += bonusMessage
                                     doubleXpButtonEnabled = false
                                     doubleXpRewardEarned = false
@@ -305,7 +317,7 @@ fun ChessScreen(
                 },
                 onAdFailedToLoad = {
                     isAdLoading = false
-                    coroutineScope.launch { snackbarHostState.showSnackbar("Reklama nije dostupna.") }
+                    coroutineScope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_ad_not_available)) }
                 }
             )
         }
@@ -357,14 +369,14 @@ fun ChessScreen(
         if (!isSuccess) {
             correctStreak = 0
             gameResultMessage = when (module) {
-                Module.Module1 -> "Promašaj! Nema više legalnih poteza uzimanja."
-                else -> "Promašaj! Nema više legalnih poteza."
+                Module.Module1 -> context.getString(R.string.game_result_fail_no_captures)
+                else -> context.getString(R.string.game_result_fail_no_moves)
             }
             showGameResultDialog = true
             return
         }
 
-        detailedMessage = "Zagonetka rešena!\n\n"
+        detailedMessage = context.getString(R.string.game_result_success_title)
         var finalPoints = 0
         if (!usedSolution) {
             val basePoints = when (difficulty) {
@@ -372,20 +384,20 @@ fun ChessScreen(
                 Difficulty.MEDIUM -> scoringParams.basePointsMedium
                 Difficulty.HARD -> scoringParams.basePointsHard
             }
-            detailedMessage += "✅ Osnovni poeni: +$basePoints\n"
+            detailedMessage += context.getString(R.string.game_result_base_points, basePoints)
             val maxTimeForBonus = when (difficulty) {
                 Difficulty.EASY -> scoringParams.maxTimeForBonusEasy
                 Difficulty.MEDIUM -> scoringParams.maxTimeForBonusMedium
                 Difficulty.HARD -> scoringParams.maxTimeForBonusHard
             }
             val timeBonus = max(0, maxTimeForBonus - elapsedTimeInSeconds)
-            detailedMessage += "🕒 Bonus za vreme: +$timeBonus\n"
+            detailedMessage += context.getString(R.string.game_result_time_bonus, timeBonus)
             val optimalMoves = currentProblem?.solution?.moves?.size ?: playerMoveCount
             val extraMoves = max(0, playerMoveCount - optimalMoves)
             val efficiencyPenalty = extraMoves * scoringParams.penaltyPerExtraMove
-            detailedMessage += "🔻 Kazna za poteze: -$efficiencyPenalty ($extraMoves poteza viška)\n"
+            detailedMessage += context.getString(R.string.game_result_moves_penalty, efficiencyPenalty, extraMoves)
             val mistakePenalty = defendedSquareMistakes * scoringParams.penaltyPerMistake
-            detailedMessage += "🔻 Kazna za greške: -$mistakePenalty ($defendedSquareMistakes grešaka)\n"
+            detailedMessage += context.getString(R.string.game_result_mistakes_penalty, mistakePenalty, defendedSquareMistakes)
 
             if (isPerfect) {
                 correctStreak++
@@ -395,11 +407,11 @@ fun ChessScreen(
                     Difficulty.HARD -> scoringParams.streakBonusHard
                 }
                 val totalBonus = correctStreak * bonusPerStreak
-                detailedMessage += "🔥 Bonus za niz: +$totalBonus ($correctStreak zagonetki zaredom)\n"
+                detailedMessage += context.getString(R.string.game_result_streak_bonus, totalBonus, correctStreak)
                 finalPoints += totalBonus
             } else {
                 correctStreak = 0
-                detailedMessage += "🔥 Bonus za niz: +0 (niz prekinut)\n"
+                detailedMessage += context.getString(R.string.game_result_streak_lost)
             }
 
             finalPoints += max(0, basePoints + timeBonus - efficiencyPenalty - mistakePenalty)
@@ -407,17 +419,17 @@ fun ChessScreen(
             scoreManager.addXp(finalPoints)
             lastAwardedXp = finalPoints
 
-            detailedMessage += "\n🏆 Osvojeno XP: $finalPoints"
+            detailedMessage += context.getString(R.string.game_result_total_xp, finalPoints)
 
             if (isPremium && lastAwardedXp > 0) {
                 scoreManager.addXp(lastAwardedXp)
-                val bonusMessage = "\n\n🔥 Premium bonus: +$lastAwardedXp"
+                val bonusMessage = context.getString(R.string.game_result_premium_bonus, lastAwardedXp)
                 detailedMessage += bonusMessage
             }
         } else {
             correctStreak = 0
             lastAwardedXp = 0
-            detailedMessage = "Zagonetka rešena uz pomoć.\n\n(Niste osvojili XP poene jer ste koristili rešenje.)"
+            detailedMessage = context.getString(R.string.game_result_solved_with_help)
         }
         gameResultMessage = detailedMessage
         showGameResultDialog = true
@@ -524,7 +536,7 @@ fun ChessScreen(
         }
         if (currentBoard.isValidMove(startSquare, clickedSquare)) {
             if (module == Module.Module1 && currentBoard.getPiece(clickedSquare) == null) {
-                coroutineScope.launch { snackbarHostState.showSnackbar("U ovom modulu svaki potez mora biti uzimanje!") }
+                coroutineScope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_module1_must_capture)) }
                 return@click
             }
             val newBoard = currentBoard.applyMove(startSquare, clickedSquare)
@@ -564,7 +576,7 @@ fun ChessScreen(
                 }
             }
         } else {
-            coroutineScope.launch { snackbarHostState.showSnackbar("Ne možete pomeriti figuru tako!") }
+            coroutineScope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_invalid_move)) }
         }
     }
 
@@ -572,7 +584,7 @@ fun ChessScreen(
         stopTimer()
         usedSolution = true
         correctStreak = 0
-        gameResultMessage = "Predali ste se. Zagonetka nije rešena."
+        gameResultMessage = context.getString(R.string.game_result_surrendered)
         showGameResultDialog = true
     }
 
@@ -634,10 +646,10 @@ fun ChessScreen(
         if (showGameResultDialog) {
             AlertDialog(
                 onDismissRequest = {},
-                title = { Text("Status zagonetke") },
+                title = { Text(stringResource(R.string.dialog_title_puzzle_status)) },
                 text = { Text(gameResultMessage) },
                 dismissButton = {
-                    TextButton(onClick = onShowSolution) { Text("Rešenje") }
+                    TextButton(onClick = onShowSolution) { Text(stringResource(R.string.button_solution)) }
                 },
                 confirmButton = {
                     Row(
@@ -649,11 +661,11 @@ fun ChessScreen(
                                 onClick = onDoubleXpClick,
                                 enabled = doubleXpButtonEnabled && !isAdLoading
                             ) {
-                                Text("Dupliraj XP")
+                                Text(stringResource(R.string.button_double_xp))
                             }
                         }
                         TextButton(onClick = onNextPuzzle) {
-                            Text(if (currentProblemIndex + 1 < problemsInSession.size) "Sledeća" else "Kraj")
+                            Text(if (currentProblemIndex + 1 < problemsInSession.size) stringResource(R.string.button_next) else stringResource(R.string.button_end))
                         }
                     }
                 }
@@ -667,11 +679,11 @@ fun ChessScreen(
             val totalXp = scoreManager.getTotalXp()
             AlertDialog(
                 onDismissRequest = {},
-                title = { Text("Kraj sesije") },
+                title = { Text(stringResource(R.string.dialog_title_session_end)) },
                 text = {
                     Column {
-                        Text("Završili ste sesiju.")
-                        Text("Ukupno XP poena: $totalXp")
+                        Text(stringResource(R.string.dialog_message_session_end))
+                        Text(stringResource(R.string.dialog_message_total_xp, totalXp))
                     }
                 },
                 confirmButton = {
@@ -679,7 +691,7 @@ fun ChessScreen(
                         showSessionEndDialog = false
                         showInterstitialAdAndFinish()
                     }) {
-                        Text("Glavni Meni")
+                        Text(stringResource(R.string.button_main_menu))
                     }
                 }
             )
@@ -692,7 +704,7 @@ fun ChessScreen(
 
 @Composable
 fun NoMoreMovesDialog(onShowSolution: () -> Unit, onNewGame: () -> Unit) {
-    AlertDialog(onDismissRequest = { }, title = { Text("Nema više poteza") }, text = { Text("Nažalost, ostali ste bez mogućih poteza kojima biste pojeli preostale crne figure.") }, dismissButton = { TextButton(onClick = onShowSolution) { Text("Pregled rešenja") } }, confirmButton = { TextButton(onClick = onNewGame) { Text("Nova zagonetka") } })
+    AlertDialog(onDismissRequest = { }, title = { Text(stringResource(R.string.dialog_title_no_more_moves)) }, text = { Text(stringResource(R.string.dialog_message_no_more_moves_m1)) }, dismissButton = { TextButton(onClick = onShowSolution) { Text(stringResource(R.string.button_review_solution)) } }, confirmButton = { TextButton(onClick = onNewGame) { Text(stringResource(R.string.button_new_puzzle)) } })
 }
 
 @SuppressLint("DefaultLocale")
@@ -702,20 +714,21 @@ fun GameInfoPanel(module: Module, difficulty: Difficulty, currentProblem: Proble
     val seconds = elapsedTime % 60
     val timeString = String.format("%02d:%02d", minutes, seconds)
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Mod: ${module.title}", style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
-        Text(text = "Težina: ${difficulty.label}", style = MaterialTheme.typography.titleMedium)
+        // ISPRAVKA: Ovde se sada poziva nova funkcija za dobijanje naziva modula
+        Text(text = stringResource(R.string.info_panel_module, getLocalizedModuleTitle(module = module)), style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
+        Text(text = stringResource(R.string.info_panel_difficulty, difficulty.label), style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "Vreme: $timeString", style = MaterialTheme.typography.headlineSmall)
+        Text(text = stringResource(R.string.info_panel_time, timeString), style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = if (problemsInSession.isNotEmpty()) "Zagonetka: ${currentSessionProblemIndex + 1}/${problemsInSession.size}" else "Učitavanje...",
+            text = if (problemsInSession.isNotEmpty()) stringResource(R.string.info_panel_puzzle_progress, currentSessionProblemIndex + 1, problemsInSession.size) else stringResource(R.string.info_panel_loading),
             style = MaterialTheme.typography.bodyLarge
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "Na potezu: Beli", style = MaterialTheme.typography.bodyLarge)
+        Text(text = stringResource(R.string.info_panel_turn), style = MaterialTheme.typography.bodyLarge)
         currentProblem?.let {
             Text(
-                text = "Cilj: ${it.description}",
+                text = stringResource(R.string.info_panel_goal, it.description),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 8.dp)
@@ -741,23 +754,23 @@ fun GameControlsPanel(
 ) {
     Column(modifier = modifier.padding(horizontal = 8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Button(onClick = onShowSolutionClick) { Text(if (showSolutionPath) "Sakrij" else "Rešenje") }
-            Button(onClick = onHintClick) { Text("Hint") }
-            Button(onClick = onNextPuzzleClick) { Text("Sledeća") }
+            Button(onClick = onShowSolutionClick) { Text(if (showSolutionPath) stringResource(R.string.button_hide) else stringResource(R.string.button_solution)) }
+            Button(onClick = onHintClick) { Text(stringResource(R.string.button_hint)) }
+            Button(onClick = onNextPuzzleClick) { Text(stringResource(R.string.button_next)) }
         }
 
         if (showSolutionPath) {
             Spacer(modifier = Modifier.height(12.dp))
-            Text("Rešenje iz JSON-a:", style = MaterialTheme.typography.labelMedium)
+            Text(stringResource(R.string.solution_controls_title), style = MaterialTheme.typography.labelMedium)
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
-                Button(onClick = onPreviousMoveClick, enabled = solutionMoveIndex > 0) { Text("<<") }
-                Button(onClick = onPlayPauseClick, enabled = currentProblem?.solution?.moves?.isNotEmpty() == true) { Text(if (isPlayingSolution) "||" else "Play") }
-                Button(onClick = onNextMoveClick, enabled = currentProblem?.solution?.moves?.isNotEmpty() == true && solutionMoveIndex < (currentProblem.solution.moves.size)) { Text(">>") }
+                Button(onClick = onPreviousMoveClick, enabled = solutionMoveIndex > 0) { Text(stringResource(R.string.button_previous_move)) }
+                Button(onClick = onPlayPauseClick, enabled = currentProblem?.solution?.moves?.isNotEmpty() == true) { Text(if (isPlayingSolution) stringResource(R.string.button_pause) else stringResource(R.string.button_play)) }
+                Button(onClick = onNextMoveClick, enabled = currentProblem?.solution?.moves?.isNotEmpty() == true && solutionMoveIndex < (currentProblem.solution.moves.size)) { Text(stringResource(R.string.button_next_move)) }
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onSurrenderClick, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text("Predajem se") }
+        Button(onClick = onSurrenderClick, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text(stringResource(R.string.button_surrender)) }
     }
 }
 
@@ -821,11 +834,11 @@ fun DefendedSquareDialog(board: Board, onDismiss: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                Text("Branjeno Polje!", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(bottom = 8.dp))
-                Text("Ne možete stati na polje koje napada protivnička figura.", textAlign = TextAlign.Center, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(bottom = 16.dp))
+                Text(stringResource(R.string.dialog_title_defended_square), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(bottom = 8.dp))
+                Text(stringResource(R.string.dialog_message_defended_square), textAlign = TextAlign.Center, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(bottom = 16.dp))
                 ChessBoardComposable(board = board, onSquareClick = {}, selectedSquare = null, highlightedHintMove = null, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text("Pokušaj ponovo") }
+                Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.button_try_again)) }
             }
         }
     }

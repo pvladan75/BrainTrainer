@@ -14,10 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,7 +38,6 @@ fun MainScreen(
     onNavigateToProfile: () -> Unit,
     onNavigateToAchievements: () -> Unit
 ) {
-    // ISPRAVKA: Kontekst se preuzima van 'remember' bloka.
     val context = LocalContext.current
     val scoreManager = remember { ScoreManager(context) }
     val currentRank = remember { RankManager.getRankForXp(scoreManager.getTotalXp()) }
@@ -46,11 +45,11 @@ fun MainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Brain Trainer") },
+                title = { Text(stringResource(id = R.string.app_name)) },
                 actions = {
-                    IconButton(onClick = onNavigateToAchievements) { Icon(Icons.Default.EmojiEvents, "Dostignuća") }
-                    IconButton(onClick = onNavigateToProfile) { Icon(Icons.Default.Person, "Moj Profil") }
-                    IconButton(onClick = onNavigateToSettings) { Icon(Icons.Default.Settings, "Podešavanja") }
+                    IconButton(onClick = onNavigateToAchievements) { Icon(Icons.Default.EmojiEvents, stringResource(id = R.string.content_desc_achievements)) }
+                    IconButton(onClick = onNavigateToProfile) { Icon(Icons.Default.Person, stringResource(id = R.string.content_desc_profile)) }
+                    IconButton(onClick = onNavigateToSettings) { Icon(Icons.Default.Settings, stringResource(id = R.string.content_desc_settings)) }
                 }
             )
         }
@@ -154,9 +153,10 @@ fun GameModeCard(
                 )
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Divider(modifier = Modifier.padding(vertical = 12.dp))
+                // ISPRAVKA: Divider je preimenovan u HorizontalDivider
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                 Text(
-                    text = "Izaberi težinu:",
+                    text = stringResource(id = R.string.main_select_difficulty),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -187,7 +187,7 @@ fun WelcomeHeader() {
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
         Text(
-            text = "♟ Vežbe uma kroz razonodu!",
+            text = stringResource(id = R.string.main_welcome_header),
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
@@ -195,7 +195,7 @@ fun WelcomeHeader() {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Tri vežbe na tri nivoa težine - treniraj um kroz zabavu",
+            text = stringResource(id = R.string.main_welcome_subheader),
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant

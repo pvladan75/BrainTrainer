@@ -40,7 +40,6 @@ class ProfileViewModel(
 
             if (previousRank != null && currentRank.title != previousRank!!.title) {
                 viewModelScope.launch {
-                    // --- ISPRAVKA: Provera da li je zvuk uključen ---
                     if (settingsManager.settingsFlow.first().isSoundEnabled) {
                         MediaPlayer.create(context, R.raw.rank_up).start()
                     }
@@ -51,8 +50,11 @@ class ProfileViewModel(
             val nextRank = RankManager.getNextRank(currentRank)
 
             val requirements = nextRank?.let {
+                // IZMENA: Prvo dobijamo prevedenu listu svih dostignuća
+                val allAchievements = getAchievementsList(context)
                 currentRank.requiredAchievements.map { achievementId ->
-                    val achievement = AchievementsList.allAchievements.find { it.id == achievementId }!!
+                    // Zatim pronalazimo potrebno dostignuće u toj listi
+                    val achievement = allAchievements.find { it.id == achievementId }!!
                     val (current, target) = getProgressForAchievement(achievementId)
                     AchievementProgress(
                         achievement = achievement,

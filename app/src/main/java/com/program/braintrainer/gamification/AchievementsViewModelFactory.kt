@@ -10,14 +10,23 @@ import com.program.braintrainer.score.ScoreManager
  * Fabrika za kreiranje instance AchievementsViewModel-a.
  */
 class AchievementsViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AchievementsViewModel::class.java)) {
-            // --- ISPRAVKA: Kreiramo SettingsManager i prosleđujemo ga ---
-            val settingsManager = SettingsManager(context.applicationContext)
-            val achievementManager = AchievementManager(context.applicationContext, settingsManager)
-            val scoreManager = ScoreManager(context.applicationContext)
-            @Suppress("UNCHECKED_CAST")
-            return AchievementsViewModel(achievementManager, scoreManager) as T
+            val applicationContext = context.applicationContext
+
+            // Kreiramo sve potrebne zavisnosti
+            val settingsManager = SettingsManager(applicationContext)
+            val achievementManager = AchievementManager(applicationContext, settingsManager)
+            val scoreManager = ScoreManager(applicationContext)
+
+            // ISPRAVKA: Prosleđujemo i 'context' u konstruktor ViewModel-a
+            return AchievementsViewModel(
+                achievementManager,
+                scoreManager,
+                applicationContext
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

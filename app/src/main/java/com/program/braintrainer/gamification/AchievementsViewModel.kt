@@ -1,5 +1,6 @@
 package com.program.braintrainer.gamification
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.program.braintrainer.chess.model.Difficulty
@@ -23,12 +24,15 @@ data class AchievementsUiState(
 
 class AchievementsViewModel(
     achievementManager: AchievementManager,
-    private val scoreManager: ScoreManager
+    private val scoreManager: ScoreManager,
+    // IZMENA: Dodajemo Context u konstruktor
+    private val context: Context
 ) : ViewModel() {
 
     val uiState: StateFlow<AchievementsUiState> =
         achievementManager.unlockedAchievementsFlow.map { unlockedIds ->
-            val progressList = AchievementsList.allAchievements.map { achievement ->
+            // IZMENA: Pozivamo novu funkciju da dobijemo prevedenu listu
+            val progressList = getAchievementsList(context).map { achievement ->
                 val (current, target) = getProgressForAchievement(achievement.id)
                 AchievementProgress(
                     achievement = achievement,

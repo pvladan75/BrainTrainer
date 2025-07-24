@@ -1,7 +1,11 @@
 package com.program.braintrainer.chess.model
 
-enum class Module(val title: String) { // Dodajemo 'val title: String'
-    Module1("Ukloni crne figure"), // Dodeljujemo naslove
-    Module2("Pojedi crne figure bezbedno"),
-    Module3("Pojedi crnog kralja");
+/**
+ * Enum koji definiše različite module (tipove) igre.
+ * Nazivi (title) su uklonjeni odavde i prebačeni u string resurse radi lakšeg prevođenja.
+ */
+enum class Module {
+    Module1,
+    Module2,
+    Module3
 }
