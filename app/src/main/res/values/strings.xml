@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BrainTrainer</string>
+    <string name="app_name">Chess BrainTrainer</string>
     <string name="content_desc_back">Nazad</string>
     <string name="button_cancel">Otkaži</string>
 

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.program.braintrainer.BuildConfig // <-- DODAT IMPORT ZA PRISTUP BUILD VARIJABLAMA
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -37,8 +38,15 @@ class SettingsManager(private val context: Context) {
         val theme = AppTheme.valueOf(
             preferences[APP_THEME_KEY] ?: AppTheme.SYSTEM.name
         )
-        val isPremiumUser = preferences[PREMIUM_USER_KEY] ?: false
-        AppSettings(soundEnabled, theme, isPremiumUser)
+
+        // --- IZMENJENA LOGIKA ZA PREMIUM STATUS ---
+        // 1. Čitamo sačuvanu vrednost iz memorije telefona
+        val isPremiumFromStorage = preferences[PREMIUM_USER_KEY] ?: false
+
+        // 2. Finalni status je 'true' ILI ako je sačuvano kao premium ILI ako je ovo testna verzija
+        val finalIsPremium = isPremiumFromStorage || BuildConfig.IS_TEST_BUILD
+
+        AppSettings(soundEnabled, theme, finalIsPremium)
     }
 
     suspend fun setSoundEnabled(isEnabled: Boolean) {

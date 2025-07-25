@@ -56,7 +56,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
 import com.program.braintrainer.chess.model.Color as ChessColor
-import com.program.braintrainer.chess.model.Difficulty
 
 // ===================================================================
 // ===         CENTRALNO MESTO ZA PODEŠAVANJE BODOVANJA            ===
@@ -85,6 +84,7 @@ private fun getLocalizedModuleTitle(module: Module): String {
         Module.Module3 -> stringResource(id = R.string.module_3_title)
     }
 }
+
 @Composable
 private fun getLocalizedDifficultyLabel(difficulty: Difficulty): String {
     return when (difficulty) {
@@ -93,6 +93,7 @@ private fun getLocalizedDifficultyLabel(difficulty: Difficulty): String {
         Difficulty.HARD -> stringResource(id = R.string.difficulty_hard)
     }
 }
+
 
 // --- FUNKCIJE ZA UČITAVANJE REKLAMA ---
 
@@ -517,7 +518,6 @@ fun ChessScreen(
         }
     }
 
-    // *** IZMENA: Pomoćna funkcija za izvršavanje jednog poteza rešenja ***
     fun playNextSolutionMove() {
         val solutionMoves = currentProblem?.solution?.moves
         if (solutionMoves != null) {
@@ -533,21 +533,19 @@ fun ChessScreen(
         }
     }
 
-    // *** IZMENA: onNextMove sada zaustavlja automatsku reprodukciju ***
     val onNextMove: () -> Unit = {
         isPlayingSolution = false
         playNextSolutionMove()
     }
 
-    // *** IZMENA: Novi LaunchedEffect za automatsku reprodukciju ***
     LaunchedEffect(isPlayingSolution, currentProblem) {
         if (isPlayingSolution) {
             val solutionMoves = currentProblem?.solution?.moves
             while (isPlayingSolution && solutionMoves != null && solutionMoveIndex < solutionMoves.size) {
                 playNextSolutionMove()
-                delay(1500L) // Pauza od 1.5s
+                delay(1500L)
             }
-            isPlayingSolution = false // Automatski pauziraj na kraju
+            isPlayingSolution = false
         }
     }
 
@@ -819,16 +817,19 @@ fun GameInfoPanel(
 
     val infoTextStyle = MaterialTheme.typography.bodyLarge
     val goalTextStyle = MaterialTheme.typography.titleMedium
+    val textColor = MaterialTheme.colorScheme.onSurface
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = getLocalizedModuleTitle(module = module),
             style = infoTextStyle,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = textColor
         )
         Text(
             text = getLocalizedDifficultyLabel(difficulty = difficulty),
-            style = infoTextStyle
+            style = infoTextStyle,
+            color = textColor
         )
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -843,11 +844,13 @@ fun GameInfoPanel(
                     currentSessionProblemIndex + 1,
                     problemsInSession.size
                 ) else stringResource(R.string.info_panel_loading),
-                style = infoTextStyle
+                style = infoTextStyle,
+                color = textColor
             )
             Text(
                 text = stringResource(R.string.info_panel_time, timeString),
-                style = infoTextStyle
+                style = infoTextStyle,
+                color = textColor
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -855,7 +858,8 @@ fun GameInfoPanel(
         if (optimalMoves > 0) {
             Text(
                 text = stringResource(R.string.info_panel_moves_progress, playerMoveCount, optimalMoves),
-                style = infoTextStyle
+                style = infoTextStyle,
+                color = textColor
             )
         }
 
@@ -864,7 +868,8 @@ fun GameInfoPanel(
         Text(
             text = stringResource(id = goalTextResId),
             style = goalTextStyle,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = textColor
         )
     }
 }

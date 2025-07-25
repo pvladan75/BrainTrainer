@@ -11,9 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.data.SettingsManager
 
@@ -26,6 +29,25 @@ fun SettingsScreen(
     val settings by viewModel.settingsState.collectAsState()
     val context = LocalContext.current
     var showResetDialog by remember { mutableStateOf(false) }
+
+    // --- NOVI DEO: Lifecycle Observer ---
+    // Ovaj blok koda "osluškuje" životni ciklus ekrana.
+    // Kada se ekran vrati u prvi plan (onResume), poziva se provera postojećih kupovina.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.queryExistingPurchasesOnResume()
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // Observer se uklanja kada se ekran uništi da bi se sprečilo curenje memorije
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Scaffold(
         topBar = {
