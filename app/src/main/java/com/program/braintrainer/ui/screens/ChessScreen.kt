@@ -12,6 +12,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.WindowInsets // <-- DODAT IMPORT
+import androidx.compose.foundation.layout.safeDrawing // <-- DODAT IMPORT
+import androidx.compose.foundation.layout.windowInsetsPadding // <-- DODAT IMPORT
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -56,6 +59,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
 import com.program.braintrainer.chess.model.Color as ChessColor
+
+// ===================================================================
+// ===         ID-JEVI ZA ADMOB TESTNE REKLAME                     ===
+// ===================================================================
+// Kasnije samo ovde zameniš svojim pravim ID-jevima
+private const val TEST_REWARDED_AD_UNIT_ID = "ca-app-pub-9672265159456524/6837006475"
+private const val TEST_INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-9672265159456524/8160811951"
+// ===================================================================
+
 
 // ===================================================================
 // ===         CENTRALNO MESTO ZA PODEŠAVANJE BODOVANJA            ===
@@ -121,8 +133,7 @@ private fun loadInterstitialAd(
     onAdLoaded: (InterstitialAd) -> Unit,
     onAdFailedToLoad: () -> Unit
 ) {
-    val adUnitId = "ca-app-pub-3940256099942544/1033173712" // Testni ID
-    InterstitialAd.load(context, adUnitId, AdRequest.Builder().build(), object : InterstitialAdLoadCallback() {
+    InterstitialAd.load(context, TEST_INTERSTITIAL_AD_UNIT_ID, AdRequest.Builder().build(), object : InterstitialAdLoadCallback() {
         override fun onAdFailedToLoad(adError: LoadAdError) {
             Log.d("AdMob", "Interstitial ad failed to load: ${adError.message}")
             onAdFailedToLoad()
@@ -269,7 +280,7 @@ fun ChessScreen(
             if (!isPremium) {
                 isAdLoading = true
                 stopTimer()
-                loadRewardedAd(context, "ca-app-pub-3940256099942544/5224354917",
+                loadRewardedAd(context, TEST_REWARDED_AD_UNIT_ID,
                     onAdLoaded = { ad ->
                         isAdLoading = false
                         val activity = context as? Activity
@@ -305,7 +316,7 @@ fun ChessScreen(
     val onDoubleXpClick: () -> Unit = {
         if (!isAdLoading) {
             isAdLoading = true
-            loadRewardedAd(context, "ca-app-pub-3940256099942544/5224354917",
+            loadRewardedAd(context, TEST_REWARDED_AD_UNIT_ID,
                 onAdLoaded = { ad ->
                     isAdLoading = false
                     val activity = context as? Activity
@@ -643,7 +654,12 @@ fun ChessScreen(
 
     val currentlyHighlightedHintMove = if (isShowingHint) hintMoves.getOrNull(hintMoveIndex) else null
 
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.safeDrawing) // <-- DODATA LINIJA
+    ) {
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else {
