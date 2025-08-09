@@ -2,8 +2,10 @@ package com.program.braintrainer.ui.screens.settings
 
 import android.app.Activity
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState // <-- Import
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll // <-- Import
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -30,9 +32,6 @@ fun SettingsScreen(
     val context = LocalContext.current
     var showResetDialog by remember { mutableStateOf(false) }
 
-    // --- NOVI DEO: Lifecycle Observer ---
-    // Ovaj blok koda "osluškuje" životni ciklus ekrana.
-    // Kada se ekran vrati u prvi plan (onResume), poziva se provera postojećih kupovina.
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -40,10 +39,7 @@ fun SettingsScreen(
                 viewModel.queryExistingPurchasesOnResume()
             }
         }
-
         lifecycleOwner.lifecycle.addObserver(observer)
-
-        // Observer se uklanja kada se ekran uništi da bi se sprečilo curenje memorije
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
@@ -61,9 +57,11 @@ fun SettingsScreen(
             )
         }
     ) { paddingValues ->
+        // --- IZMENA: Dodat je Modifier.verticalScroll ---
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState()) // Omogućava vertikalno skrolovanje
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
@@ -118,6 +116,7 @@ fun SettingsScreen(
     }
 }
 
+// ... ostatak koda u fajlu (funkcije SoundSettingsRow, ThemeSettingsGroup, itd.) ostaje nepromenjen ...
 @Composable
 private fun SoundSettingsRow(isSoundEnabled: Boolean, onSoundToggle: (Boolean) -> Unit) {
     Row(

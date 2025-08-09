@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState // <-- Import
+import androidx.compose.foundation.verticalScroll // <-- Import
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Person
@@ -64,44 +66,29 @@ fun MainScreen(
         }
     ) { paddingValues ->
         val configuration = LocalConfiguration.current
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            WelcomeHeader()
-            Spacer(modifier = Modifier.height(24.dp))
 
-            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        // --- IZMENA: Razdvojena logika za PORTRAIT i LANDSCAPE ---
+
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // LANDSCAPE: Obična kolona sa vertikalnim skrolovanjem
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()) // Omogućava skrolovanje
+                    .padding(paddingValues)
+                    .padding(vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                WelcomeHeader()
+                Spacer(modifier = Modifier.height(24.dp))
                 LazyRow(
-                    modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     items(gameModes) { mode ->
                         GameModeCard(
-                            modifier = Modifier.width(320.dp),
-                            gameMode = mode,
-                            currentRank = currentRank,
-                            onDifficultySelected = { difficulty ->
-                                onModeAndDifficultySelected(mode.type, difficulty)
-                            }
-                        )
-                    }
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                ) {
-                    items(gameModes) { mode ->
-                        GameModeCard(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.width(320.dp), // Fiksna širina za landscape
                             gameMode = mode,
                             currentRank = currentRank,
                             onDifficultySelected = { difficulty ->
@@ -111,10 +98,44 @@ fun MainScreen(
                     }
                 }
             }
+        } else {
+            // PORTRAIT: LazyColumn za efikasno skrolovanje celog sadržaja
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(vertical = 16.dp)
+            ) {
+                // Naslov kao prva stavka koja se skroluje sa listom
+                item {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
+                        WelcomeHeader()
+                    }
+                }
+                // Kartice sa modovima igre
+                items(gameModes) { mode ->
+                    GameModeCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp), // Padding je sada ovde
+                        gameMode = mode,
+                        currentRank = currentRank,
+                        onDifficultySelected = { difficulty ->
+                            onModeAndDifficultySelected(mode.type, difficulty)
+                        }
+                    )
+                }
+            }
         }
     }
 }
 
+// ... ostatak koda u fajlu (GameModeCard, WelcomeHeader) ostaje nepromenjen ...
 @Composable
 fun GameModeCard(
     modifier: Modifier = Modifier,
