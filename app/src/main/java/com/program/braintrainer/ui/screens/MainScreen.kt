@@ -37,15 +37,7 @@ import com.program.braintrainer.chess.model.GameModeInfo
 import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.gamification.RankManager
 import com.program.braintrainer.score.ScoreManager
-
-@Composable
-private fun getLocalizedDifficultyLabel(difficulty: Difficulty): String {
-    return when (difficulty) {
-        Difficulty.EASY -> stringResource(id = R.string.difficulty_easy)
-        Difficulty.MEDIUM -> stringResource(id = R.string.difficulty_medium)
-        Difficulty.HARD -> stringResource(id = R.string.difficulty_hard)
-    }
-}
+import com.program.braintrainer.ui.difficultyLabel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -220,7 +212,7 @@ fun GameModeCard(
                             onClick = { onDifficultySelected(difficulty) },
                             enabled = isEnabled
                         ) {
-                            Text(text = getLocalizedDifficultyLabel(difficulty))
+                            Text(text = difficultyLabel(difficulty))
                         }
                     }
                 }

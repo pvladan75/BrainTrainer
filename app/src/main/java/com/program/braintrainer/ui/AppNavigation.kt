@@ -37,18 +37,6 @@ object Routes {
 }
 
 /**
- * Pomoćna funkcija za dobijanje prevedenih naziva modula.
- */
-@Composable
-private fun getLocalizedModuleTitle(module: Module): String {
-    return when (module) {
-        Module.Module1 -> stringResource(id = R.string.module_1_title)
-        Module.Module2 -> stringResource(id = R.string.module_2_title)
-        Module.Module3 -> stringResource(id = R.string.module_3_title)
-    }
-}
-
-/**
  * Glavna Composable funkcija koja upravlja celokupnom navigacijom u aplikaciji.
  */
 @Composable
@@ -59,21 +47,21 @@ fun AppNavigation() {
     val gameModes = listOf(
         GameModeInfo(
             type = Module.Module1,
-            title = getLocalizedModuleTitle(module = Module.Module1), // IZMENA
+            title = moduleTitle(Module.Module1),
             description = stringResource(R.string.modul1desc),
             color = Color(0xFFE57373),
             icon = R.drawable.ic_module1_target
         ),
         GameModeInfo(
             type = Module.Module2,
-            title = getLocalizedModuleTitle(module = Module.Module2), // IZMENA
+            title = moduleTitle(Module.Module2),
             description = stringResource(R.string.modul2desc),
             color = Color(0xFF64B5F6),
             icon = R.drawable.ic_module2_shield
         ),
         GameModeInfo(
             type = Module.Module3,
-            title = getLocalizedModuleTitle(module = Module.Module3), // IZMENA
+            title = moduleTitle(Module.Module3),
             description = stringResource(R.string.modul3desc),
             color = Color(0xFF81C784),
             icon = R.drawable.ic_module3_king
