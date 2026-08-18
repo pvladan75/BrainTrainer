@@ -14,6 +14,7 @@
     <string name="snackbar_solver_failed">Solver nije uspeo da pronađe rešenje.</string>
     <string name="snackbar_module1_must_capture">U ovom modulu svaki potez mora biti uzimanje!</string>
     <string name="snackbar_invalid_move">Ne možete pomeriti figuru tako!</string>
+    <string name="snackbar_achievement_unlocked">Dostignuće otključano: %1$s</string>
     <string name="dialog_title_puzzle_status">Status zagonetke</string>
     <string name="dialog_title_session_end">Kraj sesije</string>
     <string name="dialog_message_session_end">Završili ste sesiju.</string>

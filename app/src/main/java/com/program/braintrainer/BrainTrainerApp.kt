@@ -5,6 +5,7 @@ import android.content.Context
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.program.braintrainer.chess.model.data.BillingClientManager
 import com.program.braintrainer.chess.model.data.SettingsManager
+import com.program.braintrainer.gamification.AchievementManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,6 +25,15 @@ class BrainTrainerApp : Application() {
     val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     val settingsManager: SettingsManager by lazy { SettingsManager(this) }
+
+    /**
+     * Jedna instanca za celu aplikaciju. Ranije ju je svaki factory pravio za
+     * sebe, pa je `newlyUnlockedAchievementFlow` bio per-instanca i niko nije
+     * mogao da čuje otključano dostignuće.
+     */
+    val achievementManager: AchievementManager by lazy {
+        AchievementManager(this, settingsManager)
+    }
 
     val billingClientManager: BillingClientManager by lazy {
         BillingClientManager(

@@ -70,6 +70,12 @@ class ChessViewModel(
     private var isSoundEnabled = true
 
     private var timerJob: Job? = null
+
+    /** Zagonetka teče — tajmer treba da radi čim je ekran u prvom planu. */
+    private var isTimerActive = false
+
+    /** Dok je aplikacija u pozadini vreme ne teče, da se ne gubi vremenski bonus. */
+    private var isScreenInForeground = true
     private var solutionPlaybackJob: Job? = null
     private var hintJob: Job? = null
 
@@ -78,6 +84,11 @@ class ChessViewModel(
             settingsManager.settingsFlow.collect { settings ->
                 isPremium = settings.isPremiumUser
                 isSoundEnabled = settings.isSoundEnabled
+            }
+        }
+        viewModelScope.launch {
+            achievementManager.newlyUnlockedAchievementFlow.collect { achievement ->
+                _events.emit(ChessUiEvent.AchievementUnlocked(achievement.id))
             }
         }
         loadSession()
@@ -145,18 +156,39 @@ class ChessViewModel(
     // ---------------------------------------------------------------- tajmer
 
     private fun startTimer() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            while (true) {
-                delay(1000L)
-                _uiState.update { it.copy(elapsedSeconds = it.elapsedSeconds + 1) }
-            }
-        }
+        isTimerActive = true
+        restartTicker()
     }
 
     private fun stopTimer() {
+        isTimerActive = false
+        restartTicker()
+    }
+
+    /** Poziva se iz ekrana na `ON_STOP` — odbrojavanje staje na zatečenoj sekundi. */
+    fun onScreenPaused() {
+        isScreenInForeground = false
+        restartTicker()
+    }
+
+    /** Poziva se iz ekrana na `ON_START` — nastavlja se ako zagonetka još traje. */
+    fun onScreenResumed() {
+        isScreenInForeground = true
+        restartTicker()
+    }
+
+    private fun restartTicker() {
         timerJob?.cancel()
-        timerJob = null
+        timerJob = if (isTimerActive && isScreenInForeground) {
+            viewModelScope.launch {
+                while (true) {
+                    delay(1000L)
+                    _uiState.update { it.copy(elapsedSeconds = it.elapsedSeconds + 1) }
+                }
+            }
+        } else {
+            null
+        }
     }
 
     // ------------------------------------------------------------ potez igrača

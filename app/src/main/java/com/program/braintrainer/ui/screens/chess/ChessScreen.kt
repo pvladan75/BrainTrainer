@@ -22,6 +22,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -31,10 +32,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
+import com.program.braintrainer.gamification.getAchievementsList
 import com.program.braintrainer.score.PuzzleScore
 import com.program.braintrainer.util.playSound
 
@@ -64,6 +69,15 @@ fun ChessScreen(
                 ChessUiEvent.SolverFailed ->
                     snackbarHostState.showSnackbar(context.getString(R.string.snackbar_solver_failed))
 
+                is ChessUiEvent.AchievementUnlocked -> {
+                    val title = getAchievementsList(context).find { it.id == event.id }?.title
+                    if (title != null) {
+                        snackbarHostState.showSnackbar(
+                            context.getString(R.string.snackbar_achievement_unlocked, title)
+                        )
+                    }
+                }
+
                 is ChessUiEvent.PlaySound -> playSound(
                     context,
                     when (event.sound) {
@@ -73,6 +87,20 @@ fun ChessScreen(
                 )
             }
         }
+    }
+
+    // Tajmer ne sme da radi dok je aplikacija u pozadini.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, viewModel) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_START -> viewModel.onScreenResumed()
+                Lifecycle.Event.ON_STOP -> viewModel.onScreenPaused()
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     val actions = remember(viewModel) {

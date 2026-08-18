@@ -7,7 +7,6 @@ import com.program.braintrainer.brainTrainerApp
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.chess.model.data.ProblemLoader
-import com.program.braintrainer.gamification.AchievementManager
 import com.program.braintrainer.score.ScoreManager
 
 class ChessViewModelFactory(
@@ -27,7 +26,7 @@ class ChessViewModelFactory(
                 problemLoader = ProblemLoader(app),
                 scoreManager = ScoreManager(app),
                 settingsManager = app.settingsManager,
-                achievementManager = AchievementManager(app, app.settingsManager)
+                achievementManager = app.achievementManager
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

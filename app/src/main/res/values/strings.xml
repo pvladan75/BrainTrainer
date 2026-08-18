@@ -14,6 +14,7 @@
     <string name="snackbar_solver_failed">The solver failed to find a solution.</string>
     <string name="snackbar_module1_must_capture">In this module, every move must be a capture!</string>
     <string name="snackbar_invalid_move">You can\'t move the piece like that!</string>
+    <string name="snackbar_achievement_unlocked">Achievement unlocked: %1$s</string>
     <string name="dialog_title_puzzle_status">Puzzle Status</string>
     <string name="dialog_title_session_end">Session End</string>
     <string name="dialog_message_session_end">You have finished the session.</string>

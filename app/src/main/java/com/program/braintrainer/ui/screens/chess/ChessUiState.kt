@@ -3,6 +3,7 @@ package com.program.braintrainer.ui.screens.chess
 import com.program.braintrainer.chess.model.Board
 import com.program.braintrainer.chess.model.Move
 import com.program.braintrainer.chess.model.Square
+import com.program.braintrainer.gamification.AchievementId
 import com.program.braintrainer.score.PuzzleScore
 
 /**
@@ -77,6 +78,9 @@ sealed interface ChessUiEvent {
     data object Module1MustCapture : ChessUiEvent
     data object SolverFailed : ChessUiEvent
     data class PlaySound(val sound: GameSound) : ChessUiEvent
+
+    /** Nosi samo ID - naziv dostignuća UI prevodi sam. */
+    data class AchievementUnlocked(val id: AchievementId) : ChessUiEvent
 }
 
 enum class GameSound { SUCCESS, FAILURE }
