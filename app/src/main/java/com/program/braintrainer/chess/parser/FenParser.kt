@@ -11,7 +11,9 @@ object FenParser {
     fun parseFenToBoard(fen: String): Pair<Board, Color> {
         val parts = fen.split(" ")
         val piecePlacement = parts[0]
-        val activeColorChar = parts[1]
+        // Polje za aktivnog igraca je opciono: sve zagonetke u assets-u ga imaju, ali
+        // rucno dodat zapis bez njega je ranije rusio aplikaciju na parts[1].
+        val activeColorChar = parts.getOrNull(1) ?: "w"
 
         var board = Board() // Start with an empty board
 
