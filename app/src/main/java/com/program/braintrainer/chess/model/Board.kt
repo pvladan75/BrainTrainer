@@ -2,20 +2,6 @@ package com.program.braintrainer.chess.model
 
 import kotlin.math.abs
 
-// Potrebno je dodati ovu funkciju u vašu Piece.kt datoteku
-fun Piece.getChar(): Char {
-    val char = when (type) {
-        PieceType.PAWN -> 'p'
-        PieceType.KNIGHT -> 'n'
-        PieceType.BISHOP -> 'b'
-        PieceType.ROOK -> 'r'
-        PieceType.QUEEN -> 'q'
-        PieceType.KING -> 'k'
-    }
-    return if (color == Color.WHITE) char.uppercaseChar() else char
-}
-
-
 data class Move(val start: Square, val end: Square) {
     override fun toString(): String {
         return "${start}-${end}"
@@ -42,7 +28,7 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
                         fenBuilder.append(emptySquares)
                         emptySquares = 0
                     }
-                    fenBuilder.append(piece.getChar())
+                    fenBuilder.append(piece.toFenChar())
                 }
             }
             if (emptySquares > 0) {
@@ -136,21 +122,24 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
      */
     fun getLegalMoves(start: Square): List<Square> {
         val piece = getPiece(start) ?: return emptyList()
-        val possibleMoves = mutableListOf<Square>()
 
-        // Iteriramo kroz sva polja na tabli i proveravamo da li je potez validan za tu figuru
-        for (x in 0..7) {
-            for (y in 0..7) {
-                val end = Square.fromCoordinates(x, y)
-                if (start == end) continue // Ne može se pomeriti na isto polje
-
-                // Ako je potez validan prema pravilima kretanja figure i ne rezultira šahom
-                if (isValidMove(start, end)) { // isValidMove sada uključuje proveru šaha
-                    possibleMoves.add(end)
-                }
-            }
+        // Ranije se prolazilo kroz svih 64 polja i za svako zvalo isValidMove, koji
+        // kopira mapu figura i proverava šah. Sada se kandidati generišu iz pravila
+        // kretanja same figure, pa ih je najviše 27 umesto 63.
+        val candidates = when (piece.type) {
+            PieceType.PAWN -> getPawnMoveTargets(start, piece.color)
+            PieceType.KNIGHT -> getKnightAttackTargets(start)
+            PieceType.BISHOP -> getSlidingAttackTargets(start, BishopDirections)
+            PieceType.ROOK -> getSlidingAttackTargets(start, RookDirections)
+            PieceType.QUEEN -> getSlidingAttackTargets(start, QueenDirections)
+            PieceType.KING -> getKingAttackTargets(start)
         }
-        return possibleMoves
+
+        // Redosled je isti kao kod ranije petlje (po koloni pa po redu) da se ne
+        // menja koje rešenje solver prvo pronađe.
+        return candidates
+            .filter { end -> end != start && isValidMove(start, end) }
+            .sortedBy { it.x * 8 + it.y }
     }
 
     /**
@@ -217,15 +206,39 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
         return attackedSquares
     }
 
-    // --- NOVA FUNKCIJA: Proverava da li je kralj date boje u šahu ---
-    fun isKingInCheck(kingColor: Color): Boolean {
-        // Pronađi poziciju kralja date boje
-        val kingSquare = pieces.entries.find { it.value == Piece(PieceType.KING, kingColor) }?.key
-            ?: return false // Ako kralj ne postoji, ne može biti u šahu
+    /**
+     * Da li figura date boje napada zadato polje.
+     *
+     * Prekida na prvom napadaču. Ranije se za svako ovakvo pitanje gradio ceo
+     * skup napadnutih polja, a poziva se iz svake provere legalnosti poteza.
+     */
+    fun isSquareAttackedBy(target: Square, attackingColor: Color): Boolean {
+        for ((square, piece) in pieces) {
+            if (piece.color != attackingColor || square == target) continue
 
-        val opponentColor = kingColor.opposite()
-        val attackedByOpponent = getAttackedSquares(opponentColor) // Polja napadnuta od strane protivnika
-        return attackedByOpponent.contains(kingSquare) // Da li je kraljevo polje među napadnutim?
+            val attacksTarget = when (piece.type) {
+                PieceType.PAWN -> {
+                    val direction = if (piece.color == Color.WHITE) 1 else -1
+                    target.y - square.y == direction && abs(target.x - square.x) == 1
+                }
+                PieceType.KNIGHT -> isValidKnightMove(square, target)
+                PieceType.BISHOP -> isValidBishopMove(square, target)
+                PieceType.ROOK -> isValidRookMove(square, target)
+                PieceType.QUEEN -> isValidQueenMove(square, target)
+                PieceType.KING -> isValidKingMove(square, target)
+            }
+            if (attacksTarget) return true
+        }
+        return false
+    }
+
+    /** Da li je kralj date boje u šahu. */
+    fun isKingInCheck(kingColor: Color): Boolean {
+        val kingSquare = pieces.entries.find { (_, piece) ->
+            piece.type == PieceType.KING && piece.color == kingColor
+        }?.key ?: return false // Ako kralj ne postoji, ne može biti u šahu
+
+        return isSquareAttackedBy(kingSquare, kingColor.opposite())
     }
 
     // --- Pomoćne funkcije za generisanje POTENCIJALNIH meta napada (za getAttackedSquares) ---
@@ -244,6 +257,19 @@ data class Board(val pieces: Map<Square, Piece> = emptyMap()) {
         if (targetXRight in 0..7 && targetYRight in 0..7) {
             targets.add(Square.fromCoordinates(targetXRight, targetYRight))
         }
+        return targets
+    }
+
+    /** Polja na koja pešak uopšte može da krene: napred jedno ili dva, plus dijagonale. */
+    private fun getPawnMoveTargets(start: Square, color: Color): List<Square> {
+        val direction = if (color == Color.WHITE) 1 else -1
+        val targets = mutableListOf<Square>()
+
+        for (step in 1..2) {
+            val y = start.y + step * direction
+            if (y in 0..7) targets.add(Square.fromCoordinates(start.x, y))
+        }
+        targets.addAll(getPawnAttackTargets(start, color))
         return targets
     }
 

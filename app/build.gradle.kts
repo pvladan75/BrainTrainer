@@ -90,6 +90,13 @@ android {
         compose = true
         buildConfig = true
     }
+    testOptions {
+        unitTests {
+            // Solver loguje preko android.util.Log; bez ovoga svaki poziv u
+            // JVM testu baca "not mocked".
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {

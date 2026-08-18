@@ -3,97 +3,100 @@ package com.program.braintrainer.chess.solver
 import android.util.Log
 import com.program.braintrainer.chess.model.Board
 import com.program.braintrainer.chess.model.Move
-import com.program.braintrainer.chess.model.Color as ChessColor
 import com.program.braintrainer.chess.model.Square
 import com.program.braintrainer.rules.PuzzleRules
 import java.util.ArrayDeque
+import com.program.braintrainer.chess.model.Color as ChessColor
 
 /**
  * Univerzalni solver za šahovske zagonetke koji koristi BFS algoritam.
  * Rešava zagonetke bazirane na pravilima definisanim u instanci [PuzzleRules].
  *
+ * Pretraga ima budžet: [timeBudgetMillis] i [maxVisitedStates]. Bez njih je na
+ * teškoj poziciji mogla da traje neograničeno dugo i da pojede memoriju, a
+ * poziva se sa ekrana (hint). Dubina se namerno ne ograničava — rešenja u
+ * assets-u idu i do 38 poteza.
+ *
  * @param rules Instanca [PuzzleRules] koja definiše specifična pravila i cilj zagonetke.
  */
-class UniversalPuzzleSolver(private val rules: PuzzleRules) {
-
-    private val TAG = "UniversalPuzzleSolver"
+class UniversalPuzzleSolver(
+    private val rules: PuzzleRules,
+    private val timeBudgetMillis: Long = DEFAULT_TIME_BUDGET_MILLIS,
+    private val maxVisitedStates: Int = DEFAULT_MAX_VISITED_STATES
+) {
 
     /**
-     * Data klasa koja predstavlja stanje pretrage unutar BFS algoritma.
-     *
-     * @param board Trenutno stanje šahovske table.
-     * @param currentPath Lista poteza koji su doveli do [board] stanja.
-     * @param whitePieceSquare Trenutna pozicija bele figure (ako je relevantno i ako je samo jedna).
-     * Koristi se za efikasnije praćenje posećenih stanja.
+     * Čvor pretrage. Putanja se ne kopira u svako stanje, nego se rekonstruiše
+     * unazad preko [parent] — ranije je svaki čvor nosio celu listu poteza.
      */
-    data class SolverState(
+    private class SearchNode(
         val board: Board,
-        val currentPath: List<Move>,
-        val whitePieceSquare: Square? // Pozicija ključne bele figure za praćenje stanja
-    )
+        val whitePieceSquare: Square?,
+        val parent: SearchNode?,
+        val move: Move?
+    ) {
+        val depth: Int = if (parent == null) 0 else parent.depth + 1
+
+        fun path(): List<Move> {
+            val moves = ArrayDeque<Move>()
+            var node: SearchNode? = this
+            while (node?.move != null) {
+                moves.addFirst(node.move)
+                node = node.parent
+            }
+            return moves.toList()
+        }
+    }
 
     /**
      * Pokušava da reši zagonetku počevši od [initialBoard] za datog [playerColor].
      *
-     * @param initialBoard Početno stanje šahovske table.
-     * @param playerColor Boja igrača koji rešava zagonetku (obično PieceColor.WHITE).
-     * @return [PuzzleSolution] objekat koji sadrži rezultat rešavanja.
+     * @return [PuzzleSolution]; `isSolved` je false i kada je pretraga prekinuta
+     * zbog budžeta, pa pozivalac tretira oba slučaja isto.
      */
     fun solve(initialBoard: Board, playerColor: ChessColor = ChessColor.WHITE): PuzzleSolution {
-        val queue = ArrayDeque<SolverState>()
-        // Koristimo FEN notaciju table i poziciju bele figure za praćenje posećenih stanja
-        // da bismo izbegli cikluse i ponovnu obradu istih stanja.
+        val deadline = System.currentTimeMillis() + timeBudgetMillis
+        val queue = ArrayDeque<SearchNode>()
+
+        // FEN table plus pozicija bele figure identifikuju stanje — dovoljno da
+        // se izbegnu ciklusi i ponovna obrada.
         val visitedStates = mutableSetOf<Pair<String, Square?>>()
 
-        // Pronalazimo poziciju bele figure na početnoj tabli.
-        // Pretpostavljamo da je samo jedna bela figura relevantna za ove zagonetke.
-        val initialWhitePieceEntry = initialBoard.pieces.entries.find { it.value.color == playerColor }
-        val initialWhitePieceSquare = initialWhitePieceEntry?.key
+        val initialWhitePieceSquare = initialBoard.pieces.entries
+            .find { it.value.color == playerColor }?.key
 
-        // Inicijalno stanje za BFS
-        val initialState = SolverState(
-            board = initialBoard,
-            currentPath = emptyList(),
-            whitePieceSquare = initialWhitePieceSquare
-        )
-        queue.offer(initialState)
-        // Pretpostavka: Vaša Board klasa ima toFEN() metodu
+        queue.offer(SearchNode(initialBoard, initialWhitePieceSquare, parent = null, move = null))
         visitedStates.add(Pair(initialBoard.toFEN(), initialWhitePieceSquare))
 
         Log.d(TAG, "Pokrećem univerzalni solver sa pravilima: ${rules::class.simpleName}")
 
+        var expanded = 0
         while (queue.isNotEmpty()) {
-            val currentState = queue.removeFirst()
-            val currentBoard = currentState.board
-            val currentPath = currentState.currentPath
-
-            // Korak 1: Proveravamo da li je cilj dostignut sa trenutnom tablom
-            if (rules.isGoalReached(currentBoard)) {
-                Log.d(TAG, "Cilj dostignut! Putanja: ${currentPath.joinToString(" -> ")}")
-                return PuzzleSolution(true, currentPath, currentBoard, "Zagonetka rešena!")
+            // Provera budžeta je na svakih 64 čvora da ne bi sama postala trošak.
+            if (expanded++ % 64 == 0 && System.currentTimeMillis() > deadline) {
+                return abandoned(initialBoard, "isteklo je $timeBudgetMillis ms", visitedStates.size)
+            }
+            if (visitedStates.size > maxVisitedStates) {
+                return abandoned(initialBoard, "pređeno je $maxVisitedStates stanja", visitedStates.size)
             }
 
-            // Korak 2: Generišemo sve legalne poteze za trenutnog igrača (beli)
-            val legalMovesForPlayer = rules.getAllLegalChessMoves(currentBoard, playerColor)
+            val currentNode = queue.removeFirst()
+            val currentBoard = currentNode.board
 
-            for (move in legalMovesForPlayer) {
-                // Korak 3: Pre-provera validnosti poteza prema pravilima modula.
-                if (!rules.isMoveValidForModule(move, currentBoard)) {
-                    continue // Potez nije validan po pravilima modula, pređi na sledeći
-                }
+            if (rules.isGoalReached(currentBoard)) {
+                val path = currentNode.path()
+                Log.d(TAG, "Cilj dostignut u ${path.size} poteza: ${path.joinToString(" -> ")}")
+                return PuzzleSolution(true, path, currentBoard, "Zagonetka rešena!")
+            }
 
-                // Korak 4: Simuliramo potez i dobijamo novo stanje table
-                // Pretpostavka: Vaša Board klasa ima applyMove metodu
+            for (move in rules.getAllLegalChessMoves(currentBoard, playerColor)) {
+                if (!rules.isMoveValidForModule(move, currentBoard)) continue
+
                 val nextBoard = currentBoard.applyMove(move.start, move.end) ?: continue
-                val newWhitePieceSquare = move.end
+                val nextStateKey = Pair(nextBoard.toFEN(), move.end)
 
-                // Korak 5: Kreiramo ključ za posećena stanja i proveravamo da li je stanje već posećeno
-                val nextStateKey = Pair(nextBoard.toFEN(), newWhitePieceSquare)
-
-                if (nextStateKey !in visitedStates) {
-                    visitedStates.add(nextStateKey)
-                    val newPath = currentPath + move
-                    queue.offer(SolverState(nextBoard, newPath, newWhitePieceSquare))
+                if (visitedStates.add(nextStateKey)) {
+                    queue.offer(SearchNode(nextBoard, move.end, currentNode, move))
                 }
             }
         }
@@ -101,9 +104,23 @@ class UniversalPuzzleSolver(private val rules: PuzzleRules) {
         Log.w(TAG, "Nije pronađeno rešenje za zagonetku sa pravilima: ${rules::class.simpleName}.")
         return PuzzleSolution(false, emptyList(), initialBoard, "Nije pronađeno rešenje.")
     }
+
+    private fun abandoned(board: Board, razlog: String, visited: Int): PuzzleSolution {
+        Log.w(TAG, "Pretraga prekinuta ($razlog, obrađeno $visited stanja).")
+        return PuzzleSolution(false, emptyList(), board, "Pretraga je prekinuta.")
+    }
+
+    private companion object {
+        const val TAG = "UniversalPuzzleSolver"
+
+        /** Hint se traži sa ekrana — duže od ovoga korisnik doživljava kao zaglavljivanje. */
+        const val DEFAULT_TIME_BUDGET_MILLIS = 3_000L
+
+        /** Gornja granica za memoriju: svako stanje drži FEN string i tablu. */
+        const val DEFAULT_MAX_VISITED_STATES = 200_000
+    }
 }
 
-// Potrebno je definisati i ovu data klasu u vašem projektu, ako već ne postoji
 data class PuzzleSolution(
     val isSolved: Boolean,
     val path: List<Move>,

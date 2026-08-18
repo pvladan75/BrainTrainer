@@ -32,11 +32,8 @@ class Module3Rules : PuzzleRules {
         // Simulišemo stanje table NAKON poteza
         val boardAfterMove = boardState.applyMove(move.start, move.end) ?: return false
 
-        // Proveravamo da li je polje na koje je figura sletela napadnuto od strane CRNIH figura.
-        val attackedByBlack = boardAfterMove.getAttackedSquares(Color.BLACK)
-
-        // Potez je validan ako odredišno polje NIJE napadnuto.
-        return !attackedByBlack.contains(move.end)
+        // Da li je polje na koje je figura sletela napadnuto od strane CRNIH figura.
+        return !boardAfterMove.isSquareAttackedBy(move.end, Color.BLACK)
     }
 
     /**
