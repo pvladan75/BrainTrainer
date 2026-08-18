@@ -211,6 +211,11 @@ prikazanog stanja; na kraju sesije se briše. Zagonetke se pamte po ID-ju —
 proces ubijen dok je stajao dijalog o ishodu, nastavlja se od sledeće zagonetke
 jer je ta već obračunata.
 
+Provereno na uređaju: potez, Home, `adb shell am kill com.program.braintrainer`,
+povratak preko Recents-a — ista tabla, vreme i brojači. Povratak preko ikonice
+umesto Recents-a ume da startuje nov task bez sačuvanog stanja, što nije do
+aplikacije.
+
 **Statusna traka.** `window.statusBarColor` je deprecated i na Android-u 15+ se
 ignoriše, a aplikacija radi edge-to-edge. Ostalo je samo
 `isAppearanceLightStatusBars`, sada ispravno okrenut — ranije su na Android-u
@@ -276,10 +281,6 @@ Nije hitno, ali je zabeleženo da se ne bi ponovo otkrivalo.
 test koji to dokumentuje), nema en passant-a ni rokade. Za postojeće module nije
 relevantno, a uvođenje promocije bi promenilo značenje postojećih zagonetki i
 njihovih rešenja u assets-u.
-
-**Snapshot sesije nije proveren na uređaju.** Logika učitavanja po ID-ju je
-pokrivena testovima, ali samo ubijanje procesa (Developer options → „Don't keep
-activities", ili `adb shell am kill com.program.braintrainer`) treba proći ručno.
 
 ---
 
