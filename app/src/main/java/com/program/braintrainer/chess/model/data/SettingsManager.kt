@@ -49,6 +49,15 @@ class SettingsManager(private val context: Context) {
         AppSettings(soundEnabled, theme, finalIsPremium)
     }
 
+    /**
+     * Sirova, sačuvana vrednost premium statusa - BEZ nadjačavanja preko
+     * [BuildConfig.IS_TEST_BUILD]. Koristi se da bi se izbeglo nepotrebno
+     * upisivanje iste vrednosti pri svakoj proveri kupovina.
+     */
+    val storedPremiumFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[PREMIUM_USER_KEY] ?: false
+    }
+
     suspend fun setSoundEnabled(isEnabled: Boolean) {
         context.dataStore.edit { settings ->
             settings[SOUND_ENABLED_KEY] = isEnabled

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Lista jezika koje aplikacija podržava. Omogućava korisniku da promeni jezik
+    aplikacije iz sistemskih podešavanja (Android 13+), nezavisno od jezika uređaja.
+    Prvi jezik je podrazumevani (res/values).
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en" />
+    <locale android:name="sr" />
+</locale-config>

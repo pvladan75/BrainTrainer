@@ -13,7 +13,11 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -24,6 +28,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.GameModeInfo
@@ -51,7 +58,22 @@ fun MainScreen(
 ) {
     val context = LocalContext.current
     val scoreManager = remember { ScoreManager(context) }
-    val currentRank = remember { RankManager.getRankForXp(scoreManager.getTotalXp()) }
+
+    // MainScreen ostaje u nav back stack-u dok je korisnik u igri, pa se ne rekreira pri
+    // povratku. Sa običnim `remember` bi prikazivao XP i rang od PRE odigrane sesije, i
+    // težine otključane starim rangom. Zato se rang ponovo čita na svaki ON_RESUME
+    // NavBackStackEntry-ja (navigation-compose ga izlaže kao LocalLifecycleOwner).
+    var currentRank by remember { mutableStateOf(RankManager.getRankForXp(scoreManager.getTotalXp())) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                currentRank = RankManager.getRankForXp(scoreManager.getTotalXp())
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
 
     Scaffold(
         topBar = {

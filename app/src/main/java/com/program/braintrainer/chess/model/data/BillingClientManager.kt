@@ -14,10 +14,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 
+/**
+ * @param onEntitlementResolved Poziva se kada je premium status POUZDANO utvrđen:
+ * `true` kada postoji aktivna kupovina, `false` kada je Google Play uspešno odgovorio
+ * da aktivne kupovine nema. Kod greške u komunikaciji se NE poziva - premium se nikada
+ * ne oduzima zbog toga što je korisnik offline.
+ */
 class BillingClientManager(
     private val context: Context,
-    private val externalScope: CoroutineScope, // Koristi scope spolja (npr. viewModelScope)
-    private val onPurchaseSuccess: () -> Unit
+    private val externalScope: CoroutineScope, // Koristi scope spolja (npr. applicationScope)
+    private val onEntitlementResolved: (Boolean) -> Unit
 ) {
     // Listener za sve promene u vezi sa kupovinama
     private val purchasesUpdatedListener = object : PurchasesUpdatedListener {
@@ -112,10 +118,20 @@ class BillingClientManager(
         }
 
         if (result.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-            result.purchasesList.forEach { purchase ->
+            val activePurchases = result.purchasesList.filter {
+                it.purchaseState == Purchase.PurchaseState.PURCHASED
+            }
+            activePurchases.forEach { purchase ->
                 handlePurchase(purchase)
             }
+            if (activePurchases.isEmpty()) {
+                // Play je odgovorio uspešno i nema aktivnih kupovina. Tek tada se premium
+                // oduzima - pokriva refund, povlačenje kupovine i restore na tuđem nalogu.
+                Log.d("BillingClient", "No active purchases found. Revoking premium.")
+                onEntitlementResolved(false)
+            }
         } else {
+            // Greška (npr. nema mreže ili Play servisa) NE sme da oduzme premium.
             Log.e("BillingClient", "Failed to query existing purchases: ${result.billingResult.debugMessage}")
         }
     }
@@ -178,13 +194,13 @@ class BillingClientManager(
                 }
                 if (ackResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     Log.d("BillingClient", "Purchase Acknowledged.")
-                    onPurchaseSuccess()
+                    onEntitlementResolved(true)
                 } else {
                     Log.e("BillingClient", "Failed to acknowledge purchase: ${ackResult.debugMessage}")
                 }
             } else {
                 Log.d("BillingClient", "Purchase already acknowledged.")
-                onPurchaseSuccess()
+                onEntitlementResolved(true)
             }
         } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
             Log.d("BillingClient", "Purchase is pending.")

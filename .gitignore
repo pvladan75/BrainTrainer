@@ -13,3 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Potpisni kljuc i lozinke - NIKADA u git
+keystore.properties
+*.jks
+*.keystore
+
+# Kotlin build tooling log-ovi
+.kotlin/

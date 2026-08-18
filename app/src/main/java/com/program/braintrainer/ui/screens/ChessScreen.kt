@@ -1,11 +1,8 @@
 package com.program.braintrainer.ui.screens
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
-import android.media.MediaPlayer
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,14 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import androidx.annotation.DrawableRes
 import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.*
 import com.program.braintrainer.chess.model.data.AppSettings
@@ -50,6 +40,7 @@ import com.program.braintrainer.rules.Module1Rules
 import com.program.braintrainer.rules.Module2Rules
 import com.program.braintrainer.rules.Module3Rules
 import com.program.braintrainer.score.ScoreManager
+import com.program.braintrainer.util.playSound
 import com.program.braintrainer.ui.theme.BrainTrainerTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -59,15 +50,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
 import com.program.braintrainer.chess.model.Color as ChessColor
-
-// ===================================================================
-// ===         ID-JEVI ZA ADMOB TESTNE REKLAME                     ===
-// ===================================================================
-// Kasnije samo ovde zameniš svojim pravim ID-jevima
-private const val TEST_REWARDED_AD_UNIT_ID = "ca-app-pub-9672265159456524/6837006475"
-private const val TEST_INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-9672265159456524/8160811951"
-// ===================================================================
-
 
 // ===================================================================
 // ===         CENTRALNO MESTO ZA PODEŠAVANJE BODOVANJA            ===
@@ -107,45 +89,6 @@ private fun getLocalizedDifficultyLabel(difficulty: Difficulty): String {
 }
 
 
-// --- FUNKCIJE ZA UČITAVANJE REKLAMA ---
-
-private fun loadRewardedAd(
-    context: Context,
-    adUnitId: String,
-    onAdLoaded: (RewardedAd) -> Unit,
-    onAdFailedToLoad: () -> Unit
-) {
-    val adRequest = AdRequest.Builder().build()
-    RewardedAd.load(context, adUnitId, adRequest, object : RewardedAdLoadCallback() {
-        override fun onAdFailedToLoad(adError: LoadAdError) {
-            Log.d("AdMob", "Rewarded ad ($adUnitId) failed to load: ${adError.message}")
-            onAdFailedToLoad()
-        }
-        override fun onAdLoaded(rewardedAd: RewardedAd) {
-            Log.d("AdMob", "Rewarded ad ($adUnitId) was loaded.")
-            onAdLoaded(rewardedAd)
-        }
-    })
-}
-
-private fun loadInterstitialAd(
-    context: Context,
-    onAdLoaded: (InterstitialAd) -> Unit,
-    onAdFailedToLoad: () -> Unit
-) {
-    InterstitialAd.load(context, TEST_INTERSTITIAL_AD_UNIT_ID, AdRequest.Builder().build(), object : InterstitialAdLoadCallback() {
-        override fun onAdFailedToLoad(adError: LoadAdError) {
-            Log.d("AdMob", "Interstitial ad failed to load: ${adError.message}")
-            onAdFailedToLoad()
-        }
-        override fun onAdLoaded(interstitialAd: InterstitialAd) {
-            Log.d("AdMob", "Interstitial ad was loaded.")
-            onAdLoaded(interstitialAd)
-        }
-    })
-}
-
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun ChessScreen(
@@ -162,12 +105,6 @@ fun ChessScreen(
 
     val isPremium by settingsManager.settingsFlow.map { it.isPremiumUser }.collectAsState(initial = false)
 
-    var interstitialAd by remember { mutableStateOf<InterstitialAd?>(null) }
-    var isAdLoading by remember { mutableStateOf(false) }
-    var hintRewardEarned by remember { mutableStateOf(false) }
-    var doubleXpRewardEarned by remember { mutableStateOf(false) }
-    var doubleXpButtonEnabled by remember { mutableStateOf(true) }
-
     var problems by remember { mutableStateOf<List<Problem>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
@@ -178,15 +115,6 @@ fun ChessScreen(
             problems = loadedProblems
         }
         isLoading = false
-    }
-
-    LaunchedEffect(isPremium) {
-        if (!isPremium) {
-            loadInterstitialAd(context,
-                onAdLoaded = { ad -> interstitialAd = ad },
-                onAdFailedToLoad = { interstitialAd = null }
-            )
-        }
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -246,7 +174,6 @@ fun ChessScreen(
             showGameResultDialog = false
             showNoMoreMovesDialog = false
             gameResultMessage = ""
-            doubleXpButtonEnabled = true
         }
     }
 
@@ -275,73 +202,7 @@ fun ChessScreen(
         }
     }
 
-    val onHintClick: () -> Unit = {
-        if (!isAdLoading) {
-            if (!isPremium) {
-                isAdLoading = true
-                stopTimer()
-                loadRewardedAd(context, TEST_REWARDED_AD_UNIT_ID,
-                    onAdLoaded = { ad ->
-                        isAdLoading = false
-                        val activity = context as? Activity
-                        if (activity != null) {
-                            ad.fullScreenContentCallback = object : FullScreenContentCallback() {
-                                override fun onAdDismissedFullScreenContent() {
-                                    if (hintRewardEarned) {
-                                        showHint()
-                                        hintRewardEarned = false
-                                    } else {
-                                        startTimer()
-                                    }
-                                }
-                                override fun onAdFailedToShowFullScreenContent(p0: AdError) { startTimer() }
-                            }
-                            ad.show(activity) { hintRewardEarned = true }
-                        } else {
-                            startTimer()
-                        }
-                    },
-                    onAdFailedToLoad = {
-                        isAdLoading = false
-                        coroutineScope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_ad_not_available)) }
-                        startTimer()
-                    }
-                )
-            } else {
-                showHint()
-            }
-        }
-    }
-
-    val onDoubleXpClick: () -> Unit = {
-        if (!isAdLoading) {
-            isAdLoading = true
-            loadRewardedAd(context, TEST_REWARDED_AD_UNIT_ID,
-                onAdLoaded = { ad ->
-                    isAdLoading = false
-                    val activity = context as? Activity
-                    if (activity != null) {
-                        ad.fullScreenContentCallback = object : FullScreenContentCallback() {
-                            override fun onAdDismissedFullScreenContent() {
-                                if (doubleXpRewardEarned) {
-                                    scoreManager.addXp(lastAwardedXp)
-                                    val bonusMessage = context.getString(R.string.game_result_ad_bonus, lastAwardedXp)
-                                    gameResultMessage += bonusMessage
-                                    doubleXpButtonEnabled = false
-                                    doubleXpRewardEarned = false
-                                }
-                            }
-                        }
-                        ad.show(activity) { doubleXpRewardEarned = true }
-                    }
-                },
-                onAdFailedToLoad = {
-                    isAdLoading = false
-                    coroutineScope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_ad_not_available)) }
-                }
-            )
-        }
-    }
+    val onHintClick: () -> Unit = { showHint() }
 
     fun checkGameStatus(isSuccess: Boolean) {
         stopTimer()
@@ -349,7 +210,7 @@ fun ChessScreen(
         coroutineScope.launch {
             if (settingsManager.settingsFlow.first().isSoundEnabled) {
                 val soundToPlay = if (isSuccess && !usedSolution) R.raw.succes else R.raw.failed
-                MediaPlayer.create(context, soundToPlay).start()
+                playSound(context, soundToPlay)
             }
         }
 
@@ -453,19 +314,6 @@ fun ChessScreen(
         }
         gameResultMessage = detailedMessage
         showGameResultDialog = true
-    }
-
-    fun showInterstitialAdAndFinish() {
-        val activity = context as? Activity
-        if (!isPremium && interstitialAd != null && activity != null) {
-            interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-                override fun onAdDismissedFullScreenContent() { onGameFinished() }
-                override fun onAdFailedToShowFullScreenContent(p0: AdError) { onGameFinished() }
-            }
-            interstitialAd?.show(activity)
-        } else {
-            onGameFinished()
-        }
     }
 
     val onNextPuzzle: () -> Unit = {
@@ -753,21 +601,8 @@ fun ChessScreen(
                     TextButton(onClick = onShowSolution) { Text(stringResource(R.string.button_solution)) }
                 },
                 confirmButton = {
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        if (lastAwardedXp > 0 && !isPremium) {
-                            TextButton(
-                                onClick = onDoubleXpClick,
-                                enabled = doubleXpButtonEnabled && !isAdLoading
-                            ) {
-                                Text(stringResource(R.string.button_double_xp))
-                            }
-                        }
-                        TextButton(onClick = onNextPuzzle) {
-                            Text(if (currentProblemIndex + 1 < problemsInSession.size) stringResource(R.string.button_next) else stringResource(R.string.button_end))
-                        }
+                    TextButton(onClick = onNextPuzzle) {
+                        Text(if (currentProblemIndex + 1 < problemsInSession.size) stringResource(R.string.button_next) else stringResource(R.string.button_end))
                     }
                 }
             )
@@ -790,7 +625,7 @@ fun ChessScreen(
                 confirmButton = {
                     TextButton(onClick = {
                         showSessionEndDialog = false
-                        showInterstitialAdAndFinish()
+                        onGameFinished()
                     }) {
                         Text(stringResource(R.string.button_main_menu))
                     }
@@ -1053,21 +888,30 @@ fun DefendedSquareDialog(board: Board, onDismiss: () -> Unit) {
     }
 }
 
-@SuppressLint("DiscouragedApi")
-@Composable
-fun getPieceDrawableResId(piece: Piece): Int {
-    val context = LocalContext.current
-    val colorPrefix = if (piece.color == ChessColor.WHITE) "w" else "b"
-    val typeSuffix = when (piece.type) {
-        PieceType.PAWN -> "p"
-        PieceType.KNIGHT -> "n"
-        PieceType.BISHOP -> "b"
-        PieceType.ROOK -> "r"
-        PieceType.QUEEN -> "q"
-        PieceType.KING -> "k"
+/**
+ * Direktno mapiranje figure na drawable.
+ *
+ * Ranije se koristio `resources.getIdentifier()` - spor (traženje po imenu) i nekompatibilan
+ * sa `isShrinkResources`, jer R8 ne vidi te reference pa bi obrisao slike figura.
+ */
+@DrawableRes
+fun getPieceDrawableResId(piece: Piece): Int = when (piece.color) {
+    ChessColor.WHITE -> when (piece.type) {
+        PieceType.PAWN -> R.drawable.wp
+        PieceType.KNIGHT -> R.drawable.wn
+        PieceType.BISHOP -> R.drawable.wb
+        PieceType.ROOK -> R.drawable.wr
+        PieceType.QUEEN -> R.drawable.wq
+        PieceType.KING -> R.drawable.wk
     }
-    val resourceName = "${colorPrefix}${typeSuffix}"
-    return context.resources.getIdentifier(resourceName, "drawable", context.packageName)
+    ChessColor.BLACK -> when (piece.type) {
+        PieceType.PAWN -> R.drawable.bp
+        PieceType.KNIGHT -> R.drawable.bn
+        PieceType.BISHOP -> R.drawable.bb
+        PieceType.ROOK -> R.drawable.br
+        PieceType.QUEEN -> R.drawable.bq
+        PieceType.KING -> R.drawable.bk
+    }
 }
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 740, name = "Portrait Preview")

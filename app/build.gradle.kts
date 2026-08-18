@@ -57,7 +57,8 @@ android {
         getByName("debug") {
         }
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -100,7 +101,6 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.material.icons.extended.android)
-    implementation(libs.play.services.ads)
     implementation(libs.billing)
     implementation(libs.billing.ktx)
 }

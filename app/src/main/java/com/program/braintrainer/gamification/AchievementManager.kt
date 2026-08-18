@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import android.media.MediaPlayer
 import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.data.SettingsManager
+import com.program.braintrainer.util.playSound
 
 private val Context.achievementDataStore: DataStore<Preferences> by preferencesDataStore(name = "achievements")
 
@@ -167,7 +167,7 @@ class AchievementManager(private val context: Context,
             _newlyUnlockedAchievementFlow.tryEmit(it)
             val areSoundsEnabled = settingsManager.settingsFlow.first().isSoundEnabled
             if (areSoundsEnabled) {
-                MediaPlayer.create(context, R.raw.achievement_unlocked).start()
+                playSound(context, R.raw.achievement_unlocked)
             }
         }
     }

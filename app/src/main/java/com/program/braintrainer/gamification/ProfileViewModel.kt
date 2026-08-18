@@ -1,7 +1,6 @@
 package com.program.braintrainer.gamification
 
 import android.content.Context
-import android.media.MediaPlayer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.program.braintrainer.R
@@ -9,6 +8,7 @@ import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.chess.model.data.SettingsManager
 import com.program.braintrainer.score.ScoreManager
+import com.program.braintrainer.util.playSound
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -41,7 +41,7 @@ class ProfileViewModel(
             if (previousRank != null && currentRank.id != previousRank!!.id) {
                 viewModelScope.launch {
                     if (settingsManager.settingsFlow.first().isSoundEnabled) {
-                        MediaPlayer.create(context, R.raw.rank_up).start()
+                        playSound(context, R.raw.rank_up)
                     }
                 }
             }

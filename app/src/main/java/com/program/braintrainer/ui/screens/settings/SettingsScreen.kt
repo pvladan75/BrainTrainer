@@ -187,7 +187,7 @@ private fun PremiumSettingsRow(isPremium: Boolean, onPurchaseClick: () -> Unit) 
                 color = MaterialTheme.colorScheme.primary
             )
         } else {
-            Text(stringResource(id = R.string.settings_remove_ads), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(id = R.string.settings_premium_title), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 stringResource(id = R.string.settings_premium_description),

@@ -1,7 +1,6 @@
 package com.program.braintrainer.ui.screens.settings
 
 import android.app.Activity
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.program.braintrainer.chess.model.data.AppSettings
@@ -16,24 +15,10 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(
     private val settingsManager: SettingsManager,
     private val scoreManager: ScoreManager,
-    context: Context // Kontekst se prosleđuje spolja, npr. iz Hilt/Koin ili Factory-ja
-) : ViewModel() {
-
+    // BillingClientManager je vlasništvo BrainTrainerApp-a (jedna konekcija za celu
+    // aplikaciju), zato ga ViewModel samo koristi i NE gasi u onCleared().
     private val billingClientManager: BillingClientManager
-
-    init {
-        // ISPRAVKA: Prosleđen je 'viewModelScope' kao 'externalScope'
-        billingClientManager = BillingClientManager(
-            context = context,
-            externalScope = viewModelScope,
-            onPurchaseSuccess = {
-                // Nakon uspešne kupovine, ažuriramo status korisnika
-                viewModelScope.launch {
-                    settingsManager.setPremiumUser(true)
-                }
-            }
-        )
-    }
+) : ViewModel() {
 
     val settingsState: StateFlow<AppSettings> = settingsManager.settingsFlow.stateIn(
         scope = viewModelScope,
@@ -47,7 +32,7 @@ class SettingsViewModel(
 
     /**
      * Proverava postojeće kupovine. Treba pozvati kada se UI vraća u prvi plan (onResume).
-     * Ovo je ključno za obradu kupovina koje su se desile van aplikacije.
+     * Ovo hvata kupovine i refundove koji su se desili van aplikacije.
      */
     fun queryExistingPurchasesOnResume() {
         viewModelScope.launch {
@@ -77,11 +62,5 @@ class SettingsViewModel(
         viewModelScope.launch {
             billingClientManager.launchPurchaseFlow(activity)
         }
-    }
-
-    // Dobra praksa je da se oslobode resursi kada ViewModel više nije potreban
-    override fun onCleared() {
-        super.onCleared()
-        billingClientManager.destroy()
     }
 }
