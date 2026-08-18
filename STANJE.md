@@ -10,10 +10,9 @@
 
 ## Gde smo stali
 
-Crashlytics je završen i provereno radi od kraja do kraja. Nema otvorenih
-blokada.
+`ChessViewModel` je završen i proveren na uređaju. Nema otvorenih blokada.
 
-Sledeći korak po planu: **`ChessViewModel`** (sekcija „Sledeći koraci").
+Sledeći korak po planu: **učitavanje zagonetki** (sekcija „Sledeći koraci").
 
 Jedno preostalo zaduženje van koda: **ažurirati Play Data Safety** pre sledećeg
 objavljivanja — Crashlytics prikuplja crash logove i dijagnostiku, što se mora
@@ -23,7 +22,7 @@ prijaviti u Play Console → App content → Data safety.
 
 ## Urađeno
 
-Tri commit-a na grani `uklanjanje-reklama-i-popravke`:
+Hronološki, po commit-ima na grani `uklanjanje-reklama-i-popravke`:
 
 ### `ac70b4e` — Reklame, lokalizacija, premium, R8
 
@@ -112,6 +111,44 @@ vraćene i nisu commit-ovane. Release build pokreće task
 build-a se **neće** pojaviti u konzoli. Za ponovnu proveru treba privremeno
 postaviti `setCrashlyticsCollectionEnabled(true)`.
 
+### `ChessViewModel`
+
+`ChessScreen` je bio composable od 616 linija sa 24 `remember` promenljive i pet
+`LaunchedEffect`-a. Sve stanje partije je izvučeno u ViewModel.
+
+Novi paket `ui/screens/chess/`:
+
+| Fajl | Linija | Uloga |
+|---|---|---|
+| `ChessViewModel.kt` | 512 | ceo tok sesije |
+| `ChessScreen.kt` | 322 | prikaz, bez stanja |
+| `ChessScreenComponents.kt` | 306 | tabla, paneli, dijalozi |
+| `ChessUiState.kt` | 96 | stanje, ishodi, događaji |
+| `ChessViewModelFactory.kt` | 35 | |
+
+Ključne odluke:
+
+- **ViewModel ne drži Context.** Poruke se emituju kao `PuzzleOutcome` i
+  `ChessUiEvent` (uključujući zvuk), a UI ih prevodi preko `stringResource`.
+  Ranije je `checkGameStatus` sastavljao gotov lokalizovan tekst.
+- **Tajmer, hint i reprodukcija rešenja su `Job`-ovi**, ne `LaunchedEffect`-i.
+  Otkazuju se eksplicitno i u `onCleared()`.
+- `ChessScreenContent` je odvojen od `ChessScreen` — prima samo stanje i
+  `ChessActions`, pa se može pregledati u `@Preview`-u bez ViewModel-a.
+- Komponente više ne primaju `Problem` ni `List<Problem>`, nego `sessionSize` i
+  `solutionMoveCount`.
+
+**Nije urađeno: preživljavanje process death.** ViewModel preživljava promenu
+konfiguracije, ali `SavedStateHandle` nije uveden — posle ubijanja procesa
+sesija kreće ispočetka. Ranija verzija ovog dokumenta je to navodila kao dobitak
+ovog koraka, što nije tačno; za to bi trebalo čuvati ID-jeve zagonetki u sesiji,
+FEN table i brojače.
+
+Provereno na uređaju kroz stvarnu igru: ulazak u modul, `Puzzle: 1/10`, tajmer,
+hint, predaja sa ispravnim tekstom ishoda, prelazak na sledeću zagonetku
+(`Puzzle: 2/10`, brojači resetovani) i reprodukcija rešenja koja se uredno
+zaustavlja na kraju.
+
 ### Efekat na veličinu
 
 | | AAB |
@@ -126,36 +163,21 @@ aplikacija koristi tri ikonice.
 
 ---
 
----
-
 ## Sledeći koraci
 
 Poređano po vrednosti.
 
-### 1. `ChessViewModel`
-
-Preostalih 616 linija u `ChessScreen` je stvarna mašina stanja partije — 24
-`remember` promenljive i pet `LaunchedEffect`-a. Izvlačenje u ViewModel donosi:
-
-- preživljavanje process death (trenutno rotaciju spašava samo `configChanges`
-  u manifestu)
-- mesto gde nova monetizacija može da se zakači bez daljeg naduvavanja UI-ja
-- mogućnost testiranja toka partije
-
-Testovi za `Board` i `FenParser` su mreža ispod ovog refaktora — zato je
-urađen tim redom.
-
-### 2. Učitavanje zagonetki
+### 1. Učitavanje zagonetki
 
 `ProblemLoader` čita ceo fajl u `String` (do 4,2 MB), parsira do 5.800 objekata
-i uradi `.shuffled()` nad celom listom — a `ChessScreen` zatim uradi **još
+i uradi `.shuffled()` nad celom listom — a `ChessViewModel` zatim uradi **još
 jedan** `.shuffled().take(10)`. Sve to za deset zagonetki.
 
 Rešenje: minifikovati JSON u assets-u (trenutno je pretty-printed, oko dvostruko
 veći nego što treba), preći na `Json.decodeFromStream`, i po mogućstvu indeks
 umesto parsiranja svega. Ovo je sada najveći uzrok sporog starta partije.
 
-### 3. Nova strategija monetizacije
+### 2. Nova strategija monetizacije
 
 Reklame su uklonjene, planira se novi model. Zatečeno stanje:
 

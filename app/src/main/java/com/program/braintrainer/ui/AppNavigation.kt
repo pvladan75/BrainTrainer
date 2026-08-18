@@ -15,6 +15,8 @@ import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.gamification.AchievementsViewModelFactory
 import com.program.braintrainer.gamification.ProfileViewModelFactory
 import com.program.braintrainer.ui.screens.*
+import com.program.braintrainer.ui.screens.chess.ChessScreen
+import com.program.braintrainer.ui.screens.chess.ChessViewModelFactory
 import com.program.braintrainer.ui.screens.settings.SettingsScreen
 import com.program.braintrainer.ui.screens.settings.SettingsViewModelFactory
 
@@ -112,6 +114,9 @@ fun AppNavigation() {
                 ChessScreen(
                     module = moduleType,
                     difficulty = difficultyType,
+                    viewModel = viewModel(
+                        factory = ChessViewModelFactory(context, moduleType, difficultyType)
+                    ),
                     onGameFinished = {
                         navController.popBackStack(Routes.MAIN_MENU, inclusive = false)
                     }

@@ -1,4 +1,4 @@
-package com.program.braintrainer.ui.screens
+package com.program.braintrainer.ui.screens.chess
 
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
@@ -39,7 +39,7 @@ fun NoMoreMovesDialog(onShowSolution: () -> Unit, onNewGame: () -> Unit) {
 fun GameInfoPanel(
     module: Module,
     difficulty: Difficulty,
-    problemsInSession: List<Problem>,
+    sessionSize: Int,
     currentSessionProblemIndex: Int,
     elapsedTime: Int,
     optimalMoves: Int,
@@ -81,10 +81,10 @@ fun GameInfoPanel(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = if (problemsInSession.isNotEmpty()) stringResource(
+                text = if (sessionSize > 0) stringResource(
                     R.string.info_panel_puzzle_progress,
                     currentSessionProblemIndex + 1,
-                    problemsInSession.size
+                    sessionSize
                 ) else stringResource(R.string.info_panel_loading),
                 style = infoTextStyle,
                 color = textColor
@@ -122,7 +122,7 @@ fun GameControlsPanel(
     showSolutionPath: Boolean,
     isPlayingSolution: Boolean,
     solutionMoveIndex: Int,
-    currentProblem: Problem?,
+    solutionMoveCount: Int,
     onShowSolutionClick: () -> Unit,
     onNextPuzzleClick: () -> Unit,
     onPreviousMoveClick: () -> Unit,
@@ -176,8 +176,8 @@ fun GameControlsPanel(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = onPreviousMoveClick, enabled = solutionMoveIndex > 0) { Text(stringResource(R.string.button_previous_move)) }
-                Button(onClick = onPlayPauseClick, enabled = currentProblem?.solution?.moves?.isNotEmpty() == true) { Text(if (isPlayingSolution) stringResource(R.string.button_pause) else stringResource(R.string.button_play)) }
-                Button(onClick = onNextMoveClick, enabled = currentProblem?.solution?.moves?.isNotEmpty() == true && solutionMoveIndex < (currentProblem.solution.moves.size)) { Text(stringResource(R.string.button_next_move)) }
+                Button(onClick = onPlayPauseClick, enabled = solutionMoveCount > 0) { Text(if (isPlayingSolution) stringResource(R.string.button_pause) else stringResource(R.string.button_play)) }
+                Button(onClick = onNextMoveClick, enabled = solutionMoveCount > 0 && solutionMoveIndex < solutionMoveCount) { Text(stringResource(R.string.button_next_move)) }
             }
         }
 
