@@ -16,6 +16,7 @@ import kotlin.random.Random
 internal object ProblemSampler {
 
     private const val BUFFER_SIZE = 32 * 1024
+    private const val QUOTE = '"'
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -42,6 +43,45 @@ internal object ProblemSampler {
         // Prvih `count` redova ostaje na svojim mestima dok ih neko ne zameni,
         // pa se redosled meša — ali samo za odabrane, ne za ceo fajl.
         return reservoir.mapNotNull { parseOrNull(it) }.shuffled(random)
+    }
+
+    /**
+     * Vraća zagonetke sa zadatim ID-jevima, redosledom kojim su traženi.
+     * Parsira samo pogođene redove — koristi se pri obnavljanju sesije posle
+     * ubijanja procesa.
+     */
+    fun selectByIds(input: InputStream, ids: Collection<String>): List<Problem> {
+        if (ids.isEmpty()) return emptyList()
+
+        val wanted = ids.toHashSet()
+        val found = HashMap<String, Problem>(wanted.size)
+
+        input.reader().buffered(BUFFER_SIZE).forEachLine { line ->
+            if (found.size == wanted.size) return@forEachLine
+            val id = idOf(line) ?: return@forEachLine
+            if (id in wanted && id !in found) {
+                parseOrNull(line)?.let { found[id] = it }
+            }
+        }
+
+        return ids.mapNotNull { found[it] }
+    }
+
+    /**
+     * ID reda bez parsiranja JSON-a: `id` je prvo polje, pa je njegova vrednost
+     * između trećeg i četvrtog navodnika u redu.
+     */
+    private fun idOf(line: String): String? {
+        var quotesSeen = 0
+        var valueStart = -1
+
+        for (index in line.indices) {
+            if (line[index] != QUOTE) continue
+            quotesSeen++
+            if (quotesSeen == 3) valueStart = index + 1
+            if (quotesSeen == 4) return line.substring(valueStart, index)
+        }
+        return null
     }
 
     private fun parseOrNull(line: String): Problem? = try {

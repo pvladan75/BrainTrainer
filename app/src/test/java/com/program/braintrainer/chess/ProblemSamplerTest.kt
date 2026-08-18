@@ -65,6 +65,33 @@ class ProblemSamplerTest {
     }
 
     @Test
+    fun `selectByIds vraca zagonetke redosledom kojim su trazene`() {
+        val selected = ProblemSampler.selectByIds(stream(*lines(300)), listOf("42", "7", "299"))
+
+        assertEquals(listOf("42", "7", "299"), selected.map { it.id })
+    }
+
+    @Test
+    fun `selectByIds preskace nepoznate ID-jeve i prazan zahtev`() {
+        val selected = ProblemSampler.selectByIds(stream(*lines(10)), listOf("3", "nepostojeci", "9"))
+
+        assertEquals(listOf("3", "9"), selected.map { it.id })
+        assertEquals(emptyList<Any>(), ProblemSampler.selectByIds(stream(*lines(10)), emptyList()))
+    }
+
+    @Test
+    fun `selectByIds radi nad stvarnim assets fajlom`() {
+        val file = File("src/main/assets/module1_hard_puzzles.jsonl")
+        val sample = ProblemSampler.sample(file.inputStream(), 5, Random(11))
+        val ids = sample.map { it.id }.reversed()
+
+        val selected = ProblemSampler.selectByIds(file.inputStream(), ids)
+
+        assertEquals(ids, selected.map { it.id })
+        assertEquals(sample.sortedBy { it.id }, selected.sortedBy { it.id })
+    }
+
+    @Test
     fun `svaki red u assets fajlu je ispravna zagonetka`() {
         val file = File("src/main/assets/module3_hard_puzzles.jsonl")
         assertTrue("nedostaje ${file.absolutePath}", file.exists())

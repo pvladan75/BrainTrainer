@@ -5,6 +5,7 @@ import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.chess.model.Problem
 import java.io.IOException
+import java.io.InputStream
 import kotlin.random.Random
 
 class ProblemLoader(private val context: Context) {
@@ -21,13 +22,31 @@ class ProblemLoader(private val context: Context) {
         difficulty: Difficulty,
         count: Int,
         random: Random = Random.Default
+    ): List<Problem> = readAsset(module, difficulty) { stream ->
+        ProblemSampler.sample(stream, count, random)
+    }
+
+    /**
+     * Učitava tačno zadate zagonetke, redosledom kojim su traženi ID-jevi.
+     * Koristi se kada se sesija obnavlja posle ubijanja procesa.
+     */
+    fun loadProblemsByIds(
+        module: Module,
+        difficulty: Difficulty,
+        ids: List<String>
+    ): List<Problem> = readAsset(module, difficulty) { stream ->
+        ProblemSampler.selectByIds(stream, ids)
+    }
+
+    private fun readAsset(
+        module: Module,
+        difficulty: Difficulty,
+        block: (InputStream) -> List<Problem>
     ): List<Problem> {
         val fileName = "${module.name.lowercase()}_${difficulty.name.lowercase()}_puzzles.jsonl"
 
         return try {
-            context.assets.open(fileName).use { stream ->
-                ProblemSampler.sample(stream, count, random)
-            }
+            context.assets.open(fileName).use(block)
         } catch (ioException: IOException) {
             println("ERROR: Could not load file $fileName. Does it exist in assets and is named correctly? ${ioException.message}")
             ioException.printStackTrace()

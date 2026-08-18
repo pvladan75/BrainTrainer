@@ -3,6 +3,8 @@ package com.program.braintrainer.ui.screens.chess
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.program.braintrainer.brainTrainerApp
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
@@ -17,7 +19,7 @@ class ChessViewModelFactory(
 
     private val app = context.brainTrainerApp
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         if (modelClass.isAssignableFrom(ChessViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return ChessViewModel(
@@ -26,7 +28,9 @@ class ChessViewModelFactory(
                 problemLoader = ProblemLoader(app),
                 scoreManager = ScoreManager(app),
                 settingsManager = app.settingsManager,
-                achievementManager = app.achievementManager
+                achievementManager = app.achievementManager,
+                // Nosi snapshot sesije preko ubijanja procesa.
+                savedStateHandle = extras.createSavedStateHandle()
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

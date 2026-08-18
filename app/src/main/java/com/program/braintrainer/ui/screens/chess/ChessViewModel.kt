@@ -1,5 +1,6 @@
 package com.program.braintrainer.ui.screens.chess
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.program.braintrainer.chess.model.Board
@@ -34,6 +35,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import com.program.braintrainer.chess.model.Color as ChessColor
 
 /**
@@ -53,6 +56,7 @@ class ChessViewModel(
     private val scoreManager: ScoreManager,
     private val settingsManager: SettingsManager,
     private val achievementManager: AchievementManager,
+    private val savedStateHandle: SavedStateHandle = SavedStateHandle(),
     private val scoringParams: ScoringParams = ScoringParams()
 ) : ViewModel() {
 
@@ -91,7 +95,108 @@ class ChessViewModel(
                 _events.emit(ChessUiEvent.AchievementUnlocked(achievement.id))
             }
         }
-        loadSession()
+
+        val snapshot = savedStateHandle.get<String>(KEY_SNAPSHOT)?.let(::decodeSnapshot)
+        if (snapshot != null) restoreSession(snapshot) else loadSession()
+
+        // Snimanje ide iz jednog mesta: sve što UI vidi, vidi i snapshot.
+        viewModelScope.launch {
+            uiState.collect { state -> persist(state) }
+        }
+    }
+
+    // ------------------------------------------------- preživljavanje procesa
+
+    /**
+     * Ono što je potrebno da se partija nastavi tamo gde je stala. Zagonetke se
+     * pamte po ID-ju, a ne cele — sesija se posle ubijanja procesa pročita iz
+     * assets-a preko [ProblemLoader.loadProblemsByIds].
+     */
+    @Serializable
+    private data class SessionSnapshot(
+        val puzzleIds: List<String>,
+        val currentIndex: Int,
+        val correctStreak: Int,
+        val boardFen: String,
+        val elapsedSeconds: Int,
+        val playerMoveCount: Int,
+        val mistakes: Int,
+        val usedSolution: Boolean,
+        val puzzleFinished: Boolean
+    )
+
+    private fun persist(state: ChessUiState) {
+        if (state.isLoading || session.isEmpty()) return
+
+        if (state.showSessionEndDialog) {
+            // Sesija je gotova; nema šta da se nastavlja.
+            savedStateHandle.remove<String>(KEY_SNAPSHOT)
+            return
+        }
+
+        val snapshot = SessionSnapshot(
+            puzzleIds = session.map { it.id },
+            currentIndex = currentIndex,
+            correctStreak = correctStreak,
+            boardFen = state.board.toFEN(),
+            elapsedSeconds = state.elapsedSeconds,
+            playerMoveCount = state.playerMoveCount,
+            mistakes = state.mistakes,
+            usedSolution = state.usedSolution,
+            puzzleFinished = state.outcome != null || state.showNoMoreMovesDialog
+        )
+        savedStateHandle[KEY_SNAPSHOT] = snapshotJson.encodeToString(snapshot)
+    }
+
+    private fun decodeSnapshot(stored: String): SessionSnapshot? = try {
+        snapshotJson.decodeFromString<SessionSnapshot>(stored)
+    } catch (exception: Exception) {
+        println("ERROR: Could not restore chess session. ${exception.message}")
+        null
+    }
+
+    private fun restoreSession(snapshot: SessionSnapshot) {
+        viewModelScope.launch {
+            val restored = withContext(Dispatchers.IO) {
+                problemLoader.loadProblemsByIds(module, difficulty, snapshot.puzzleIds)
+            }
+            if (restored.size != snapshot.puzzleIds.size) {
+                // Assets su se promenili ispod nas — bolje nova sesija nego pola stare.
+                loadSession()
+                return@launch
+            }
+
+            session = restored
+            correctStreak = snapshot.correctStreak
+            _uiState.update { it.copy(isLoading = false, sessionSize = session.size) }
+
+            if (snapshot.puzzleFinished) {
+                // Proces je ubijen dok je stajao dijalog o ishodu; ta zagonetka je
+                // već obračunata, pa se kreće od sledeće.
+                if (snapshot.currentIndex + 1 >= session.size) {
+                    loadSession()
+                    return@launch
+                }
+                currentIndex = snapshot.currentIndex + 1
+                startCurrentPuzzle()
+                return@launch
+            }
+
+            currentIndex = snapshot.currentIndex.coerceIn(0, session.lastIndex)
+            startCurrentPuzzle()
+
+            val board = FenParser.parseFenToBoard(snapshot.boardFen).first
+            _uiState.update {
+                it.copy(
+                    board = board,
+                    selectedSquare = firstWhiteSquare(board),
+                    elapsedSeconds = snapshot.elapsedSeconds,
+                    playerMoveCount = snapshot.playerMoveCount,
+                    mistakes = snapshot.mistakes,
+                    usedSolution = snapshot.usedSolution
+                )
+            }
+        }
     }
 
     // ---------------------------------------------------------------- sesija
@@ -529,6 +634,9 @@ class ChessViewModel(
     }
 
     private companion object {
+        const val KEY_SNAPSHOT = "chess_session_snapshot"
+        val snapshotJson = Json { ignoreUnknownKeys = true }
+
         const val PUZZLES_PER_SESSION = 10
         const val HINT_MOVES = 3
         const val HINT_STEP_MS = 1500L
