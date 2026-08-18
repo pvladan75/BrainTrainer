@@ -12,12 +12,11 @@
 
 `ChessViewModel` je završen i proveren na uređaju. Nema otvorenih blokada.
 
+Poznata ograničenja i dug su prošireni; ostala su samo šahovska pravila
+(promocija, en passant, rokada), koja za postojeće module nisu relevantna.
+
 Sledeći korak po planu: **nova strategija monetizacije** (sekcija „Sledeći
 koraci").
-
-Jedno preostalo zaduženje van koda: **ažurirati Play Data Safety** pre sledećeg
-objavljivanja — Crashlytics prikuplja crash logove i dijagnostiku, što se mora
-prijaviti u Play Console → App content → Data safety.
 
 ---
 
@@ -139,11 +138,9 @@ Ključne odluke:
 - Komponente više ne primaju `Problem` ni `List<Problem>`, nego `sessionSize` i
   `solutionMoveCount`.
 
-**Nije urađeno: preživljavanje process death.** ViewModel preživljava promenu
-konfiguracije, ali `SavedStateHandle` nije uveden — posle ubijanja procesa
-sesija kreće ispočetka. Ranija verzija ovog dokumenta je to navodila kao dobitak
-ovog koraka, što nije tačno; za to bi trebalo čuvati ID-jeve zagonetki u sesiji,
-FEN table i brojače.
+**Tada nije urađeno: preživljavanje process death.** ViewModel je preživljavao
+promenu konfiguracije, ali `SavedStateHandle` nije bio uveden. Rešeno kasnije —
+vidi „Raščišćen dug".
 
 Provereno na uređaju kroz stvarnu igru: ulazak u modul, `Puzzle: 1/10`, tajmer,
 hint, predaja sa ispravnim tekstom ishoda, prelazak na sledeću zagonetku
@@ -174,6 +171,58 @@ Merenje na JVM-u (`module1_hard`, 5.800 zagonetki): 163 ms → 58 ms na hladno,
 34 ms → 4 ms kad je fajl u kešu. Na AAB se ovo skoro i ne vidi (**–0,08 MB**) —
 razmaci iz pretty-print-a se ionako odlično kompresuju; dobitak je u parsiranju,
 memoriji i prostoru na uređaju.
+
+### Raščišćen dug
+
+Pređeno redom po vrednosti.
+
+**Dostignuća.** `AchievementManager` se pravio zasebno u tri factory-ja, pa je
+`newlyUnlockedAchievementFlow` bio per-instanca — a nije ga niko ni slušao.
+Sada je jedna instanca u `BrainTrainerApp`, `ChessViewModel` je sluša i emituje
+`ChessUiEvent.AchievementUnlocked`, a ekran prikazuje snackbar sa prevedenim
+nazivom. Prvi put da otključano dostignuće uopšte stigne do korisnika.
+
+**Tajmer u pozadini.** Odbrojavao je i dok je aplikacija u pozadini, pa se gubio
+vremenski bonus. Tiker sada radi samo kada zagonetka teče i ekran je u prvom
+planu (`ON_START`/`ON_STOP`), bez promene u tome kada se tajmer logički pokreće.
+
+**Performanse table.** `getLegalMoves` je za svaku figuru prolazio kroz svih 64
+polja i za svako zvao `isValidMove` (kopira mapu figura, pa računa šah). Sada se
+kandidati generišu iz pravila kretanja same figure — najviše 27. `isKingInCheck`
+je gradio ceo skup napadnutih polja da bi proverio jedno; zamenjen je sa
+`isSquareAttackedBy`, koji prekida na prvom napadaču, i isti poziv koriste
+Module2 i Module3 pravila. `Square` interniše svih 64 polja umesto da alocira
+novo pri svakom `fromCoordinates`.
+
+Merenje na JVM-u (200 pozicija iz `module2_hard` i `module3_hard`, 20 prolaza):
+177–194 ms → 68–70 ms, oko **2,6x**. Novo generisanje se u testovima poredi sa
+starom logikom na stvarnim pozicijama iz assets-a, figuru po figuru.
+
+**Solver.** BFS je dobio budžet: 3 s i 200.000 stanja. Dubina se namerno **ne**
+ograničava — rešenja u assets-u idu do 38 poteza, pa bi svaki razuman limit
+dubine odsekao teške zagonetke. Putanja se više ne kopira u svaki čvor, nego se
+rekonstruiše preko roditelja.
+
+**Process death.** U `SavedStateHandle` se čuva snapshot sesije: ID-jevi deset
+zagonetki, indeks, niz tačnih, FEN zatečene table, vreme, potezi, greške i da li
+je rešenje otkriveno. Piše se iz pretplate na `uiState`, pa ne može da odluta od
+prikazanog stanja; na kraju sesije se briše. Zagonetke se pamte po ID-ju —
+`ProblemLoader.loadProblemsByIds` parsira samo pogođene redove JSONL-a. Ako je
+proces ubijen dok je stajao dijalog o ishodu, nastavlja se od sledeće zagonetke
+jer je ta već obračunata.
+
+**Statusna traka.** `window.statusBarColor` je deprecated i na Android-u 15+ se
+ignoriše, a aplikacija radi edge-to-edge. Ostalo je samo
+`isAppearanceLightStatusBars`, sada ispravno okrenut — ranije su na Android-u
+15+ ikonice bile bele na svetloj pozadini.
+
+**Sitnice.** Obrisane su mrtva `Piece.getChar()` extension unutar same klase,
+njen duplikat u `Board.kt` (ostaje `toFenChar`), `Piece.opposite()` koja vraća
+`Color`, i `Square.isValid()` koja uvek vraća `true`.
+
+**CI.** GitHub Actions workflow (`.github/workflows/build.yml`) vrti testove i
+debug build na svaki push i pull request. Ne treba mu `keystore.properties` jer
+se debug potpisuje debug ključem. Testova je sada **65**.
 
 ### Efekat na veličinu
 
@@ -225,30 +274,12 @@ Nije hitno, ali je zabeleženo da se ne bi ponovo otkrivalo.
 
 **Šahovska pravila.** Nema promocije pešaka (pešak na 8. redu ostaje pešak — ima
 test koji to dokumentuje), nema en passant-a ni rokade. Za postojeće module nije
-relevantno.
+relevantno, a uvođenje promocije bi promenilo značenje postojećih zagonetki i
+njihovih rešenja u assets-u.
 
-**Performanse table.** `getLegalMoves` prolazi svih 64 polja i za svako zove
-`isValidMove`, koji radi `applyMove` (kopira mapu) plus `isKingInCheck`. Sve na
-glavnoj niti u `onSquareClick`.
-
-**Solver.** `UniversalPuzzleSolver` je BFS bez ograničenja dubine i bez timeout-a,
-sa `visitedStates` setom FEN stringova. Na teškoj poziciji može dugo da traje.
-
-**Tajmer.** Ne pauzira kada aplikacija ode u pozadinu — vreme teče i korisnik
-gubi vremenski bonus.
-
-**`AchievementManager`.** Instancira se zasebno u svakom factory-ju i u
-`ChessScreen`, pa je `_newlyUnlockedAchievementFlow` per-instanca i notifikacija
-o otključanom dostignuću nikada ne stigne do ekrana koji sluša. Praktično mrtav
-kod.
-
-**Sitnice.** `Square` je data class sa `Char` + `Int`, pa se alocira objekat za
-svako polje u svakoj petlji solvera. `Piece.kt` sadrži extension funkciju unutar
-same klase (nedostupna) i `opposite()` koja vraća `Color` umesto `Piece`.
-`Square.isValid()` uvek vraća `true`. `window.statusBarColor` u `Theme.kt` je
-deprecated i ignorisan na Android 15+.
-
-**Nema CI-ja.** Testovi se pokreću ručno.
+**Snapshot sesije nije proveren na uređaju.** Logika učitavanja po ID-ju je
+pokrivena testovima, ali samo ubijanje procesa (Developer options → „Don't keep
+activities", ili `adb shell am kill com.program.braintrainer`) treba proći ručno.
 
 ---
 
