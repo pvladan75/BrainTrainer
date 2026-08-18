@@ -1,3 +1,4 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -12,6 +13,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -55,8 +58,18 @@ android {
 
     buildTypes {
         getByName("debug") {
+            configure<CrashlyticsExtension> {
+                // Debug nema obfuskaciju, pa nema ni šta da se uploaduje.
+                mappingFileUploadEnabled = false
+            }
         }
         getByName("release") {
+            // Bez mapping fajla su stack trace-ovi iz produkcije nečitljivi,
+            // jer R8 obfuskuje imena klasa i metoda.
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = true
+            }
+
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -101,6 +114,8 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.material.icons.extended.android)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
     implementation(libs.billing)
     implementation(libs.billing.ktx)
 }

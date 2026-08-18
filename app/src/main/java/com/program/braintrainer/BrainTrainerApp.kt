@@ -2,6 +2,7 @@ package com.program.braintrainer
 
 import android.app.Application
 import android.content.Context
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.program.braintrainer.chess.model.data.BillingClientManager
 import com.program.braintrainer.chess.model.data.SettingsManager
 import kotlinx.coroutines.CoroutineScope
@@ -41,6 +42,11 @@ class BrainTrainerApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Padovi iz debug build-a ne treba da zagađuju Crashlytics konzolu.
+        FirebaseCrashlytics.getInstance()
+            .setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
+
         // Pristup lazy vrednosti pokreće povezivanje na Google Play i proveru kupovina.
         billingClientManager
     }

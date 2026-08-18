@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "23160555230",
+    "project_id": "braintrainer-8eda3",
+    "storage_bucket": "braintrainer-8eda3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23160555230:android:11d5db97bca8a6eec4e44f",
+        "android_client_info": {
+          "package_name": "com.program.braintrainer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHjnXl7kk9Y8UBs4nlUYxYrB8HE-cOyI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

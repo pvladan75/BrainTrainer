@@ -10,10 +10,14 @@
 
 ## Gde smo stali
 
-Poslednji korak u toku je **Crashlytics** i blokiran je — čeka se
-`google-services.json`. Detalji niže, u sekciji „U toku".
+Crashlytics je završen i provereno radi od kraja do kraja. Nema otvorenih
+blokada.
 
-Sve pre toga je završeno, build-ovano, testirano i push-ovano.
+Sledeći korak po planu: **`ChessViewModel`** (sekcija „Sledeći koraci").
+
+Jedno preostalo zaduženje van koda: **ažurirati Play Data Safety** pre sledećeg
+objavljivanja — Crashlytics prikuplja crash logove i dijagnostiku, što se mora
+prijaviti u Play Console → App content → Data safety.
 
 ---
 
@@ -69,6 +73,45 @@ samo `assertEquals(4, 2 + 2)`.
 Uz to: `FenParser.parseFenToBoard` je čitao `parts[1]` bez provere, pa bi FEN bez
 polja za aktivnog igrača srušio aplikaciju. Polje je sada opciono.
 
+### `2e3aac9` — Dokumentacija
+
+`README.md` i `STANJE.md`. Projekat do tada nije imao nikakvu dokumentaciju.
+
+### Crashlytics
+
+**Zašto:** od kad je R8 uključen, stack trace-ovi iz produkcije su obfuskovani.
+Bez Crashlytics-a i upload-a mapping fajla padovi su nečitljivi.
+
+Firebase projekat: **`braintrainer-8eda3`**.
+Konfiguracija je u `app/google-services.json` i **commit-ovana je** — sadrži
+client config i API ključ ograničen imenom paketa i potpisom, nije tajna. Bez nje
+projekat ne može da se build-uje na čistom klonu.
+
+Verzije, provereno aktuelne na `dl.google.com/dl/android/maven2`:
+
+| | |
+|---|---|
+| `com.google.gms.google-services` | 4.5.0 |
+| `com.google.firebase.crashlytics` | 3.0.7 |
+| `firebase-bom` | 34.17.0 |
+
+Podešeno:
+- upload R8 mapping fajla uključen za release, isključen za debug
+  (`mappingFileUploadEnabled`)
+- slanje izveštaja isključeno u debug build-u
+  (`setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)` u `BrainTrainerApp`),
+  da test padovi ne zagađuju konzolu
+
+Provereno na uređaju: namerni pad je poslat, logcat pokazuje
+`Initializing Firebase Crashlytics 20.1.0` i zahtev ka
+`crashlyticsreports-pa.googleapis.com`. Privremene izmene za taj test su
+vraćene i nisu commit-ovane. Release build pokreće task
+`uploadCrashlyticsMappingFileGooglePlayRelease`.
+
+**Napomena za testiranje:** pošto je slanje isključeno u debug-u, pad iz debug
+build-a se **neće** pojaviti u konzoli. Za ponovnu proveru treba privremeno
+postaviti `setCrashlyticsCollectionEnabled(true)`.
+
 ### Efekat na veličinu
 
 | | AAB |
@@ -82,38 +125,6 @@ Najveći pojedinačni dobitak: R8 je uklonio 11.403 stavke iz
 aplikacija koristi tri ikonice.
 
 ---
-
-## U toku: Crashlytics (blokirano)
-
-**Zašto:** od kad je R8 uključen, stack trace-ovi iz produkcije su obfuskovani.
-Bez Crashlytics-a i upload-a mapping fajla padovi su praktično nečitljivi.
-
-**Urađeno:** stavke dodate u `gradle/libs.versions.toml` — neaktivne, build je
-zelen. Verzije su provereno aktuelne (`dl.google.com/dl/android/maven2`):
-
-| | |
-|---|---|
-| `com.google.gms.google-services` | 4.5.0 |
-| `com.google.firebase.crashlytics` | 3.0.7 |
-| `firebase-bom` | 34.17.0 |
-
-**Blokada:** treba `google-services.json`. Firebase projekat se pravi pod
-Google nalogom vlasnika.
-
-1. [console.firebase.google.com](https://console.firebase.google.com) →
-   Create a project
-2. Add app → Android, package name tačno `com.program.braintrainer`
-   (SHA-1 nije potreban za Crashlytics)
-3. Download `google-services.json` → snimiti u **`app/google-services.json`**
-4. U Firebase konzoli otvoriti Crashlytics → Enable
-
-**Preostalo posle toga:**
-- uključiti oba plugin-a i dodati `firebase-bom` + `firebase-crashlytics`
-- uključiti automatski upload R8 mapping fajla za release
-- isključiti slanje izveštaja iz debug build-a
-- namerni test-pad radi provere da izveštaj stiže u konzolu
-- **ažurirati Play Data Safety** — Crashlytics prikuplja crash logove i
-  dijagnostiku; mora se prijaviti u Play Console → App content → Data safety
 
 ---
 
