@@ -12,7 +12,8 @@
 
 `ChessViewModel` je završen i proveren na uređaju. Nema otvorenih blokada.
 
-Sledeći korak po planu: **učitavanje zagonetki** (sekcija „Sledeći koraci").
+Sledeći korak po planu: **nova strategija monetizacije** (sekcija „Sledeći
+koraci").
 
 Jedno preostalo zaduženje van koda: **ažurirati Play Data Safety** pre sledećeg
 objavljivanja — Crashlytics prikuplja crash logove i dijagnostiku, što se mora
@@ -149,6 +150,31 @@ hint, predaja sa ispravnim tekstom ishoda, prelazak na sledeću zagonetku
 (`Puzzle: 2/10`, brojači resetovani) i reprodukcija rešenja koja se uredno
 zaustavlja na kraju.
 
+### Učitavanje zagonetki
+
+`ProblemLoader` je čitao ceo fajl u `String` (do 4,2 MB), parsirao svih 5.800
+objekata i mešao celu listu, pa je `ChessViewModel` mešao još jednom i uzimao
+deset. Sada se učitava samo ono što se koristi.
+
+- **Assets su prebačeni u JSONL** — jedna minifikovana zagonetka po redu, bez
+  polja `baseScore` i `maxMovesAllowed` koja kod nigde ne čita. Fajlovi su
+  preimenovani u `*_puzzles.jsonl`; 11,4 MB → 5,1 MB raspakovano.
+- **`ProblemSampler`** radi rezervoarsko uzorkovanje: jedan prolaz kroz tok, u
+  memoriji najviše deset redova, a JSON se parsira tek za odabrane. Umesto 5.800
+  objekata parsira se deset.
+- **`ProblemLoader.loadRandomProblems(module, difficulty, count)`** je zamenio
+  `loadProblemsForModuleAndDifficulty`; `ChessViewModel` više ne meša ništa i
+  samo prosleđuje `PUZZLES_PER_SESSION`.
+
+Šest novih testova (`ProblemSamplerTest`) pokriva veličinu uzorka, slučaj kad
+zagonetki ima manje nego što se traži, raspodelu kroz ceo fajl, preskakanje
+praznih i pokvarenih redova, i ispravnost svih redova u jednom assets fajlu.
+
+Merenje na JVM-u (`module1_hard`, 5.800 zagonetki): 163 ms → 58 ms na hladno,
+34 ms → 4 ms kad je fajl u kešu. Na AAB se ovo skoro i ne vidi (**–0,08 MB**) —
+razmaci iz pretty-print-a se ionako odlično kompresuju; dobitak je u parsiranju,
+memoriji i prostoru na uređaju.
+
 ### Efekat na veličinu
 
 | | AAB |
@@ -156,6 +182,7 @@ zaustavlja na kraju.
 | Pre svega | 19,5 MB |
 | Posle R8 | 9,1 MB |
 | Posle uklanjanja reklamnih SDK-ova | **5,4 MB** |
+| Sada (Crashlytics + minifikovane zagonetke) | 5,94 MB |
 
 Najveći pojedinačni dobitak: R8 je uklonio 11.403 stavke iz
 `androidx.compose.material.icons` — biblioteka nosi ceo Material icon set, a
@@ -167,17 +194,7 @@ aplikacija koristi tri ikonice.
 
 Poređano po vrednosti.
 
-### 1. Učitavanje zagonetki
-
-`ProblemLoader` čita ceo fajl u `String` (do 4,2 MB), parsira do 5.800 objekata
-i uradi `.shuffled()` nad celom listom — a `ChessViewModel` zatim uradi **još
-jedan** `.shuffled().take(10)`. Sve to za deset zagonetki.
-
-Rešenje: minifikovati JSON u assets-u (trenutno je pretty-printed, oko dvostruko
-veći nego što treba), preći na `Json.decodeFromStream`, i po mogućstvu indeks
-umesto parsiranja svega. Ovo je sada najveći uzrok sporog starta partije.
-
-### 2. Nova strategija monetizacije
+### 1. Nova strategija monetizacije
 
 Reklame su uklonjene, planira se novi model. Zatečeno stanje:
 

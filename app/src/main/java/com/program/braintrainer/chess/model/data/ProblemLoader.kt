@@ -4,37 +4,34 @@ import android.content.Context
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.chess.model.Problem
-import kotlinx.serialization.json.Json
 import java.io.IOException
+import kotlin.random.Random
 
 class ProblemLoader(private val context: Context) {
 
-    // Konfiguracija Json objekta
-    private val json = Json {
-        ignoreUnknownKeys = true // Ignoriše nepoznate ključeve u JSON-u (dobro za kompatibilnost unazad)
-        prettyPrint = true     // Formatira izlaz ako serializuješ (nije primarno za deserializaciju, ali korisno)
-    }
-
     /**
-     * Učitava listu šahovskih problema iz JSON fajla za dati modul i težinu.
-     * Fajlovi su imenovani npr. "module1_easy_puzzles.json", i svaki fajl
-     * sada sadrži LISTU objekata Problem.
+     * Učitava [count] nasumičnih zagonetki za dati modul i težinu.
+     *
+     * Fajlovi u assets-u su JSONL, imenovani npr. "module1_easy_puzzles.jsonl",
+     * sa jednom zagonetkom po redu. Uzorak bira [ProblemSampler] u jednom
+     * prolazu, bez učitavanja i parsiranja celog fajla.
      */
-    fun loadProblemsForModuleAndDifficulty(module: Module, difficulty: Difficulty): List<Problem> {
-        val fileName = "${module.name.lowercase()}_${difficulty.name.lowercase()}_puzzles.json"
+    fun loadRandomProblems(
+        module: Module,
+        difficulty: Difficulty,
+        count: Int,
+        random: Random = Random.Default
+    ): List<Problem> {
+        val fileName = "${module.name.lowercase()}_${difficulty.name.lowercase()}_puzzles.jsonl"
 
         return try {
-            val jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
-            // Sada parsiramo kao LISTU Problem objekata
-            json.decodeFromString<List<Problem>>(jsonString).shuffled()
+            context.assets.open(fileName).use { stream ->
+                ProblemSampler.sample(stream, count, random)
+            }
         } catch (ioException: IOException) {
             println("ERROR: Could not load file $fileName. Does it exist in assets and is named correctly? ${ioException.message}")
             ioException.printStackTrace()
-            emptyList() // Vraća praznu listu ako fajl ne postoji ili je problem sa I/O
-        } catch (serializationException: Exception) {
-            println("ERROR: Could not parse JSON from $fileName. Check JSON structure (should be a list of problems) and Problem data class. ${serializationException.message}")
-            serializationException.printStackTrace()
-            emptyList() // Vraća praznu listu ako dođe do greške prilikom parsiranja JSON-a
+            emptyList()
         }
     }
 }

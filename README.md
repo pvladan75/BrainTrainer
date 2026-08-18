@@ -58,8 +58,10 @@ app/src/main/java/com/program/braintrainer/
 └── util/SoundPlayer.kt         zvučni efekti
 ```
 
-Zagonetke su u `app/src/main/assets/` — devet JSON fajlova (modul × težina),
-ukupno **18.335 zagonetki**, oko 11 MB.
+Zagonetke su u `app/src/main/assets/` — devet JSONL fajlova (modul × težina),
+jedna minifikovana zagonetka po redu, ukupno **18.335 zagonetki**, oko 5 MB.
+`ProblemLoader` iz njih uzima deset nasumičnih zagonetki po partiji, u jednom
+prolazu kroz fajl i bez parsiranja onoga što nije odabrano (`ProblemSampler`).
 
 ### Build varijante
 

@@ -87,13 +87,8 @@ class ChessViewModel(
 
     private fun loadSession() {
         viewModelScope.launch {
-            val loaded = withContext(Dispatchers.IO) {
-                problemLoader.loadProblemsForModuleAndDifficulty(module, difficulty)
-            }
-            session = if (loaded.size >= PUZZLES_PER_SESSION) {
-                loaded.shuffled().take(PUZZLES_PER_SESSION)
-            } else {
-                loaded.shuffled()
+            session = withContext(Dispatchers.IO) {
+                problemLoader.loadRandomProblems(module, difficulty, PUZZLES_PER_SESSION)
             }
             currentIndex = 0
             _uiState.update { it.copy(isLoading = false, sessionSize = session.size) }
