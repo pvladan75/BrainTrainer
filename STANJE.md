@@ -166,6 +166,18 @@ Reklame su uklonjene, planira se novi model. Zatečeno stanje:
 Pre nego što se monetizacija zakomplikuje, vredi rešiti da se premium status
 čuva kao običan boolean u DataStore-u, bez serverske verifikacije.
 
+**Play Integrity API** (Play Console → Zaštićeno pomoću Play-a) stoji na 0/7 i
+namerno je tako ostavljen. Verdikt mora da se verifikuje na serveru — ako se
+proverava u samoj aplikaciji, napadač koji je već modifikovao APK preskoči i tu
+proveru. Bez backend-a daje privid zaštite. Realne scenarije (refund, deljenje
+backup-a, promena naloga) već pokriva `queryPurchasesAsync` pri svakom
+pokretanju. Vredi ga uvesti tek ako novi model donese serversku stranu.
+
+**„Ograničenja korišćenja ponude"** u zaštiti Play naplate je isključeno i ne
+može da se uključi — odnosi se na promotivne ponude za pretplatu, a aplikacija
+ima samo jednokratni `premium_upgrade` (`ProductType.INAPP`). Postaje relevantno
+ako se uvede pretplata sa probnim periodom.
+
 ---
 
 ## Poznata ograničenja i dug
