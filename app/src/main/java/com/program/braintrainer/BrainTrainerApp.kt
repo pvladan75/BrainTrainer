@@ -6,6 +6,8 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.program.braintrainer.chess.model.data.BillingClientManager
 import com.program.braintrainer.chess.model.data.SettingsManager
 import com.program.braintrainer.gamification.AchievementManager
+import com.program.braintrainer.stats.AttemptRepository
+import com.program.braintrainer.stats.StatsDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -33,6 +35,14 @@ class BrainTrainerApp : Application() {
      */
     val achievementManager: AchievementManager by lazy {
         AchievementManager(this, settingsManager)
+    }
+
+    /**
+     * Istorija odigranih zagonetki. Room dozvoljava jednu instancu baze po
+     * procesu, pa i ona živi ovde.
+     */
+    val attemptRepository: AttemptRepository by lazy {
+        AttemptRepository(StatsDatabase.create(this).attemptDao())
     }
 
     val billingClientManager: BillingClientManager by lazy {

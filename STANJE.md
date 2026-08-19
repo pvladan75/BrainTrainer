@@ -230,6 +230,42 @@ njen duplikat u `Board.kt` (ostaje `toFenChar`), `Piece.opposite()` koja vraća
 debug build na svaki push i pull request. Ne treba mu `keystore.properties` jer
 se debug potpisuje debug ključem. Testova je sada **65**.
 
+### Baza odigranih zagonetki
+
+Prvi komad novog premiuma, i jedini koji poskupljuje ako se odloži: svaki dan
+bez njega je dan odigranih zagonetki o kojima ne postoji nikakav trag. Ništa se
+u UI-ju još ne vidi — zapisivanje kreće odmah, prikaz dolazi kasnije.
+
+`ScoreManager` je i dalje tu i i dalje drži zbirne brojače u SharedPreferences;
+nova baza ga ne zamenjuje nego beleži ono što on ne pamti — pojedinačan pokušaj.
+
+- **Room + KSP**, jedna tabela `puzzle_attempts` (paket `stats/`). Šema se izvozi
+  u `app/schemas` i **commit-uje**, pa svaka naredna verzija ima sa čim da uporedi
+  migraciju.
+- Modul, težina i ishod se čuvaju **kao tekst**, ne kao redni broj enum-a —
+  dodavanje četvrtog modula ne sme da premesti značenje već upisanih redova. Red
+  sa nepoznatom vrednošću se preskače umesto da sruši spisak.
+- Zapisuje se **svaki** ishod: rešeno, rešeno uz rešenje, predato, bez poteza.
+  Dnevnik grešaka živi baš od onih koje nisu rešene. Ponovno pokretanje iste
+  zagonetke daje nov zapis — istorija je dnevnik pokušaja, ne stanje zagonetke.
+- `AttemptRepository` vraća domenske modele, ne Room tipove, pa baza ne curi u UI.
+- Upiti koji već postoje: skorašnji pokušaji, dnevni zbir (dan u **lokalnoj**
+  zoni, ne UTC), otvorene greške i zbir po modulu i težini.
+
+**Otvorena greška** je zagonetka čiji je *poslednji* pokušaj neuspešan: rešena pa
+kasnije promašena je otvorena, promašena pa rešena nije. To je i najlakši upit da
+se napiše naopako, pa je pokriven testom.
+
+Testovi: četiri JVM testa za preslikavanje i „savršeno rešenje", i **pet
+instrumentiranih** za same upite — Room proverava sintaksu pri prevođenju, ali ne
+i da li upit znači ono što mislimo. Instrumentirani se ne vrte na CI-ju:
+
+```bash
+./gradlew :app:connectedInternalDebugAndroidTest
+```
+
+Prošli su na uređaju (SM-A137F) 19.8.2026.
+
 ### Efekat na veličinu
 
 | | AAB |
@@ -284,10 +320,9 @@ Igranje ostaje neograničeno i besplatno; nijedan modul, težina ni zagonetka se
 ne zaključava. Podela je ista kao u BlindfoldTrainer-u, pa tri aplikacije
 govore istim jezikom: **alat je besplatan, plaća se uvid u sopstveni rad.**
 
-Preduslov za prvo dvoje: rezultati moraju negde da se pamte. Danas
-`ScoreManager` drži samo zbirne brojače u SharedPreferences — nigde ne stoji
-koja je zagonetka rešena, kada, za koliko i koja je promašena. Prvi komad posla
-je lokalna baza rezultata, pa dnevnik grešaka nad njom.
+Preduslov za prvo dvoje je bila lokalna baza rezultata — **urađena
+19.8.2026**, vidi „Baza odigranih zagonetki" u Urađeno. Sledeći komad je
+dnevnik grešaka nad njom, pa istorija i grafici.
 
 **Kupaca nema — provereno 19.8.2026.** Upravljanje porudžbinama pokazuje
 **jednu jedinu** porudžbinu `premium_upgrade`-a, od 24.7.2025, autorovu

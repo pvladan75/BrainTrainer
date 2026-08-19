@@ -1,0 +1,121 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "77ad567e5e161063528fb3eb72d005a5",
+    "entities": [
+      {
+        "tableName": "puzzle_attempts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `puzzle_id` TEXT NOT NULL, `module` TEXT NOT NULL, `difficulty` TEXT NOT NULL, `finished_at` INTEGER NOT NULL, `outcome` TEXT NOT NULL, `elapsed_seconds` INTEGER NOT NULL, `player_moves` INTEGER NOT NULL, `optimal_moves` INTEGER NOT NULL, `mistakes` INTEGER NOT NULL, `earned_xp` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "puzzleId",
+            "columnName": "puzzle_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "module",
+            "columnName": "module",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "difficulty",
+            "columnName": "difficulty",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "finishedAt",
+            "columnName": "finished_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "outcome",
+            "columnName": "outcome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "elapsedSeconds",
+            "columnName": "elapsed_seconds",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerMoves",
+            "columnName": "player_moves",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "optimalMoves",
+            "columnName": "optimal_moves",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mistakes",
+            "columnName": "mistakes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "earnedXp",
+            "columnName": "earned_xp",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_puzzle_attempts_finished_at",
+            "unique": false,
+            "columnNames": [
+              "finished_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_puzzle_attempts_finished_at` ON `${TABLE_NAME}` (`finished_at`)"
+          },
+          {
+            "name": "index_puzzle_attempts_puzzle_id",
+            "unique": false,
+            "columnNames": [
+              "puzzle_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_puzzle_attempts_puzzle_id` ON `${TABLE_NAME}` (`puzzle_id`)"
+          },
+          {
+            "name": "index_puzzle_attempts_module_difficulty",
+            "unique": false,
+            "columnNames": [
+              "module",
+              "difficulty"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_puzzle_attempts_module_difficulty` ON `${TABLE_NAME}` (`module`, `difficulty`)"
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '77ad567e5e161063528fb3eb72d005a5')"
+    ]
+  }
+}

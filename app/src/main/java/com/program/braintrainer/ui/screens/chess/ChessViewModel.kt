@@ -23,6 +23,9 @@ import com.program.braintrainer.rules.PuzzleRules
 import com.program.braintrainer.score.ScoreCalculator
 import com.program.braintrainer.score.ScoreManager
 import com.program.braintrainer.score.ScoringParams
+import com.program.braintrainer.stats.AttemptOutcome
+import com.program.braintrainer.stats.AttemptRepository
+import com.program.braintrainer.stats.PuzzleAttempt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -56,6 +59,7 @@ class ChessViewModel(
     private val scoreManager: ScoreManager,
     private val settingsManager: SettingsManager,
     private val achievementManager: AchievementManager,
+    private val attemptRepository: AttemptRepository,
     private val savedStateHandle: SavedStateHandle = SavedStateHandle(),
     private val scoringParams: ScoringParams = ScoringParams()
 ) : ViewModel() {
@@ -361,6 +365,7 @@ class ChessViewModel(
                     stopTimer()
                     correctStreak = 0
                     scoreManager.resetPerfectStreak()
+                    recordAttempt(_uiState.value, AttemptOutcome.FAILED, earnedXp = 0)
                     _uiState.update { it.copy(showNoMoreMovesDialog = true) }
                 }
             }
@@ -403,12 +408,14 @@ class ChessViewModel(
 
         if (!isSuccess) {
             correctStreak = 0
+            recordAttempt(state, AttemptOutcome.FAILED, earnedXp = 0)
             _uiState.update { it.copy(outcome = PuzzleOutcome.Failed) }
             return
         }
 
         if (state.usedSolution) {
             correctStreak = 0
+            recordAttempt(state, AttemptOutcome.SOLVED_WITH_HELP, earnedXp = 0)
             _uiState.update { it.copy(outcome = PuzzleOutcome.SolvedWithHelp) }
             return
         }
@@ -429,7 +436,32 @@ class ChessViewModel(
         val premiumBonus = if (isPremium && score.totalXp > 0) score.totalXp else 0
         if (premiumBonus > 0) scoreManager.addXp(premiumBonus)
 
+        recordAttempt(state, AttemptOutcome.SOLVED, earnedXp = score.totalXp + premiumBonus)
         _uiState.update { it.copy(outcome = PuzzleOutcome.Solved(score, premiumBonus)) }
+    }
+
+    /**
+     * Upisuje odigranu zagonetku u istoriju. Zove se za **svaki** ishod, jer
+     * dnevnik grešaka živi baš od onih koje nisu rešene.
+     *
+     * Ponovno pokretanje iste zagonetke daje nov zapis; istorija je dnevnik
+     * pokušaja, ne stanje zagonetke.
+     */
+    private fun recordAttempt(state: ChessUiState, outcome: AttemptOutcome, earnedXp: Int) {
+        val problem = session.getOrNull(currentIndex) ?: return
+        val attempt = PuzzleAttempt(
+            puzzleId = problem.id,
+            module = module,
+            difficulty = difficulty,
+            finishedAt = System.currentTimeMillis(),
+            outcome = outcome,
+            elapsedSeconds = state.elapsedSeconds,
+            playerMoves = state.playerMoveCount,
+            optimalMoves = state.solutionMoveCount,
+            mistakes = state.mistakes,
+            earnedXp = earnedXp
+        )
+        viewModelScope.launch { attemptRepository.record(attempt) }
     }
 
     private fun recordSolvedStatistics(state: ChessUiState, isPerfect: Boolean) {
@@ -463,6 +495,7 @@ class ChessViewModel(
         stopTimer()
         cancelHint()
         correctStreak = 0
+        recordAttempt(_uiState.value, AttemptOutcome.SURRENDERED, earnedXp = 0)
         _uiState.update { it.copy(usedSolution = true, outcome = PuzzleOutcome.Surrendered) }
     }
 

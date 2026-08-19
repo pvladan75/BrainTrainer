@@ -81,8 +81,14 @@ Release build koristi R8 (`isMinifyEnabled` + `isShrinkResources`).
 ./gradlew test
 ```
 
-Iste testove (65 komada) vrti i GitHub Actions na svaki push i pull request —
+Iste testove (69 komada) vrti i GitHub Actions na svaki push i pull request —
 `.github/workflows/build.yml`.
+
+Upiti nad bazom odigranih zagonetki traže pravi uređaj i ne idu na CI:
+
+```bash
+./gradlew :app:connectedInternalDebugAndroidTest
+```
 
 ```bash
 ./gradlew :app:assembleGooglePlayDebug

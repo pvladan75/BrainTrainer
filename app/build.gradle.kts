@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -99,6 +100,12 @@ android {
     }
 }
 
+// Šema baze se izvozi u repozitorijum: migracija bez zapisane šeme je pogađanje,
+// a Room bez zapisane šeme ne može ni da proveri da li je tačna.
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -123,6 +130,13 @@ dependencies {
     implementation(libs.androidx.material.icons.extended.android)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+
+    // Lokalna baza odigranih zagonetki
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.androidx.test.runner)
     implementation(libs.billing)
     implementation(libs.billing.ktx)
 }

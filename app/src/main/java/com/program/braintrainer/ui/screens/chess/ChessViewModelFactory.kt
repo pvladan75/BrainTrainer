@@ -29,6 +29,7 @@ class ChessViewModelFactory(
                 scoreManager = ScoreManager(app),
                 settingsManager = app.settingsManager,
                 achievementManager = app.achievementManager,
+                attemptRepository = app.attemptRepository,
                 // Nosi snapshot sesije preko ubijanja procesa.
                 savedStateHandle = extras.createSavedStateHandle()
             ) as T

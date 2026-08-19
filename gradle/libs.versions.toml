@@ -21,6 +21,9 @@ datastoreCoreAndroid = "1.1.7"
 firebaseBom = "34.17.0"
 googleServices = "4.5.0"
 firebaseCrashlyticsGradle = "3.0.7"
+# KSP mora da prati verziju Kotlin-a; Room ga koristi kao procesor
+ksp = "2.1.20-1.0.32"
+room = "2.7.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,6 +56,11 @@ androidx-datastore-core-android = { group = "androidx.datastore", name = "datast
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 # Verzija se preuzima iz firebase-bom-a
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
+androidx-test-runner = { module = "androidx.test:runner", version = "1.7.0" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -62,3 +70,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsGradle" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
