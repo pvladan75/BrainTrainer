@@ -15,8 +15,9 @@
 Poznata ograničenja i dug su prošireni; ostala su samo šahovska pravila
 (promocija, en passant, rokada), koja za postojeće module nisu relevantna.
 
-Sledeći korak po planu: **nova strategija monetizacije** (sekcija „Sledeći
-koraci").
+Model monetizacije je odlučen 19.8.2026 — svaka aplikacija za sebe, bez servera.
+Sledeći korak je **nov sadržaj premiuma**, a prvi komad posla je lokalna baza
+rezultata (sekcija „Sledeći koraci").
 
 ---
 
@@ -248,16 +249,54 @@ aplikacija koristi tri ikonice.
 
 Poređano po vrednosti.
 
-### 1. Nova strategija monetizacije
+### 1. Nov sadržaj premiuma
 
-Reklame su uklonjene, planira se novi model. Zatečeno stanje:
+Model je odlučen **19.8.2026.** Ovo više nije otvoreno pitanje, nego posao.
 
-- Google Play Billing radi ispravno i proverava kupovine pri svakom pokretanju
-- proizvod `premium_upgrade` je aktivan i daje **dupli XP** za rešenu zagonetku
-- tekst u Podešavanjima opisuje baš to i ništa više
+**Svaka aplikacija naplaćuje za sebe** („model A"). Kupovina na Google Play-u
+živi na paru „Google nalog + paket aplikacije" i ne može da pređe u drugu
+aplikaciju bez naloga i servera. Pošto BrainTrainer ne prodaje ništa što se
+izvršava na serveru, server mu **ne treba**: `queryPurchasesAsync` pri svakom
+pokretanju već vraća kupovinu na novom telefonu i hvata refund. Boolean u
+DataStore-u je keš te provere, a ne rupa — jedini scenario koji bi server
+pokrio je modifikovan APK, što za dupli XP ne plaća uvođenje prijave.
 
-Pre nego što se monetizacija zakomplikuje, vredi rešiti da se premium status
-čuva kao običan boolean u DataStore-u, bez serverske verifikacije.
+Druge dve aplikacije (`chess_master`, `BlindfoldTrainer`) idu na zajednički
+DigitalOcean droplet sa odvojenim tabelama po aplikaciji; tamo je premium po
+prirodi serverski jer se prodaje baš usluga (čuvanje napretka, dnevni zadatak,
+lestvica). BrainTrainer u tome ne učestvuje.
+
+**Dupli XP izlazi iz premiuma.** Po pravilu koje već stoji u planu
+BlindfoldTrainer-a: merilo koje nagrađuje prestaje da meri. XP kaže koliko je
+neko odigrao; udvostručen za pare, više ne kaže ništa, a rangovi koji iz njega
+izlaze postaju priča o tome ko je platio. Uz to je i slaba ponuda — kupcu ne
+daje ništa novo da radi.
+
+**Novi obim premiuma**, po vrednosti:
+
+| | Zašto |
+|---|---|
+| Istorija i grafici napretka po modulu i težini | najkorisnija stvar koju igrač može da dobije, a besplatnoj verziji ne fali |
+| Dnevnik grešaka — ponovo odigraj baš promašene zagonetke | jeftino otkad su zagonetke adresabilne po ID-ju |
+| Trening po meri — sastav sesije, dužina, bez tajmera | menja kako se vežba, ne koliko |
+
+Igranje ostaje neograničeno i besplatno; nijedan modul, težina ni zagonetka se
+ne zaključava. Podela je ista kao u BlindfoldTrainer-u, pa tri aplikacije
+govore istim jezikom: **alat je besplatan, plaća se uvid u sopstveni rad.**
+
+Preduslov za prvo dvoje: rezultati moraju negde da se pamte. Danas
+`ScoreManager` drži samo zbirne brojače u SharedPreferences — nigde ne stoji
+koja je zagonetka rešena, kada, za koliko i koja je promašena. Prvi komad posla
+je lokalna baza rezultata, pa dnevnik grešaka nad njom.
+
+**Obaveza prema postojećim kupcima.** `premium_upgrade` je već prodavan. Ista
+šifra proizvoda dobija novo značenje, a ko ga je kupio dobija sve novo bez
+ikakve doplate. Zato dupli XP ne sme da nestane tiho: premium mora da dobije
+više nego što je imao.
+
+**Dnevna zagonetka ne traži server** ako se ikad poželi: datum kao seme, seme
+bira redni broj u JSONL fajlu, i svi dobiju istu zagonetku istog dana. Server bi
+trebao samo za lestvicu, koja ovde nije potrebna.
 
 **Play Integrity API** (Play Console → Zaštićeno pomoću Play-a) stoji na 0/7 i
 namerno je tako ostavljen. Verdikt mora da se verifikuje na serveru — ako se
@@ -265,6 +304,37 @@ proverava u samoj aplikaciji, napadač koji je već modifikovao APK preskoči i 
 proveru. Bez backend-a daje privid zaštite. Realne scenarije (refund, deljenje
 backup-a, promena naloga) već pokriva `queryPurchasesAsync` pri svakom
 pokretanju. Vredi ga uvesti tek ako novi model donese serversku stranu.
+
+### Kako se ovo testira pre objave
+
+Ažuriranje ide na **internal testing** traku ka testerima, pa tek onda u
+produkciju. Dve stvari se lako pomešaju, a nisu isto:
+
+| | čemu služi |
+|---|---|
+| **internal testing traka** | testeri uopšte dobiju build, preko Play-a i sa produkcijskim potpisom |
+| **License testing** (Play Console → Setup) | ti isti nalozi kupuju `premium_upgrade` kroz **pravi** tok, bez naplate |
+
+**Testeri ne treba da budu premium od starta.** Ako im se premium uključi
+zastavicom, jedina stvar koja zaista može da pukne — sam tok kupovine — ostaje
+neproverena, a premium funkcije se testiraju u stanju u kom nijedan stvarni
+korisnik nikada nije. Umesto toga se upišu kao license testeri i kupe proizvod
+za nula dinara.
+
+Flavor `internal` (`IS_TEST_BUILD = true`, premium uključen bez kupovine) ostaje
+**samo za autorov uređaj preko `adb install`**. Ne sme na Play traku: Play
+Billing traži da je aplikacija instalirana sa Play-a i potpisana istim ključem,
+pa sideload sa debug ključem ionako ne ponaša se kao produkcija.
+
+Spisak koji mora da prođe:
+
+1. **Ažuriranje preko postojeće produkcijske instalacije**, ne čista instalacija
+   — XP, dostignuća i premium status preživljavaju.
+2. **Kupac od ranije** ostaje premium i dobija nove funkcije (grandfathering).
+3. **Nov besplatan korisnik** — kupovina otključava bez restarta aplikacije.
+4. **Refund/povlačenje kupovine** u Play Console-u — premium nestaje pri sledećem
+   pokretanju.
+5. **Bez interneta** — premium se ne gubi kada Play nije dostupan.
 
 **„Ograničenja korišćenja ponude"** u zaštiti Play naplate je isključeno i ne
 može da se uključi — odnosi se na promotivne ponude za pretplatu, a aplikacija
