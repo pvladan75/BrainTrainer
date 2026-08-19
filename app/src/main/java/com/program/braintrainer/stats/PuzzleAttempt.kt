@@ -61,6 +61,13 @@ data class OpenMistake(
     val attempts: Int
 )
 
+/** Zbir jedne grupe, sa oznakama kojoj grupi pripada. */
+data class GroupSummary(
+    val module: Module,
+    val difficulty: Difficulty,
+    val summary: ModuleSummary
+)
+
 /** Zbir za jedan modul i težinu. */
 data class ModuleSummary(
     val attempts: Int,

@@ -182,7 +182,7 @@ private fun LockedNotice(modifier: Modifier = Modifier, onOpenSettings: () -> Un
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = stringResource(R.string.mistakes_locked_title),
+            text = stringResource(R.string.premium_locked_title),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
@@ -194,7 +194,7 @@ private fun LockedNotice(modifier: Modifier = Modifier, onOpenSettings: () -> Un
         )
         Spacer(Modifier.height(16.dp))
         Button(onClick = onOpenSettings) {
-            Text(stringResource(R.string.mistakes_locked_action))
+            Text(stringResource(R.string.premium_locked_action))
         }
     }
 }

@@ -294,6 +294,32 @@ u dnevniku kao „Sleepers / Easy — 1 puzzle", a „Vežbaj" je otvorio sesiju
 Testovi: četiri JVM testa za grupisanje (isti modul i težina u istu grupu,
 najskorija grupa prva, prazan spisak).
 
+### Istorija napretka
+
+Druga premium funkcija. Ulaz je dugme na ekranu Profila; ekran ima tri dela:
+zbir (odigrano, rešeno, ukupno vreme), stubići aktivnosti za poslednjih 14 dana,
+zbir po modulu i težini, i spisak poslednjih 30 zagonetki.
+
+- Zbir za svih devet kombinacija stiže **jednim** upitom (`summaries()`), a ne
+  sa devet prolaza kroz tabelu.
+- **Dani bez vežbanja se popunjavaju nulama** (`fillMissingDays`), da grafik ne
+  sabije nedelju dana pauze u jedan razmak; prazan dan ostaje vidljiv kao tanka
+  crta u dnu.
+- Grafik je namerno **bez brojeva na osi**. Odgovara na pitanje „da li vežbam
+  redovno", ne na „koliko tačno" — za to služi zbir iznad njega.
+- Stubić je ceo odigrano, puni deo rešeno.
+- Trajanje se formatira preko `durationParts`, odvojeno od ekrana, pa granice
+  (59 s, 60 s, 3599 s, 3600 s) imaju test.
+
+Zaključavanje bez premiuma je isto kao u dnevniku grešaka, sa zajedničkim
+stringovima `premium_locked_*`.
+
+**Nije viđeno na uređaju** — telefon je bio zaključan kad je ekran bio gotov.
+Ostaje da se pogleda uživo, zajedno sa izgledom grafika sa stvarnim podacima.
+
+Testovi: pet JVM testova (popunjavanje dana, opseg, granice trajanja) i jedan
+instrumentirani za `summaries()`.
+
 ### Efekat na veličinu
 
 | | AAB |
@@ -348,10 +374,10 @@ Igranje ostaje neograničeno i besplatno; nijedan modul, težina ni zagonetka se
 ne zaključava. Podela je ista kao u BlindfoldTrainer-u, pa tri aplikacije
 govore istim jezikom: **alat je besplatan, plaća se uvid u sopstveni rad.**
 
-Baza rezultata i dnevnik grešaka su **urađeni 19.8.2026** (vidi Urađeno).
-Ostaje **istorija i grafici**, pa **trening po meri**. Uz njih ide i zaseban
-posao: gde se i kada premium uopšte ponudi — danas se pominje samo jednom
-rečenicom u Podešavanjima.
+Baza rezultata, dnevnik grešaka i istorija napretka su **urađeni 19.8.2026**
+(vidi Urađeno). Ostaje **trening po meri**, i uz njega zaseban posao: gde se i
+kada premium uopšte ponudi — danas se pominje samo jednom rečenicom u
+Podešavanjima.
 
 **Kupaca nema — provereno 19.8.2026.** Upravljanje porudžbinama pokazuje
 **jednu jedinu** porudžbinu `premium_upgrade`-a, od 24.7.2025, autorovu

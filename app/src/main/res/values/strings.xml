@@ -133,9 +133,7 @@
     <string name="mistakes_title">Mistake log</string>
     <string name="mistakes_empty">Nothing is waiting for a rematch. Every puzzle you have played was solved in the end.</string>
     <string name="mistakes_practice">Practice</string>
-    <string name="mistakes_locked_title">Part of Premium</string>
     <string name="mistakes_locked_description">The mistake log collects the puzzles you did not solve and lets you play exactly those again. It is part of Premium, together with your progress history.</string>
-    <string name="mistakes_locked_action">Open Settings</string>
     <string name="content_desc_mistakes">Mistake log</string>
     <plurals name="mistakes_open_count">
         <item quantity="one">%1$d puzzle waiting for a rematch</item>
@@ -145,4 +143,29 @@
         <item quantity="one">%1$d puzzle</item>
         <item quantity="other">%1$d puzzles</item>
     </plurals>
+
+    <string name="history_title">Progress</string>
+    <string name="history_locked_description">History shows how much you practiced day by day, how you are doing in each module, and the puzzles you played last. It is part of Premium, together with the mistake log.</string>
+    <string name="history_empty">Nothing here yet. Play a session and your progress shows up.</string>
+    <string name="history_section_activity">Last 14 days</string>
+    <string name="history_section_modules">By module</string>
+    <string name="history_section_recent">Recent puzzles</string>
+    <string name="history_total_played">Played: %1$d</string>
+    <string name="history_total_solved">Solved: %1$d</string>
+    <string name="history_total_time">Time: %1$s</string>
+    <string name="history_chart_legend">Filled part is solved; the whole bar is played</string>
+    <string name="history_chart_max">Most in a day: %1$d</string>
+    <string name="history_group_solved">%1$d of %2$d solved</string>
+    <string name="history_group_perfect">%1$d perfect</string>
+    <string name="history_group_best">Best %1$s</string>
+    <string name="premium_locked_title">Part of Premium</string>
+    <string name="premium_locked_action">Open Settings</string>
+    <string name="outcome_solved">Solved</string>
+    <string name="outcome_solved_with_help">Solved with the solution shown</string>
+    <string name="outcome_surrendered">Surrendered</string>
+    <string name="outcome_failed">Not solved</string>
+    <string name="duration_seconds">%1$ds</string>
+    <string name="duration_minutes">%1$dm %2$02ds</string>
+    <string name="duration_hours">%1$dh %2$02dm</string>
+    <string name="profile_open_history">Progress history</string>
 </resources>

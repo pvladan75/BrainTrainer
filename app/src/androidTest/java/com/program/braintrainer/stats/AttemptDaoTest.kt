@@ -128,6 +128,23 @@ class AttemptDaoTest {
     }
 
     @Test
+    fun zbir_po_grupama_vraca_red_za_svaku_kombinaciju() = runBlocking {
+        val now = System.currentTimeMillis()
+        dao.insert(attempt("1", "SOLVED", now, elapsedSeconds = 30))
+        dao.insert(attempt("2", "FAILED", now, elapsedSeconds = 10))
+        dao.insert(attempt("3", "SOLVED", now, difficulty = "HARD", elapsedSeconds = 44))
+        dao.insert(attempt("4", "SOLVED", now, module = "Module3", elapsedSeconds = 7))
+
+        val byGroup = dao.summaries().associateBy { it.module to it.difficulty }
+
+        assertEquals(3, byGroup.size)
+        assertEquals(2, byGroup.getValue("Module1" to "EASY").attempts)
+        assertEquals(1, byGroup.getValue("Module1" to "EASY").solved)
+        assertEquals(44, byGroup.getValue("Module1" to "HARD").bestSeconds)
+        assertEquals(7, byGroup.getValue("Module3" to "EASY").totalSeconds)
+    }
+
+    @Test
     fun bez_resene_zagonetke_nema_najboljeg_vremena() = runBlocking {
         dao.insert(attempt("1", "FAILED", System.currentTimeMillis()))
 

@@ -35,7 +35,8 @@ private fun getLocalizedRankTitle(rank: Rank): String {
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
+    onNavigateToHistory: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -64,6 +65,13 @@ fun ProfileScreen(
                         rankTitle = getLocalizedRankTitle(rank = state.currentRank),
                         totalXp = state.totalXp
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = onNavigateToHistory,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(id = R.string.profile_open_history))
+                    }
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 

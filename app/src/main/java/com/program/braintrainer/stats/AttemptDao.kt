@@ -22,6 +22,17 @@ data class OpenMistakeRow(
     val attempts: Int
 )
 
+/** Zbir za jedan modul i težinu, sa oznakama grupe. */
+data class GroupSummaryRow(
+    val module: String,
+    val difficulty: String,
+    val attempts: Int,
+    val solved: Int,
+    val perfect: Int,
+    val bestSeconds: Int?,
+    val totalSeconds: Int
+)
+
 /** Red koji vraća zbirni upit; `bestSeconds` je null dok nijedna nije rešena. */
 data class SummaryRow(
     val attempts: Int,
@@ -97,4 +108,24 @@ interface AttemptDao {
         """
     )
     suspend fun summary(module: String, difficulty: String): SummaryRow
+
+    /**
+     * Zbir za sve grupe odjednom. Ekran istorije prikazuje devet kombinacija
+     * modula i težine; devet zasebnih upita bi bilo devet prolaza kroz tabelu.
+     */
+    @Query(
+        """
+        SELECT module,
+               difficulty,
+               COUNT(*) AS attempts,
+               SUM(CASE WHEN outcome = 'SOLVED' THEN 1 ELSE 0 END) AS solved,
+               SUM(CASE WHEN outcome = 'SOLVED' AND mistakes = 0 AND player_moves <= optimal_moves
+                        THEN 1 ELSE 0 END) AS perfect,
+               MIN(CASE WHEN outcome = 'SOLVED' THEN elapsed_seconds END) AS bestSeconds,
+               SUM(elapsed_seconds) AS totalSeconds
+        FROM puzzle_attempts
+        GROUP BY module, difficulty
+        """
+    )
+    suspend fun summaries(): List<GroupSummaryRow>
 }

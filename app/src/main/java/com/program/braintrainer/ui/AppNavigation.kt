@@ -19,6 +19,8 @@ import com.program.braintrainer.gamification.ProfileViewModelFactory
 import com.program.braintrainer.ui.screens.*
 import com.program.braintrainer.ui.screens.chess.ChessScreen
 import com.program.braintrainer.ui.screens.chess.ChessViewModelFactory
+import com.program.braintrainer.ui.screens.history.HistoryScreen
+import com.program.braintrainer.ui.screens.history.HistoryViewModelFactory
 import com.program.braintrainer.ui.screens.mistakes.MistakesScreen
 import com.program.braintrainer.ui.screens.mistakes.MistakesViewModelFactory
 import com.program.braintrainer.ui.screens.settings.SettingsScreen
@@ -33,6 +35,7 @@ object Routes {
     const val PROFILE = "profile"
     const val ACHIEVEMENTS = "achievements"
     const val MISTAKES = "mistakes"
+    const val HISTORY = "history"
     const val CHESS_GAME = "chess_game/{moduleType}/{difficultyType}?puzzleIds={puzzleIds}"
 
     /**
@@ -105,7 +108,16 @@ fun AppNavigation() {
         composable(Routes.PROFILE) {
             ProfileScreen(
                 viewModel = viewModel(factory = ProfileViewModelFactory(context)),
-                onBackPress = { navController.popBackStack() }
+                onBackPress = { navController.popBackStack() },
+                onNavigateToHistory = { navController.navigate(Routes.HISTORY) }
+            )
+        }
+
+        composable(Routes.HISTORY) {
+            HistoryScreen(
+                viewModel = viewModel(factory = HistoryViewModelFactory(context)),
+                onBackPress = { navController.popBackStack() },
+                onOpenSettings = { navController.navigate(Routes.SETTINGS) }
             )
         }
 

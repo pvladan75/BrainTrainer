@@ -61,6 +61,26 @@ class AttemptRepository(
             }
         }
 
+    /** Zbir za svaku kombinaciju modula i težine koja ima bar jedan pokušaj. */
+    suspend fun summaries(): List<GroupSummary> = withContext(ioDispatcher) {
+        dao.summaries().mapNotNull { row ->
+            val module = enumOrNull<Module>(row.module) ?: return@mapNotNull null
+            val difficulty = enumOrNull<Difficulty>(row.difficulty) ?: return@mapNotNull null
+
+            GroupSummary(
+                module = module,
+                difficulty = difficulty,
+                summary = ModuleSummary(
+                    attempts = row.attempts,
+                    solved = row.solved,
+                    perfect = row.perfect,
+                    bestSeconds = row.bestSeconds,
+                    totalSeconds = row.totalSeconds
+                )
+            )
+        }
+    }
+
     suspend fun summary(module: Module, difficulty: Difficulty): ModuleSummary =
         withContext(ioDispatcher) {
             val row = dao.summary(module.name, difficulty.name)
