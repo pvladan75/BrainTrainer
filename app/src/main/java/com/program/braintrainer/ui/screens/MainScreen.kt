@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState // <-- Import
 import androidx.compose.foundation.verticalScroll // <-- Import
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -46,7 +47,8 @@ fun MainScreen(
     onModeAndDifficultySelected: (Module, Difficulty) -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToProfile: () -> Unit,
-    onNavigateToAchievements: () -> Unit
+    onNavigateToAchievements: () -> Unit,
+    onNavigateToMistakes: () -> Unit
 ) {
     val context = LocalContext.current
     val scoreManager = remember { ScoreManager(context) }
@@ -72,6 +74,7 @@ fun MainScreen(
             TopAppBar(
                 title = { Text(stringResource(id = R.string.app_name)) },
                 actions = {
+                    IconButton(onClick = onNavigateToMistakes) { Icon(Icons.Default.History, stringResource(id = R.string.content_desc_mistakes)) }
                     IconButton(onClick = onNavigateToAchievements) { Icon(Icons.Default.EmojiEvents, stringResource(id = R.string.content_desc_achievements)) }
                     IconButton(onClick = onNavigateToProfile) { Icon(Icons.Default.Person, stringResource(id = R.string.content_desc_profile)) }
                     IconButton(onClick = onNavigateToSettings) { Icon(Icons.Default.Settings, stringResource(id = R.string.content_desc_settings)) }

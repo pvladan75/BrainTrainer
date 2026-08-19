@@ -129,4 +129,22 @@
     <string name="rank_experienced">Iskusni Igrač</string>
     <string name="rank_master">Majstor</string>
     <string name="rank_grandmaster">Velemajstor</string>
+
+    <string name="mistakes_title">Dnevnik grešaka</string>
+    <string name="mistakes_empty">Ništa ne čeka revanš. Sve zagonetke koje si igrao su na kraju rešene.</string>
+    <string name="mistakes_practice">Vežbaj</string>
+    <string name="mistakes_locked_title">Deo Premiuma</string>
+    <string name="mistakes_locked_description">Dnevnik grešaka skuplja zagonetke koje nisi rešio i pušta te da odigraš baš njih. Deo je Premiuma, zajedno sa istorijom napretka.</string>
+    <string name="mistakes_locked_action">Otvori Podešavanja</string>
+    <string name="content_desc_mistakes">Dnevnik grešaka</string>
+    <plurals name="mistakes_open_count">
+        <item quantity="one">%1$d zagonetka čeka revanš</item>
+        <item quantity="few">%1$d zagonetke čekaju revanš</item>
+        <item quantity="other">%1$d zagonetki čeka revanš</item>
+    </plurals>
+    <plurals name="mistakes_waiting">
+        <item quantity="one">%1$d zagonetka</item>
+        <item quantity="few">%1$d zagonetke</item>
+        <item quantity="other">%1$d zagonetki</item>
+    </plurals>
 </resources>

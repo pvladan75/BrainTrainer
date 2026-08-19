@@ -129,4 +129,20 @@
     <string name="rank_experienced">Experienced Player</string>
     <string name="rank_master">Master</string>
     <string name="rank_grandmaster">Grandmaster</string>
+
+    <string name="mistakes_title">Mistake log</string>
+    <string name="mistakes_empty">Nothing is waiting for a rematch. Every puzzle you have played was solved in the end.</string>
+    <string name="mistakes_practice">Practice</string>
+    <string name="mistakes_locked_title">Part of Premium</string>
+    <string name="mistakes_locked_description">The mistake log collects the puzzles you did not solve and lets you play exactly those again. It is part of Premium, together with your progress history.</string>
+    <string name="mistakes_locked_action">Open Settings</string>
+    <string name="content_desc_mistakes">Mistake log</string>
+    <plurals name="mistakes_open_count">
+        <item quantity="one">%1$d puzzle waiting for a rematch</item>
+        <item quantity="other">%1$d puzzles waiting for a rematch</item>
+    </plurals>
+    <plurals name="mistakes_waiting">
+        <item quantity="one">%1$d puzzle</item>
+        <item quantity="other">%1$d puzzles</item>
+    </plurals>
 </resources>

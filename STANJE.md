@@ -266,6 +266,34 @@ i da li upit znači ono što mislimo. Instrumentirani se ne vrte na CI-ju:
 
 Prošli su na uređaju (SM-A137F) 19.8.2026.
 
+### Dnevnik grešaka
+
+Prva premium funkcija koja se vidi u aplikaciji. Ikonica u gornjoj traci glavnog
+ekrana vodi na spisak zagonetki koje čekaju revanš, a dugme „Vežbaj" pokreće
+sesiju sastavljenu baš od njih.
+
+**Grupiše se po modulu i težini**, i to nije kozmetika: pravila su vezana za
+modul, a bodovanje za težinu, pa jedna partija ne može da meša zagonetke iz
+različitih grupa. Mešana sesija bi tražila da se pravila biraju po zagonetki
+umesto po sesiji — moguće, ali to je drugi posao.
+
+- `ChessViewModel` prima `puzzleIds`; prazno znači obična nasumična sesija,
+  popunjeno znači revanš nad tačno tim zagonetkama (`loadProblemsByIds`).
+- Ruta igre je dobila upitni deo `?puzzleIds=`, sa podrazumevanom praznom
+  vrednošću — bez nje ruta bez upitnog dela ne bi bila pogođena.
+- Kraj partije sada radi običan `popBackStack()` umesto povratka na glavni meni.
+  Time se iz revanša vraća u dnevnik, koji se na `ON_RESUME` osvežava, pa ne nudi
+  zagonetke koje su upravo rešene.
+- Bez premiuma se vidi objašnjenje i dugme ka Podešavanjima, gde kupovina i
+  živi. **Taj ekran nije viđen na uređaju** — `internal` flavor uvek ima premium.
+
+Provereno na uređaju kroz stvarnu igru 19.8.2026: predata zagonetka se pojavila
+u dnevniku kao „Sleepers / Easy — 1 puzzle", a „Vežbaj" je otvorio sesiju
+`Puzzle: 1/1` sa baš tom zagonetkom.
+
+Testovi: četiri JVM testa za grupisanje (isti modul i težina u istu grupu,
+najskorija grupa prva, prazan spisak).
+
 ### Efekat na veličinu
 
 | | AAB |
@@ -320,9 +348,10 @@ Igranje ostaje neograničeno i besplatno; nijedan modul, težina ni zagonetka se
 ne zaključava. Podela je ista kao u BlindfoldTrainer-u, pa tri aplikacije
 govore istim jezikom: **alat je besplatan, plaća se uvid u sopstveni rad.**
 
-Preduslov za prvo dvoje je bila lokalna baza rezultata — **urađena
-19.8.2026**, vidi „Baza odigranih zagonetki" u Urađeno. Sledeći komad je
-dnevnik grešaka nad njom, pa istorija i grafici.
+Baza rezultata i dnevnik grešaka su **urađeni 19.8.2026** (vidi Urađeno).
+Ostaje **istorija i grafici**, pa **trening po meri**. Uz njih ide i zaseban
+posao: gde se i kada premium uopšte ponudi — danas se pominje samo jednom
+rečenicom u Podešavanjima.
 
 **Kupaca nema — provereno 19.8.2026.** Upravljanje porudžbinama pokazuje
 **jednu jedinu** porudžbinu `premium_upgrade`-a, od 24.7.2025, autorovu

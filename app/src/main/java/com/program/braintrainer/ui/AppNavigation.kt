@@ -5,9 +5,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.program.braintrainer.R
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.GameModeInfo
@@ -17,6 +19,8 @@ import com.program.braintrainer.gamification.ProfileViewModelFactory
 import com.program.braintrainer.ui.screens.*
 import com.program.braintrainer.ui.screens.chess.ChessScreen
 import com.program.braintrainer.ui.screens.chess.ChessViewModelFactory
+import com.program.braintrainer.ui.screens.mistakes.MistakesScreen
+import com.program.braintrainer.ui.screens.mistakes.MistakesViewModelFactory
 import com.program.braintrainer.ui.screens.settings.SettingsScreen
 import com.program.braintrainer.ui.screens.settings.SettingsViewModelFactory
 
@@ -28,13 +32,19 @@ object Routes {
     const val SETTINGS = "settings"
     const val PROFILE = "profile"
     const val ACHIEVEMENTS = "achievements"
-    const val CHESS_GAME = "chess_game/{moduleType}/{difficultyType}"
+    const val MISTAKES = "mistakes"
+    const val CHESS_GAME = "chess_game/{moduleType}/{difficultyType}?puzzleIds={puzzleIds}"
 
     /**
-     * Pomoćna funkcija za kreiranje rute do ekrana igre sa konkretnim vrednostima.
+     * Ruta do ekrana igre. [puzzleIds] je prazno za običnu sesiju, a popunjeno
+     * kad se vežbaju baš određene zagonetke (revanš iz dnevnika grešaka).
      */
-    fun createChessGameRoute(module: Module, difficulty: Difficulty): String {
-        return "chess_game/${module.name}/${difficulty.name}"
+    fun createChessGameRoute(
+        module: Module,
+        difficulty: Difficulty,
+        puzzleIds: List<String> = emptyList()
+    ): String {
+        return "chess_game/${module.name}/${difficulty.name}?puzzleIds=${puzzleIds.joinToString(",")}"
     }
 }
 
@@ -79,6 +89,7 @@ fun AppNavigation() {
                     navController.navigate(Routes.createChessGameRoute(module, difficulty))
                 },
                 onNavigateToSettings = { navController.navigate(Routes.SETTINGS) },
+                onNavigateToMistakes = { navController.navigate(Routes.MISTAKES) },
                 onNavigateToProfile = { navController.navigate(Routes.PROFILE) },
                 onNavigateToAchievements = { navController.navigate(Routes.ACHIEVEMENTS) }
             )
@@ -106,19 +117,42 @@ fun AppNavigation() {
             )
         }
 
-        composable(Routes.CHESS_GAME) { backStackEntry ->
+        composable(Routes.MISTAKES) {
+            MistakesScreen(
+                viewModel = viewModel(factory = MistakesViewModelFactory(context)),
+                onBackPress = { navController.popBackStack() },
+                onPractice = { module, difficulty, puzzleIds ->
+                    navController.navigate(Routes.createChessGameRoute(module, difficulty, puzzleIds))
+                },
+                onOpenSettings = { navController.navigate(Routes.SETTINGS) }
+            )
+        }
+
+        composable(
+            Routes.CHESS_GAME,
+            // Bez podrazumevane vrednosti ruta bez upitnog dela ne bi bila pogođena.
+            arguments = listOf(
+                navArgument("puzzleIds") { type = NavType.StringType; defaultValue = "" }
+            )
+        ) { backStackEntry ->
             val moduleType = backStackEntry.arguments?.getString("moduleType")?.let { Module.valueOf(it) }
             val difficultyType = backStackEntry.arguments?.getString("difficultyType")?.let { Difficulty.valueOf(it) }
+            val puzzleIds = backStackEntry.arguments?.getString("puzzleIds")
+                ?.split(",")
+                ?.filter { it.isNotBlank() }
+                .orEmpty()
 
             if (moduleType != null && difficultyType != null) {
                 ChessScreen(
                     module = moduleType,
                     difficulty = difficultyType,
                     viewModel = viewModel(
-                        factory = ChessViewModelFactory(context, moduleType, difficultyType)
+                        factory = ChessViewModelFactory(context, moduleType, difficultyType, puzzleIds)
                     ),
                     onGameFinished = {
-                        navController.popBackStack(Routes.MAIN_MENU, inclusive = false)
+                        // Nazad na ekran sa kog je partija pokrenuta — glavni meni
+                        // ili dnevnik grešaka, koji se time i osveži.
+                        navController.popBackStack()
                     }
                 )
             }

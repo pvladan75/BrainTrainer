@@ -60,6 +60,8 @@ class ChessViewModel(
     private val settingsManager: SettingsManager,
     private val achievementManager: AchievementManager,
     private val attemptRepository: AttemptRepository,
+    /** Prazno za običnu sesiju; popunjeno kad se vežbaju baš određene zagonetke. */
+    private val puzzleIds: List<String> = emptyList(),
     private val savedStateHandle: SavedStateHandle = SavedStateHandle(),
     private val scoringParams: ScoringParams = ScoringParams()
 ) : ViewModel() {
@@ -208,7 +210,15 @@ class ChessViewModel(
     private fun loadSession() {
         viewModelScope.launch {
             session = withContext(Dispatchers.IO) {
-                problemLoader.loadRandomProblems(module, difficulty, PUZZLES_PER_SESSION)
+                if (puzzleIds.isEmpty()) {
+                    problemLoader.loadRandomProblems(module, difficulty, PUZZLES_PER_SESSION)
+                } else {
+                    problemLoader.loadProblemsByIds(
+                        module,
+                        difficulty,
+                        puzzleIds.take(PUZZLES_PER_SESSION)
+                    )
+                }
             }
             currentIndex = 0
             _uiState.update { it.copy(isLoading = false, sessionSize = session.size) }

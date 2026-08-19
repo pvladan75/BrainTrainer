@@ -14,7 +14,9 @@ import com.program.braintrainer.score.ScoreManager
 class ChessViewModelFactory(
     context: Context,
     private val module: Module,
-    private val difficulty: Difficulty
+    private val difficulty: Difficulty,
+    /** Prazno za običnu sesiju; popunjeno za revanš nad određenim zagonetkama. */
+    private val puzzleIds: List<String> = emptyList()
 ) : ViewModelProvider.Factory {
 
     private val app = context.brainTrainerApp
@@ -30,6 +32,7 @@ class ChessViewModelFactory(
                 settingsManager = app.settingsManager,
                 achievementManager = app.achievementManager,
                 attemptRepository = app.attemptRepository,
+                puzzleIds = puzzleIds,
                 // Nosi snapshot sesije preko ubijanja procesa.
                 savedStateHandle = extras.createSavedStateHandle()
             ) as T
