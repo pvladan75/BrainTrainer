@@ -37,8 +37,8 @@ android {
         applicationId = "com.program.braintrainer"
         minSdk = 27
         targetSdk = 36
-        versionCode = 6
-        versionName = "6.0"
+        versionCode = 7
+        versionName = "6.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
