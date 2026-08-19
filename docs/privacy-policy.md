@@ -36,8 +36,15 @@ Thank you for using Chess Brain Trainer!
 
 ---
 
-*Objavljeno na `vp-mobile-apps.web.app` (Firebase Hosting) i prijavljeno u Play
-Console → Садржај апликације → Политика приватности. Ova kopija postoji da bi
+*Objavljeno na https://vp-mobile-apps.web.app/privacy-policy.html (Firebase
+Hosting) i prijavljeno u Play Console → Садржај апликације → Политика
+приватности. Ova kopija postoji da bi
 tekst imao istoriju izmena: prethodna verzija, od 22.7.2025, tvrdila je da
 aplikacija ne koristi nikakve alate treće strane — što je prestalo da bude
-tačno uvođenjem Crashlytics-a.*
+tačno uvođenjem Crashlytics-a.
+
+Deklaracija „Безбедност података" u Play konzoli je 19.8.2026 usklađena sa ovim
+tekstom: prikupljaju se evidencije otkazivanja, dijagnostika i identifikatori
+uređaja; ne dele se sa trećim stranama; šifruju se u prenosu; brišu se
+automatski posle 90 dana. Politika i deklaracija moraju da govore isto — Play to
+proverava.*
