@@ -314,8 +314,14 @@ zbir po modulu i težini, i spisak poslednjih 30 zagonetki.
 Zaključavanje bez premiuma je isto kao u dnevniku grešaka, sa zajedničkim
 stringovima `premium_locked_*`.
 
-**Nije viđeno na uređaju** — telefon je bio zaključan kad je ekran bio gotov.
-Ostaje da se pogleda uživo, zajedno sa izgledom grafika sa stvarnim podacima.
+Viđeno na uređaju 19.8.2026 sa stvarnim podacima: zbir, stubići, grupa
+„Sleepers / Easy — 0 od 3 rešeno" i spisak poslednjih pokušaja sa vremenom i
+datumom. Kad nijedna nije rešena, red sa najboljim vremenom se ne prikazuje.
+
+**Usput naučeno:** `connectedInternalDebugAndroidTest` **deinstalira aplikaciju**
+kad završi, pa briše XP, dostignuća i bazu. Tako je nestao napredak sa test
+telefona, a sa njim i otključani moduli — Avoidance i King Hunt traže rang iznad
+početnog. Upozorenje je dodato u README uz samu komandu.
 
 Testovi: pet JVM testova (popunjavanje dana, opseg, granice trajanja) i jedan
 instrumentirani za `summaries()`.

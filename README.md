@@ -90,6 +90,10 @@ Upiti nad bazom odigranih zagonetki traže pravi uređaj i ne idu na CI:
 ./gradlew :app:connectedInternalDebugAndroidTest
 ```
 
+> **Pažnja:** ova komanda deinstalira aplikaciju sa uređaja kad završi, pa briše
+> XP, dostignuća i bazu odigranih zagonetki. Ne pokretati je na telefonu na kome
+> stoji napredak koji ti treba.
+
 ```bash
 ./gradlew :app:assembleGooglePlayDebug
 ```
