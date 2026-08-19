@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.program.braintrainer.R
+import com.program.braintrainer.ui.components.PremiumLockedNotice
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.ui.difficultyLabel
@@ -80,30 +81,11 @@ fun CustomTrainingScreen(
                 verticalArrangement = Arrangement.Center
             ) { CircularProgressIndicator() }
 
-            !state.isPremium -> Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.premium_locked_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = stringResource(R.string.training_locked_description),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(16.dp))
-                Button(onClick = onOpenSettings) {
-                    Text(stringResource(R.string.premium_locked_action))
-                }
-            }
+            !state.isPremium -> PremiumLockedNotice(
+                introText = stringResource(R.string.training_locked_description),
+                onOpenSettings = onOpenSettings,
+                modifier = Modifier.padding(padding)
+            )
 
             else -> Column(
                 modifier = Modifier

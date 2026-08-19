@@ -39,6 +39,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.program.braintrainer.R
+import com.program.braintrainer.ui.components.PremiumLockedNotice
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 import com.program.braintrainer.ui.difficultyLabel
@@ -93,9 +94,10 @@ fun MistakesScreen(
                 CircularProgressIndicator()
             }
 
-            !state.isPremium -> LockedNotice(
-                modifier = Modifier.padding(padding),
-                onOpenSettings = onOpenSettings
+            !state.isPremium -> PremiumLockedNotice(
+                introText = stringResource(R.string.mistakes_locked_description),
+                onOpenSettings = onOpenSettings,
+                modifier = Modifier.padding(padding)
             )
 
             state.groups.isEmpty() -> CenteredColumn(Modifier.padding(padding)) {
@@ -172,32 +174,6 @@ private fun MistakeGroupCard(group: MistakeGroup, onPractice: () -> Unit) {
     }
 }
 
-@Composable
-private fun LockedNotice(modifier: Modifier = Modifier, onOpenSettings: () -> Unit) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = stringResource(R.string.premium_locked_title),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.mistakes_locked_description),
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(16.dp))
-        Button(onClick = onOpenSettings) {
-            Text(stringResource(R.string.premium_locked_action))
-        }
-    }
-}
 
 @Composable
 private fun CenteredColumn(modifier: Modifier = Modifier, content: @Composable () -> Unit) {

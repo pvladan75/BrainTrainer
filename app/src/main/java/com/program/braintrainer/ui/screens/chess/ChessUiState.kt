@@ -63,8 +63,11 @@ data class ChessUiState(
  * `stringResource` je posao UI sloja, pa ViewModel ne mora da drži Context.
  */
 sealed interface PuzzleOutcome {
-    /** Rešeno samostalno. [premiumBonusXp] je 0 za korisnike bez premiuma. */
-    data class Solved(val score: PuzzleScore, val premiumBonusXp: Int) : PuzzleOutcome
+    /**
+     * Rešeno samostalno. Bodovi su isti za sve — premium ne kupuje XP, nego
+     * uvid u sopstveni rad (istorija, dnevnik grešaka, trening po meri).
+     */
+    data class Solved(val score: PuzzleScore) : PuzzleOutcome
 
     /** Rešeno tek pošto je igrač pogledao rešenje - bez bodova. */
     data object SolvedWithHelp : PuzzleOutcome

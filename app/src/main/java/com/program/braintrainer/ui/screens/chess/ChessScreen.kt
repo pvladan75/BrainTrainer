@@ -318,11 +318,11 @@ private fun outcomeMessage(module: Module, outcome: PuzzleOutcome): String = whe
         else -> stringResource(R.string.game_result_fail_no_moves)
     }
 
-    is PuzzleOutcome.Solved -> solvedMessage(outcome.score, outcome.premiumBonusXp)
+    is PuzzleOutcome.Solved -> solvedMessage(outcome.score)
 }
 
 @Composable
-private fun solvedMessage(score: PuzzleScore, premiumBonusXp: Int): String = buildString {
+private fun solvedMessage(score: PuzzleScore): String = buildString {
     append(stringResource(R.string.game_result_success_title))
     append(stringResource(R.string.game_result_base_points, score.basePoints))
     append(stringResource(R.string.game_result_time_bonus, score.timeBonus))
@@ -346,7 +346,4 @@ private fun solvedMessage(score: PuzzleScore, premiumBonusXp: Int): String = bui
         append(stringResource(R.string.game_result_streak_lost))
     }
     append(stringResource(R.string.game_result_total_xp, score.totalXp))
-    if (premiumBonusXp > 0) {
-        append(stringResource(R.string.game_result_premium_bonus, premiumBonusXp))
-    }
 }

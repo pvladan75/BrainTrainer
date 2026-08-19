@@ -21,6 +21,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.program.braintrainer.R
+import com.program.braintrainer.ui.components.PremiumBenefits
 import com.program.braintrainer.chess.model.data.SettingsManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,6 +31,7 @@ fun SettingsScreen(
     onBackPress: () -> Unit
 ) {
     val settings by viewModel.settingsState.collectAsState()
+    val premiumPrice by viewModel.premiumPrice.collectAsState()
     val context = LocalContext.current
     var showResetDialog by remember { mutableStateOf(false) }
 
@@ -80,6 +82,7 @@ fun SettingsScreen(
 
             PremiumSettingsRow(
                 isPremium = settings.isPremiumUser,
+                price = premiumPrice,
                 onPurchaseClick = {
                     (context as? Activity)?.let { activity ->
                         viewModel.onPurchasePremium(activity)
@@ -174,7 +177,11 @@ private fun ThemeSettingsGroup(selectedTheme: SettingsManager.AppTheme, onThemeC
 }
 
 @Composable
-private fun PremiumSettingsRow(isPremium: Boolean, onPurchaseClick: () -> Unit) {
+private fun PremiumSettingsRow(
+    isPremium: Boolean,
+    price: String?,
+    onPurchaseClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -194,8 +201,16 @@ private fun PremiumSettingsRow(isPremium: Boolean, onPurchaseClick: () -> Unit) 
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
+            PremiumBenefits()
+            Spacer(modifier = Modifier.height(12.dp))
             Button(onClick = onPurchaseClick) {
-                Text(stringResource(id = R.string.settings_buy_premium))
+                Text(
+                    text = if (price != null) {
+                        stringResource(id = R.string.settings_buy_premium_price, price)
+                    } else {
+                        stringResource(id = R.string.settings_buy_premium)
+                    }
+                )
             }
         }
     }

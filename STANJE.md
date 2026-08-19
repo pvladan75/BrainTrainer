@@ -352,6 +352,34 @@ trening „King Hunt, Hard, 5 zagonetki, sakriven sat" daje partiju sa
 Testovi: četiri JVM testa za rutu partije (obična sesija, revanš sa spiskom
 ID-jeva, trening sa dužinom i skrivenim satom, i da šablon pokriva sve parametre).
 
+### Ponuda premiuma i kraj duplog XP-a
+
+Poslednji korak: aplikacija je do sada **pogrešno opisivala sopstveni proizvod**.
+U Podešavanjima je pisalo da premium daje dupli XP, a tri nove funkcije su
+nudile zaključan ekran bez ijedne reči o tome šta se dobija.
+
+**Dupli XP je uklonjen iz koda**, ne samo iz teksta. `ChessViewModel` više ne
+dodaje bonus, `PuzzleOutcome.Solved` više ne nosi `premiumBonusXp`, a string
+`game_result_premium_bonus` je obrisan. Bodovi su sada isti za sve — što je i
+bila odluka: merilo koje nagrađuje prestaje da meri.
+
+**Jedna komponenta za ponudu** (`ui/components/PremiumLockedNotice.kt`) koju
+koriste sva tri zaključana ekrana i Podešavanja. Spisak je svuda isti, pa čovek
+koji naiđe na zaključan ekran vidi celu ponudu na licu mesta, a ne tek ako ode u
+Podešavanja.
+
+**Cena dolazi sa Play-a** (`ProductDetails.oneTimePurchaseOfferDetails.formattedPrice`),
+u valuti korisnika. Dok se detalji ne učitaju ili ako Play nije dostupan, dugme
+stoji bez cene umesto da izmisli broj.
+
+Uz spisak ide i rečenica koja je zapravo cela filozofija: *igranje ostaje
+besplatno i neograničeno; premium kupuje uvid u sopstveno vežbanje, ne prednost
+u njemu.*
+
+Provereno na uređaju 19.8.2026, na `googlePlay` debug buildu — jedinom na kome
+se ponuda uopšte vidi, jer `internal` uvek ima premium. Cena je tu prazna, kako
+i treba kad build nije stigao sa Play-a.
+
 ### Efekat na veličinu
 
 | | AAB |
@@ -406,10 +434,9 @@ Igranje ostaje neograničeno i besplatno; nijedan modul, težina ni zagonetka se
 ne zaključava. Podela je ista kao u BlindfoldTrainer-u, pa tri aplikacije
 govore istim jezikom: **alat je besplatan, plaća se uvid u sopstveni rad.**
 
-Sve tri stvari iz novog premiuma su **urađene 19.8.2026** (vidi Urađeno).
-Ostaje jedan zaseban posao: **gde se i kada premium uopšte ponudi** — danas se
-pominje samo jednom rečenicom u Podešavanjima, a tri nove funkcije nude
-zaključan ekran bez ijedne reči o ceni.
+Nov premium je **završen 19.8.2026** — sve tri funkcije, ponuda i tekst koji je
+opisuje (vidi Urađeno). Sledeće je **objavljivanje**: podići `versionCode` i
+`versionName`, napraviti bundle, i proći spisak provera niže.
 
 **Kupaca nema — provereno 19.8.2026.** Upravljanje porudžbinama pokazuje
 **jednu jedinu** porudžbinu `premium_upgrade`-a, od 24.7.2025, autorovu

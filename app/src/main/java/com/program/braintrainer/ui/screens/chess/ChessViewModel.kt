@@ -83,7 +83,6 @@ class ChessViewModel(
     private var currentIndex = 0
     private var correctStreak = 0
 
-    private var isPremium = false
     private var isSoundEnabled = true
 
     private var timerJob: Job? = null
@@ -99,7 +98,6 @@ class ChessViewModel(
     init {
         viewModelScope.launch {
             settingsManager.settingsFlow.collect { settings ->
-                isPremium = settings.isPremiumUser
                 isSoundEnabled = settings.isSoundEnabled
             }
         }
@@ -448,11 +446,8 @@ class ChessViewModel(
         correctStreak = score.streak
         scoreManager.addXp(score.totalXp)
 
-        val premiumBonus = if (isPremium && score.totalXp > 0) score.totalXp else 0
-        if (premiumBonus > 0) scoreManager.addXp(premiumBonus)
-
-        recordAttempt(state, AttemptOutcome.SOLVED, earnedXp = score.totalXp + premiumBonus)
-        _uiState.update { it.copy(outcome = PuzzleOutcome.Solved(score, premiumBonus)) }
+        recordAttempt(state, AttemptOutcome.SOLVED, earnedXp = score.totalXp)
+        _uiState.update { it.copy(outcome = PuzzleOutcome.Solved(score)) }
     }
 
     /**

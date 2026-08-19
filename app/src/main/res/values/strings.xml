@@ -33,7 +33,6 @@
     <string name="game_result_streak_bonus">🔥 Streak Bonus: +%1$d (%2$d puzzles in a row)\n</string>
     <string name="game_result_streak_lost">🔥 Streak Bonus: +0 (streak broken)\n</string>
     <string name="game_result_total_xp">\n🏆 XP Gained: %1$d</string>
-    <string name="game_result_premium_bonus">\n\n🔥 Premium Bonus: +%1$d</string>
     <string name="game_result_solved_with_help">Puzzle solved with help.\n\n(You did not earn XP because you used the solution.)</string>
     <string name="game_result_surrendered">You surrendered. The puzzle was not solved.</string>
     <string name="button_solution">Solution</string>
@@ -105,7 +104,7 @@
     <string name="settings_theme_system">System Default</string>
     <string name="settings_premium_activated">Premium is activated.</string>
     <string name="settings_premium_title">Premium</string>
-    <string name="settings_premium_description">Premium gives you double XP for every solved puzzle.</string>
+    <string name="settings_premium_description">Premium adds three things to the app. Playing itself stays free.</string>
     <string name="settings_buy_premium">Buy Premium</string>
     <string name="settings_reset_progress">Reset Progress</string>
     <string name="settings_reset_description">Deletes all saved results.</string>
@@ -179,4 +178,10 @@
     <string name="training_hide_timer_note">Time is still measured and still counts towards your score — only the clock is out of sight.</string>
     <string name="training_start">Start</string>
     <string name="main_custom_training">Custom training</string>
+
+    <string name="premium_benefit_history">Progress history — day by day, and how you do in each module</string>
+    <string name="premium_benefit_mistakes">Mistake log — play again exactly the puzzles you did not solve</string>
+    <string name="premium_benefit_training">Custom training — pick the module, the difficulty, the length, and whether the clock shows</string>
+    <string name="premium_free_note">Playing stays free and unlimited. Premium buys insight into your own practice, not an advantage in it.</string>
+    <string name="settings_buy_premium_price">Buy Premium — %1$s</string>
 </resources>

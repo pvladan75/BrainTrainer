@@ -8,6 +8,7 @@ import com.program.braintrainer.chess.model.data.BillingClientManager
 import com.program.braintrainer.chess.model.data.SettingsManager
 import com.program.braintrainer.score.ScoreManager
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -29,6 +30,19 @@ class SettingsViewModel(
             isPremiumUser = false
         )
     )
+
+    /**
+     * Cena onako kako je Play prikazuje, sa valutom korisnika. Null dok se
+     * detalji proizvoda ne učitaju ili ako Play nije dostupan — tada dugme stoji
+     * bez cene umesto da laže broj.
+     */
+    val premiumPrice: StateFlow<String?> = billingClientManager.productDetails
+        .map { it?.oneTimePurchaseOfferDetails?.formattedPrice }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
 
     /**
      * Proverava postojeće kupovine. Treba pozvati kada se UI vraća u prvi plan (onResume).

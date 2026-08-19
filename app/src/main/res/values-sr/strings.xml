@@ -33,7 +33,6 @@
     <string name="game_result_streak_bonus">🔥 Bonus za niz: +%1$d (%2$d zagonetki zaredom)\n</string>
     <string name="game_result_streak_lost">🔥 Bonus za niz: +0 (niz prekinut)\n</string>
     <string name="game_result_total_xp">\n🏆 Osvojeno XP: %1$d</string>
-    <string name="game_result_premium_bonus">\n\n🔥 Premium bonus: +%1$d</string>
     <string name="game_result_solved_with_help">Zagonetka rešena uz pomoć.\n\n(Niste osvojili XP poene jer ste koristili rešenje.)</string>
     <string name="game_result_surrendered">Predali ste se. Zagonetka nije rešena.</string>
     <string name="button_solution">Rešenje</string>
@@ -105,7 +104,7 @@
     <string name="settings_theme_system">Sistemska podrazumevana</string>
     <string name="settings_premium_activated">Premium verzija je aktivirana.</string>
     <string name="settings_premium_title">Premium</string>
-    <string name="settings_premium_description">Premium vam donosi duple XP poene za svaku rešenu zagonetku.</string>
+    <string name="settings_premium_description">Premium dodaje tri stvari u aplikaciju. Samo igranje ostaje besplatno.</string>
     <string name="settings_buy_premium">Kupi Premium</string>
     <string name="settings_reset_progress">Resetuj napredak</string>
     <string name="settings_reset_description">Briše sve sačuvane rezultate.</string>
@@ -181,4 +180,10 @@
     <string name="training_hide_timer_note">Vreme se i dalje meri i i dalje ulazi u bodove — samo sat nije pred očima.</string>
     <string name="training_start">Počni</string>
     <string name="main_custom_training">Trening po meri</string>
+
+    <string name="premium_benefit_history">Istorija napretka — iz dana u dan, i kako stojiš po modulima</string>
+    <string name="premium_benefit_mistakes">Dnevnik grešaka — odigraj ponovo baš one zagonetke koje nisi rešio</string>
+    <string name="premium_benefit_training">Trening po meri — biraš modul, težinu, dužinu i da li se vidi sat</string>
+    <string name="premium_free_note">Igranje ostaje besplatno i neograničeno. Premium kupuje uvid u sopstveno vežbanje, ne prednost u njemu.</string>
+    <string name="settings_buy_premium_price">Kupi Premium — %1$s</string>
 </resources>

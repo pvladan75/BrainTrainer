@@ -43,6 +43,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.program.braintrainer.R
+import com.program.braintrainer.ui.components.PremiumLockedNotice
 import com.program.braintrainer.stats.DayTotals
 import com.program.braintrainer.stats.GroupSummary
 import com.program.braintrainer.stats.PuzzleAttempt
@@ -95,7 +96,11 @@ fun HistoryScreen(
         when {
             state.isLoading -> Centered(Modifier.padding(padding)) { CircularProgressIndicator() }
 
-            !state.isPremium -> LockedNotice(Modifier.padding(padding), onOpenSettings)
+            !state.isPremium -> PremiumLockedNotice(
+                introText = stringResource(R.string.history_locked_description),
+                onOpenSettings = onOpenSettings,
+                modifier = Modifier.padding(padding)
+            )
 
             !state.hasAnything -> Centered(Modifier.padding(padding)) {
                 Text(
@@ -310,32 +315,6 @@ private fun AttemptRow(attempt: PuzzleAttempt) {
     }
 }
 
-@Composable
-private fun LockedNotice(modifier: Modifier = Modifier, onOpenSettings: () -> Unit) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = stringResource(R.string.premium_locked_title),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.history_locked_description),
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(16.dp))
-        Button(onClick = onOpenSettings) {
-            Text(stringResource(R.string.premium_locked_action))
-        }
-    }
-}
 
 @Composable
 private fun Centered(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
