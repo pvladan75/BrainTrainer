@@ -107,6 +107,16 @@ ksp {
 }
 
 dependencies {
+    // Google Play services dovlače androidx.fragment 1.1.0, koji je njegov autor
+    // označio kao zastareo i na koji se Play Console žali pri svakom izdanju.
+    // Aplikacija nema nijedan Fragment; ovo samo podiže verziju koja i tako ulazi
+    // u build, pa se ne dodaje kao prava zavisnost nego kao ograničenje.
+    constraints {
+        implementation(libs.androidx.fragment) {
+            because("Play services vuku 1.1.0; Play Console traži 1.2.1+")
+        }
+    }
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

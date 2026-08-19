@@ -424,6 +424,16 @@ Redom:
 
 Spisak provera pre objave je niže, u „Kako se ovo testira pre objave".
 
+**Upozorenja koja Play Console prijavljuje pre izdanja** (stanje 19.8.2026):
+
+| Upozorenje | Stanje |
+|---|---|
+| `androidx.fragment:fragment 1.1.0` je zastareo | **rešeno** — Play services su ga dovlačili; podignut na 1.8.9 preko `constraints` bloka, jer aplikacija nema nijedan Fragment pa mu nije mesto među pravim zavisnostima |
+| Prikaz od ivice do ivice na Android-u 15 | **već urađeno u kodu** — `enableEdgeToEdge()` u `MainActivity`, `Scaffold` insets na svim ekranima, `windowInsetsPadding(safeDrawing)` na ekranu partije. Ostaje da se pogleda uživo, naročito pejzaž sa gestovnom navigacijom |
+| Uklanjanje uvučenih delova / nezavisne prodavnice | odluka u konzoli, nema koda |
+| Pauzirati staru zatvorenu test verziju | radnja u konzoli — zamenjena je produkcijom pre više od 90 dana |
+
+
 ### 2. Model monetizacije — odluka od 19.8.2026
 
 Zapisano zato što obrazloženje ne postoji u kodu. Sam sadržaj premiuma je
