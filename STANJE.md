@@ -425,9 +425,11 @@ dve stare zatvorene trake. Politika privatnosti na `vp-mobile-apps.web.app` je
 istog dana zamenjena i usklađena sa deklaracijom, a izvor sajta je stavljen pod
 git — ranije nije postojao nigde na disku.
 
-Ostalo posle objave: **srpski unos u prodavnici** (tekst spreman), dopuna
-engleskog opisa premium odeljkom, i osvežavanje slika ekrana — sadašnje su od
-avgusta 2025. i ne pokazuju nijedan nov ekran.
+Unos u prodavnici je istog dana dopunjen: dodat **srpski prevod** (naziv, kratak
+i pun opis), a engleski opis je dobio odeljak o besplatnom igranju i premiumu.
+
+Ostaje samo **osvežavanje slika ekrana** — sadašnje su od avgusta 2025. i ne
+pokazuju nijedan od tri nova ekrana.
 
 Postupak koji je primenjen, za sledeći put:
 
