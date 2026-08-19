@@ -289,10 +289,21 @@ Preduslov za prvo dvoje: rezultati moraju negde da se pamte. Danas
 koja je zagonetka rešena, kada, za koliko i koja je promašena. Prvi komad posla
 je lokalna baza rezultata, pa dnevnik grešaka nad njom.
 
-**Obaveza prema postojećim kupcima.** `premium_upgrade` je već prodavan. Ista
-šifra proizvoda dobija novo značenje, a ko ga je kupio dobija sve novo bez
-ikakve doplate. Zato dupli XP ne sme da nestane tiho: premium mora da dobije
-više nego što je imao.
+**Kupaca nema — provereno 19.8.2026.** Upravljanje porudžbinama pokazuje
+**jednu jedinu** porudžbinu `premium_upgrade`-a, od 24.7.2025, autorovu
+sopstvenu proveru da naplata radi, i to refundiranu. Dakle proizvod stoji
+dostupan više od godinu dana i nije se prodao nijednom čoveku.
+
+Posledica za plan: obaveza prema postojećim kupcima je **prazna**, pa se šta
+`premium_upgrade` znači menja bez ikakvog duga prema ranijim kupcima. Princip
+ostaje ako se neko pojavi pre nego što novi premium izađe — ista šifra
+proizvoda, novo značenje, bez doplate.
+
+Nula prodaja **ne dokazuje** sama po sebi da je ponuda loša; tri uzroka se
+preklapaju: malo korisnika, dupli XP kao slaba ponuda, i to što se premium u
+aplikaciji nigde ne nudi osim jednom rečenicom u Podešavanjima. Prva dva rešava
+novi sadržaj premiuma; **treće je zaseban posao** — gde se i kada ponuda uopšte
+pokaže.
 
 **Dnevna zagonetka ne traži server** ako se ikad poželi: datum kao seme, seme
 bira redni broj u JSONL fajlu, i svi dobiju istu zagonetku istog dana. Server bi
@@ -335,6 +346,10 @@ Spisak koji mora da prođe:
 4. **Refund/povlačenje kupovine** u Play Console-u — premium nestaje pri sledećem
    pokretanju.
 5. **Bez interneta** — premium se ne gubi kada Play nije dostupan.
+
+Refund se **ne može proveriti na autorovom telefonu**, jer tamo stoji `internal`
+flavor koji pali premium bez obzira na kupovinu. Za tačku 4 treba `googlePlay`
+build sa Play trake.
 
 **„Ograničenja korišćenja ponude"** u zaštiti Play naplate je isključeno i ne
 može da se uključi — odnosi se na promotivne ponude za pretplatu, a aplikacija
