@@ -385,6 +385,16 @@ Uz spisak ide i rečenica koja je zapravo cela filozofija: *igranje ostaje
 besplatno i neograničeno; premium kupuje uvid u sopstveno vežbanje, ne prednost
 u njemu.*
 
+**Cena je spuštena sa 7,44 na 2,49 USD** (19.8.2026). Stara je stajala trinaest
+meseci bez ijedne prodaje — što samo po sebi ne dokazuje da je cena bila kriva,
+jer su i ponuda (dupli XP) i njena vidljivost bili slabi. Pošto se to dvoje
+menja ovim izdanjem, menja se i treće, da se ne gata koje je od tri bilo uzrok.
+
+**Opis proizvoda u Play Console-u je bio netačan u oba smera** — obećavao je
+uklanjanje reklama, kojih više nema nigde, i dupli XP, koji je uklonjen. To je
+tekst koji korisnik čita u trenutku plaćanja, pa je zamenjen opisom tri stvarne
+funkcije, na engleskom i srpskom.
+
 Provereno na uređaju 19.8.2026, na `googlePlay` debug buildu — jedinom na kome
 se ponuda uopšte vidi, jer `internal` uvek ima premium. Cena je tu prazna, kako
 i treba kad build nije stigao sa Play-a.
