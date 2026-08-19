@@ -15,6 +15,10 @@ samo beli, a crne figure se ne pomeraju.
 Svaki modul ima tri težine (EASY / MEDIUM / HARD). Napredak se meri XP poenima,
 rangovima i dostignućima.
 
+Igranje je besplatno i neograničeno. **Premium** (jednokratna kupovina
+`premium_upgrade`) dodaje uvid u sopstveno vežbanje — istoriju napretka, dnevnik
+grešaka i trening po meri — a ne prednost u igri; bodovi su isti za sve.
+
 ---
 
 ## Tehnologije
@@ -26,7 +30,7 @@ rangovima i dostignućima.
 | Navigacija | navigation-compose 2.9.3 |
 | Build | AGP 8.10.1, Gradle 8.11.1 |
 | SDK | compileSdk 36, targetSdk 36, minSdk 27 |
-| Podaci | DataStore Preferences + SharedPreferences |
+| Podaci | DataStore Preferences + SharedPreferences, Room 2.7.2 (istorija) |
 | Naplata | Google Play Billing 8.0.0 |
 | Serijalizacija | kotlinx.serialization |
 
@@ -38,22 +42,26 @@ Trenutna verzija: `versionCode = 6`, `versionName = "6.0"`.
 
 ```
 app/src/main/java/com/program/braintrainer/
-├── BrainTrainerApp.kt          Application: drži SettingsManager i BillingClientManager
+├── BrainTrainerApp.kt          Application: SettingsManager, AchievementManager,
+│                               AttemptRepository i BillingClientManager
 ├── MainActivity.kt             jedina Activity, hostuje Compose
 ├── chess/
 │   ├── model/                  Board, Square, Piece, Problem, enumi
-│   │   └── data/               SettingsManager, ProblemLoader, BillingClientManager
+│   │   └── data/               SettingsManager, ProblemLoader, ProblemSampler,
+│   │                           BillingClientManager
 │   ├── parser/FenParser.kt     FEN <-> Board, parsiranje poteza
-│   └── solver/                 BFS solver za hintove
+│   └── solver/                 BFS solver za hintove, sa budžetom vremena i stanja
 ├── rules/                      PuzzleRules + tri implementacije po modulu
 ├── score/
 │   ├── ScoreCalculator.kt      čista računica bodova (testirana)
 │   └── ScoreManager.kt         trajno čuvanje XP-a i statistike
+├── stats/                      Room baza odigranih zagonetki (istorija, greške)
 ├── gamification/               dostignuća, rangovi, ViewModel-i
 ├── ui/
 │   ├── AppNavigation.kt        rute
 │   ├── LocalizedNames.kt       prevedeni nazivi modula i težina
-│   ├── screens/                ekrani
+│   ├── components/             PremiumLockedNotice — ponuda premiuma na jednom mestu
+│   ├── screens/                ekrani: chess, mistakes, history, training, settings
 │   └── theme/                  Compose tema
 └── util/SoundPlayer.kt         zvučni efekti
 ```
@@ -67,9 +75,10 @@ prolazu kroz fajl i bez parsiranja onoga što nije odabrano (`ProblemSampler`).
 
 Dva flavor-a po dimenziji `version`:
 
-- **`internal`** — `BuildConfig.IS_TEST_BUILD = true`, premium je automatski uključen.
-  Za testere.
-- **`googlePlay`** — verzija za objavu.
+- **`internal`** — `BuildConfig.IS_TEST_BUILD = true`: premium je uključen bez
+  kupovine i svi moduli su otključani bez obzira na rang. Za probanje sadržaja na
+  sopstvenom uređaju; **naplata se na njemu ne može proveriti.**
+- **`googlePlay`** — verzija za objavu, i jedina na kojoj se vidi ponuda premiuma.
 
 Release build koristi R8 (`isMinifyEnabled` + `isShrinkResources`).
 

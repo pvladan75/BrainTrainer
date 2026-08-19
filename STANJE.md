@@ -10,14 +10,18 @@
 
 ## Gde smo stali
 
-`ChessViewModel` je završen i proveren na uređaju. Nema otvorenih blokada.
+Stanje na **19.8.2026**. Nema otvorenih blokada u kodu.
 
-Poznata ograničenja i dug su prošireni; ostala su samo šahovska pravila
-(promocija, en passant, rokada), koja za postojeće module nisu relevantna.
+Ova sesija je zatvorila tri celine: **učitavanje zagonetki** (uzorak umesto
+parsiranja celog fajla), **poznata ograničenja i dug** (dostignuća, tajmer,
+performanse table, budžet solvera, process death, statusna traka, CI), i **nov
+premium** (baza odigranih zagonetki, dnevnik grešaka, istorija napretka, trening
+po meri, i ponuda koja ga opisuje).
 
-Model monetizacije je odlučen 19.8.2026 — svaka aplikacija za sebe, bez servera.
-Sledeći korak je **nov sadržaj premiuma**, a prvi komad posla je lokalna baza
-rezultata (sekcija „Sledeći koraci").
+Model monetizacije je odlučen: **svaka aplikacija naplaćuje za sebe, bez
+servera**. Dupli XP je izašao iz premiuma i iz koda.
+
+Sledeće je **objavljivanje** — sekcija „Sledeći koraci".
 
 ---
 
@@ -397,11 +401,28 @@ aplikacija koristi tri ikonice.
 
 ## Sledeći koraci
 
-Poređano po vrednosti.
+### 1. Objavljivanje
 
-### 1. Nov sadržaj premiuma
+Redom:
 
-Model je odlučen **19.8.2026.** Ovo više nije otvoreno pitanje, nego posao.
+1. **Podići verziju** u `app/build.gradle.kts` — sada `versionCode = 6`,
+   `versionName = "6.0"`.
+2. `./gradlew :app:bundleGooglePlayRelease` — ključ i lozinke već čita iz
+   `keystore.properties`, izlaz je `app/build/outputs/bundle/googlePlayRelease/`.
+3. Play Console → Testing → Internal testing → Create new release, pa tek onda
+   produkcija.
+4. **Proveriti naplatu** sa naloga upisanog u License testing (Play Console →
+   Setup → License testing). Na `internal` buildu se to ne može videti.
+5. **Store listing** i dalje opisuje staru aplikaciju. Ako igde pominje dupli XP
+   ili reklame, to je jedina preostala neistina o proizvodu — i jedina koja nije
+   u repozitorijumu.
+
+Spisak provera pre objave je niže, u „Kako se ovo testira pre objave".
+
+### 2. Model monetizacije — odluka od 19.8.2026
+
+Zapisano zato što obrazloženje ne postoji u kodu. Sam sadržaj premiuma je
+napravljen (vidi Urađeno); ovde stoji **zašto** je takav.
 
 **Svaka aplikacija naplaćuje za sebe** („model A"). Kupovina na Google Play-u
 živi na paru „Google nalog + paket aplikacije" i ne može da pređe u drugu
@@ -416,7 +437,7 @@ DigitalOcean droplet sa odvojenim tabelama po aplikaciji; tamo je premium po
 prirodi serverski jer se prodaje baš usluga (čuvanje napretka, dnevni zadatak,
 lestvica). BrainTrainer u tome ne učestvuje.
 
-**Dupli XP izlazi iz premiuma.** Po pravilu koje već stoji u planu
+**Dupli XP je izašao iz premiuma.** Po pravilu koje već stoji u planu
 BlindfoldTrainer-a: merilo koje nagrađuje prestaje da meri. XP kaže koliko je
 neko odigrao; udvostručen za pare, više ne kaže ništa, a rangovi koji iz njega
 izlaze postaju priča o tome ko je platio. Uz to je i slaba ponuda — kupcu ne
