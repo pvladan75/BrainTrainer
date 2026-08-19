@@ -10,7 +10,8 @@
 
 ## Gde smo stali
 
-Stanje na **19.8.2026**. Nema otvorenih blokada u kodu.
+Stanje na **19.8.2026**. **Verzija 7 (7.0) je objavljena u produkciji** — nema
+otvorenih blokada ni u kodu ni u konzoli.
 
 Ova sesija je zatvorila tri celine: **učitavanje zagonetki** (uzorak umesto
 parsiranja celog fajla), **poznata ograničenja i dug** (dostignuća, tajmer,
@@ -416,9 +417,19 @@ aplikacija koristi tri ikonice.
 
 ## Sledeći koraci
 
-### 1. Objavljivanje
+### 1. Objavljivanje — ✅ urađeno 19.8.2026
 
-Redom:
+Verzija **7 (7.0)** je prošla pregled i objavljena je za sve korisnike. Uz nju su
+otišle i deklaracije (oglasi, ID oglašavanja, bezbednost podataka) i pauziranje
+dve stare zatvorene trake. Politika privatnosti na `vp-mobile-apps.web.app` je
+istog dana zamenjena i usklađena sa deklaracijom, a izvor sajta je stavljen pod
+git — ranije nije postojao nigde na disku.
+
+Ostalo posle objave: **srpski unos u prodavnici** (tekst spreman), dopuna
+engleskog opisa premium odeljkom, i osvežavanje slika ekrana — sadašnje su od
+avgusta 2025. i ne pokazuju nijedan nov ekran.
+
+Postupak koji je primenjen, za sledeći put:
 
 1. **Podići verziju** u `app/build.gradle.kts` — sada `versionCode = 6`,
    `versionName = "6.0"`.
