@@ -535,19 +535,32 @@ potpisana istim ključem, pa sideload sa debug ključem ionako ne ponaša se kao
 produkcija. Za proveru naplate ide `googlePlay` build sa trake, uz nalog upisan
 u License testing.
 
-Spisak koji mora da prođe:
+Spisak i šta je od njega prošlo, **provereno 19.8.2026** na uređaju, na verziji
+7 (7.0) instaliranoj sa interne trake:
 
-1. **Ažuriranje preko postojeće produkcijske instalacije**, ne čista instalacija
-   — XP, dostignuća i premium status preživljavaju.
-2. **Kupac od ranije** ostaje premium i dobija nove funkcije (grandfathering).
-3. **Nov besplatan korisnik** — kupovina otključava bez restarta aplikacije.
-4. **Refund/povlačenje kupovine** u Play Console-u — premium nestaje pri sledećem
-   pokretanju.
-5. **Bez interneta** — premium se ne gubi kada Play nije dostupan.
+| | Stanje |
+|---|---|
+| Kupovina prolazi kroz pravi tok | ✅ test kartica, „you will not be charged" |
+| Premium se uključi **bez restarta** | ✅ |
+| Sva tri premium ekrana se otključaju | ✅ |
+| Bez interneta premium se ne gubi | ✅ |
+| Refund oduzima premium pri sledećem pokretanju | ✅ |
+| **Ažuriranje preko postojeće instalacije** | ❌ **nije provereno** — aplikacija je na tom telefonu bila obrisana, pa je ovo bila čista instalacija |
+| Kupac od ranije zadržava premium | bespredmetno — kupaca nema |
 
-Refund se **ne može proveriti na autorovom telefonu**, jer tamo stoji `internal`
-flavor koji pali premium bez obzira na kupovinu. Za tačku 4 treba `googlePlay`
-build sa Play trake.
+**Zavrzlama sa nalozima, da se ne ponovi.** Kupovina je tri puta nudila pravu
+karticu umesto test kartice. Uzrok: telefon je imao **tri** Google naloga, a Play
+je za plaćanje koristio treći — onaj koji nije bio ni u listi testera ni u
+License testing-u (i kome je kartica istekla 2021). Pravilo: presudan je nalog
+koji Play koristi **za plaćanje**, ne onaj kojim je aplikacija instalirana; vidi
+se dodirom na način plaćanja u samom dijalogu.
+
+Preostali rizik je samo prvi red tabele: teorijski, ažuriranje ne dira podatke
+(Android ih čuva kad su paket i potpis isti, a aplikacija ništa ne briše), ali
+niko to nije video.
+
+Refund se **ne može proveriti na buildu koji premium pali zastavicom** — za to
+treba `googlePlay` build sa Play trake, što je 19.8.2026 i urađeno.
 
 **„Ograničenja korišćenja ponude"** u zaštiti Play naplate je isključeno i ne
 može da se uključi — odnosi se na promotivne ponude za pretplatu, a aplikacija
