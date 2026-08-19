@@ -62,7 +62,12 @@ fun GameInfoPanel(
     val goalTextStyle = MaterialTheme.typography.titleMedium
     val textColor = MaterialTheme.colorScheme.onSurface
 
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        // U pejzažu panel stoji tik uz tablu, pa mu treba razmak s desne strane:
+        // bez njega se "Time: 00:09" dodiruje sa ivicom table.
+        modifier = modifier.padding(end = if (isLandscape) 12.dp else 0.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             text = moduleTitle(module),
             style = infoTextStyle,
