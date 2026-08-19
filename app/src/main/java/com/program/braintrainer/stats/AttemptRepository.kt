@@ -23,8 +23,6 @@ class AttemptRepository(
         Unit
     }
 
-    suspend fun count(): Int = withContext(ioDispatcher) { dao.count() }
-
     suspend fun recent(limit: Int = DEFAULT_LIMIT): List<PuzzleAttempt> = withContext(ioDispatcher) {
         dao.recent(limit).mapNotNull { it.toAttempt() }
     }
@@ -55,8 +53,7 @@ class AttemptRepository(
                     puzzleId = row.puzzleId,
                     module = module,
                     difficulty = difficulty,
-                    lastAttemptAt = row.lastAttemptAt,
-                    attempts = row.attempts
+                    lastAttemptAt = row.lastAttemptAt
                 )
             }
         }
@@ -80,18 +77,6 @@ class AttemptRepository(
             )
         }
     }
-
-    suspend fun summary(module: Module, difficulty: Difficulty): ModuleSummary =
-        withContext(ioDispatcher) {
-            val row = dao.summary(module.name, difficulty.name)
-            ModuleSummary(
-                attempts = row.attempts,
-                solved = row.solved,
-                perfect = row.perfect,
-                bestSeconds = row.bestSeconds,
-                totalSeconds = row.totalSeconds
-            )
-        }
 
     private companion object {
         const val DEFAULT_LIMIT = 50

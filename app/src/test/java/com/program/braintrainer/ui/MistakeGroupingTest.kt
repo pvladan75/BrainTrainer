@@ -15,7 +15,7 @@ class MistakeGroupingTest {
         module: Module,
         difficulty: Difficulty,
         at: Long
-    ) = OpenMistake(id, module, difficulty, at, attempts = 1)
+    ) = OpenMistake(id, module, difficulty, at)
 
     @Test
     fun `greske se grupisu po modulu i tezini`() {

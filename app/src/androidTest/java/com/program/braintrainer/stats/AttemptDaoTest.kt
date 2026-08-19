@@ -68,7 +68,7 @@ class AttemptDaoTest {
         dao.insert(attempt("2", "FAILED", now - dan))
         dao.insert(attempt("3", "SOLVED", now))
 
-        assertEquals(3, dao.count())
+        assertEquals(3, dao.recent(10).size)
         assertEquals(listOf("3", "2"), dao.recent(2).map { it.puzzleId })
     }
 
@@ -87,7 +87,6 @@ class AttemptDaoTest {
         val open = dao.openMistakes(10)
 
         assertEquals(listOf("predata", "otvorena"), open.map { it.puzzleId })
-        assertEquals(2, open.first { it.puzzleId == "otvorena" }.attempts)
     }
 
     @Test
@@ -118,7 +117,7 @@ class AttemptDaoTest {
         dao.insert(attempt("3", "FAILED", now, elapsedSeconds = 50))
         dao.insert(attempt("4", "SOLVED", now, difficulty = "HARD", elapsedSeconds = 5))
 
-        val summary = dao.summary("Module1", "EASY")
+        val summary = dao.summaries().first { it.module == "Module1" && it.difficulty == "EASY" }
 
         assertEquals(3, summary.attempts)
         assertEquals(2, summary.solved)
@@ -148,7 +147,7 @@ class AttemptDaoTest {
     fun bez_resene_zagonetke_nema_najboljeg_vremena() = runBlocking {
         dao.insert(attempt("1", "FAILED", System.currentTimeMillis()))
 
-        val summary = dao.summary("Module1", "EASY")
+        val summary = dao.summaries().single()
 
         assertEquals(1, summary.attempts)
         assertEquals(0, summary.solved)

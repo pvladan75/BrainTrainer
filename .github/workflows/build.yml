@@ -23,6 +23,12 @@ jobs:
 
       # Release potpisivanje traži keystore.properties, koji nije u repozitorijumu;
       # debug varijanta se potpisuje debug ključem, pa CI ne treba tajne.
+      # Izvršna dozvola stoji u gitu (100755), ali Windows checkout je lako izgubi
+      # pri sledećem commit-u; ovo je jeftino osiguranje da runner ne stane na
+      # "Permission denied".
+      - name: Dozvola za gradlew
+        run: chmod +x ./gradlew
+
       - name: Testovi
         run: ./gradlew :app:testGooglePlayDebugUnitTest --no-daemon
 

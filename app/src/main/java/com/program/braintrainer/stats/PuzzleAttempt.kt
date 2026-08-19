@@ -57,8 +57,7 @@ data class OpenMistake(
     val puzzleId: String,
     val module: Module,
     val difficulty: Difficulty,
-    val lastAttemptAt: Long,
-    val attempts: Int
+    val lastAttemptAt: Long
 )
 
 /** Zbir jedne grupe, sa oznakama kojoj grupi pripada. */

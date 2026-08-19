@@ -232,7 +232,12 @@ njen duplikat u `Board.kt` (ostaje `toFenChar`), `Piece.opposite()` koja vraća
 
 **CI.** GitHub Actions workflow (`.github/workflows/build.yml`) vrti testove i
 debug build na svaki push i pull request. Ne treba mu `keystore.properties` jer
-se debug potpisuje debug ključem. Testova je sada **65**.
+se debug potpisuje debug ključem.
+
+Prvi pokretanje je palo na `./gradlew: Permission denied` — fajl je u gitu bio
+`100644`, jer Windows ne prati izvršnu dozvolu. Rešeno sa
+`git update-index --chmod=+x gradlew`, uz `chmod +x` korak u workflow-u kao
+osiguranje ako se dozvola ikad opet izgubi.
 
 ### Baza odigranih zagonetki
 
