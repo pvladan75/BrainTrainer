@@ -48,7 +48,8 @@ fun MainScreen(
     onNavigateToSettings: () -> Unit,
     onNavigateToProfile: () -> Unit,
     onNavigateToAchievements: () -> Unit,
-    onNavigateToMistakes: () -> Unit
+    onNavigateToMistakes: () -> Unit,
+    onNavigateToCustomTraining: () -> Unit
 ) {
     val context = LocalContext.current
     val scoreManager = remember { ScoreManager(context) }
@@ -114,6 +115,10 @@ fun MainScreen(
                         )
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedButton(onClick = onNavigateToCustomTraining) {
+                    Text(stringResource(id = R.string.main_custom_training))
+                }
             }
         } else {
             // PORTRAIT: LazyColumn za efikasno skrolovanje celog sadržaja
@@ -146,6 +151,17 @@ fun MainScreen(
                             onModeAndDifficultySelected(mode.type, difficulty)
                         }
                     )
+                }
+
+                item {
+                    OutlinedButton(
+                        onClick = onNavigateToCustomTraining,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Text(stringResource(id = R.string.main_custom_training))
+                    }
                 }
             }
         }

@@ -42,6 +42,7 @@ fun GameInfoPanel(
     sessionSize: Int,
     currentSessionProblemIndex: Int,
     elapsedTime: Int,
+    showTime: Boolean,
     optimalMoves: Int,
     playerMoveCount: Int,
     isLandscape: Boolean,
@@ -89,11 +90,13 @@ fun GameInfoPanel(
                 style = infoTextStyle,
                 color = textColor
             )
-            Text(
-                text = stringResource(R.string.info_panel_time, timeString),
-                style = infoTextStyle,
-                color = textColor
-            )
+            if (showTime) {
+                Text(
+                    text = stringResource(R.string.info_panel_time, timeString),
+                    style = infoTextStyle,
+                    color = textColor
+                )
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
 

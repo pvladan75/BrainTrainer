@@ -1,5 +1,6 @@
 package com.program.braintrainer.gamification
 
+import com.program.braintrainer.BuildConfig
 import com.program.braintrainer.chess.model.Difficulty
 import com.program.braintrainer.chess.model.Module
 
@@ -136,6 +137,10 @@ object RankManager {
     }
 
     fun getAvailableDifficultiesFor(rank: Rank, module: Module): List<Difficulty> {
+        // Test build ne skuplja XP da bi video sadržaj: tester treba da proba
+        // svaki modul, a ne da ga prvo zaradi.
+        if (BuildConfig.IS_TEST_BUILD) return Difficulty.entries
+
         return rank.unlockedContent.find { it.module == module }?.availableDifficulties ?: emptyList()
     }
 }

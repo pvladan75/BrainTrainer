@@ -13,6 +13,9 @@ import com.program.braintrainer.score.PuzzleScore
 data class ChessUiState(
     val isLoading: Boolean = true,
 
+    /** Sat se ne prikazuje, ali vreme i dalje teče i bodovanje je nepromenjeno. */
+    val hideTimer: Boolean = false,
+
     // trenutna zagonetka
     val board: Board = Board(),
     val selectedSquare: Square? = null,

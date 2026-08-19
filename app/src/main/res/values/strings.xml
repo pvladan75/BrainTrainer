@@ -168,4 +168,15 @@
     <string name="duration_minutes">%1$dm %2$02ds</string>
     <string name="duration_hours">%1$dh %2$02dm</string>
     <string name="profile_open_history">Progress history</string>
+
+    <string name="training_title">Custom training</string>
+    <string name="training_locked_description">Custom training lets you pick the module, the difficulty, how many puzzles a session has, and whether the clock is shown. It is part of Premium, together with history and the mistake log.</string>
+    <string name="training_section_module">Module</string>
+    <string name="training_section_difficulty">Difficulty</string>
+    <string name="training_section_length">Session length</string>
+    <string name="training_length_puzzles">%1$d puzzles</string>
+    <string name="training_hide_timer">Hide the clock</string>
+    <string name="training_hide_timer_note">Time is still measured and still counts towards your score — only the clock is out of sight.</string>
+    <string name="training_start">Start</string>
+    <string name="main_custom_training">Custom training</string>
 </resources>

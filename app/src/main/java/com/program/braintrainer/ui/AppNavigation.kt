@@ -23,6 +23,8 @@ import com.program.braintrainer.ui.screens.history.HistoryScreen
 import com.program.braintrainer.ui.screens.history.HistoryViewModelFactory
 import com.program.braintrainer.ui.screens.mistakes.MistakesScreen
 import com.program.braintrainer.ui.screens.mistakes.MistakesViewModelFactory
+import com.program.braintrainer.ui.screens.training.CustomTrainingScreen
+import com.program.braintrainer.ui.screens.training.CustomTrainingViewModelFactory
 import com.program.braintrainer.ui.screens.settings.SettingsScreen
 import com.program.braintrainer.ui.screens.settings.SettingsViewModelFactory
 
@@ -36,7 +38,9 @@ object Routes {
     const val ACHIEVEMENTS = "achievements"
     const val MISTAKES = "mistakes"
     const val HISTORY = "history"
-    const val CHESS_GAME = "chess_game/{moduleType}/{difficultyType}?puzzleIds={puzzleIds}"
+    const val CUSTOM_TRAINING = "custom_training"
+    const val CHESS_GAME =
+        "chess_game/{moduleType}/{difficultyType}?puzzleIds={puzzleIds}&size={size}&hideTimer={hideTimer}"
 
     /**
      * Ruta do ekrana igre. [puzzleIds] je prazno za običnu sesiju, a popunjeno
@@ -45,10 +49,17 @@ object Routes {
     fun createChessGameRoute(
         module: Module,
         difficulty: Difficulty,
-        puzzleIds: List<String> = emptyList()
+        puzzleIds: List<String> = emptyList(),
+        sessionSize: Int = DEFAULT_SESSION_SIZE,
+        hideTimer: Boolean = false
     ): String {
-        return "chess_game/${module.name}/${difficulty.name}?puzzleIds=${puzzleIds.joinToString(",")}"
+        return "chess_game/${module.name}/${difficulty.name}" +
+            "?puzzleIds=${puzzleIds.joinToString(",")}" +
+            "&size=$sessionSize" +
+            "&hideTimer=$hideTimer"
     }
+
+    const val DEFAULT_SESSION_SIZE = 10
 }
 
 /**
@@ -93,6 +104,7 @@ fun AppNavigation() {
                 },
                 onNavigateToSettings = { navController.navigate(Routes.SETTINGS) },
                 onNavigateToMistakes = { navController.navigate(Routes.MISTAKES) },
+                onNavigateToCustomTraining = { navController.navigate(Routes.CUSTOM_TRAINING) },
                 onNavigateToProfile = { navController.navigate(Routes.PROFILE) },
                 onNavigateToAchievements = { navController.navigate(Routes.ACHIEVEMENTS) }
             )
@@ -110,6 +122,24 @@ fun AppNavigation() {
                 viewModel = viewModel(factory = ProfileViewModelFactory(context)),
                 onBackPress = { navController.popBackStack() },
                 onNavigateToHistory = { navController.navigate(Routes.HISTORY) }
+            )
+        }
+
+        composable(Routes.CUSTOM_TRAINING) {
+            CustomTrainingScreen(
+                viewModel = viewModel(factory = CustomTrainingViewModelFactory(context)),
+                onBackPress = { navController.popBackStack() },
+                onStart = { module, difficulty, size, hideTimer ->
+                    navController.navigate(
+                        Routes.createChessGameRoute(
+                            module = module,
+                            difficulty = difficulty,
+                            sessionSize = size,
+                            hideTimer = hideTimer
+                        )
+                    )
+                },
+                onOpenSettings = { navController.navigate(Routes.SETTINGS) }
             )
         }
 
@@ -144,7 +174,9 @@ fun AppNavigation() {
             Routes.CHESS_GAME,
             // Bez podrazumevane vrednosti ruta bez upitnog dela ne bi bila pogođena.
             arguments = listOf(
-                navArgument("puzzleIds") { type = NavType.StringType; defaultValue = "" }
+                navArgument("puzzleIds") { type = NavType.StringType; defaultValue = "" },
+                navArgument("size") { type = NavType.IntType; defaultValue = Routes.DEFAULT_SESSION_SIZE },
+                navArgument("hideTimer") { type = NavType.BoolType; defaultValue = false }
             )
         ) { backStackEntry ->
             val moduleType = backStackEntry.arguments?.getString("moduleType")?.let { Module.valueOf(it) }
@@ -159,7 +191,17 @@ fun AppNavigation() {
                     module = moduleType,
                     difficulty = difficultyType,
                     viewModel = viewModel(
-                        factory = ChessViewModelFactory(context, moduleType, difficultyType, puzzleIds)
+                        factory = ChessViewModelFactory(
+                            context = context,
+                            module = moduleType,
+                            difficulty = difficultyType,
+                            puzzleIds = puzzleIds,
+                            sessionSize = backStackEntry.arguments
+                                ?.getInt("size", Routes.DEFAULT_SESSION_SIZE)
+                                ?: Routes.DEFAULT_SESSION_SIZE,
+                            hideTimer = backStackEntry.arguments
+                                ?.getBoolean("hideTimer", false) ?: false
+                        )
                     ),
                     onGameFinished = {
                         // Nazad na ekran sa kog je partija pokrenuta — glavni meni

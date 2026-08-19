@@ -326,6 +326,32 @@ početnog. Upozorenje je dodato u README uz samu komandu.
 Testovi: pet JVM testova (popunjavanje dana, opseg, granice trajanja) i jedan
 instrumentirani za `summaries()`.
 
+### Trening po meri
+
+Poslednji komad novog premiuma. Ulaz je dugme ispod kartica modula na glavnom
+ekranu; bira se modul, težina, dužina sesije (5, 10 ili 20) i da li se vidi sat.
+
+**Sat se sakriva, ne isključuje.** Vreme i dalje teče i i dalje ulazi u bodove —
+skriven sat sklanja pritisak, ne bodove. Da se tajmer stvarno zaustavi, brzinski
+bonus bi bio maksimalan u svakoj partiji, pa bi „trening bez tajmera" postao
+najisplativiji način da se skuplja XP. To piše i na samom ekranu, ispod
+prekidača.
+
+`ChessViewModel` je dobio `sessionSize` i `hideTimer`; ruta partije nosi oba kao
+upitne parametre, pa ih obnavljanje sesije posle ubijanja procesa dobija besplatno.
+
+**Test build otključava sve module.** `RankManager.getAvailableDifficultiesFor`
+u `IS_TEST_BUILD` verziji vraća sve težine — tester (ili autor) treba da proba
+svaki modul, a ne da ga prvo zaradi. Ovo je i praktična posledica brisanja
+napretka opisanog kod istorije.
+
+Provereno na uređaju 19.8.2026: Avoidance/Medium se otvara sa nula XP-a, a
+trening „King Hunt, Hard, 5 zagonetki, sakriven sat" daje partiju sa
+`Puzzle: 1/5` i **bez** reda sa vremenom.
+
+Testovi: četiri JVM testa za rutu partije (obična sesija, revanš sa spiskom
+ID-jeva, trening sa dužinom i skrivenim satom, i da šablon pokriva sve parametre).
+
 ### Efekat na veličinu
 
 | | AAB |
@@ -380,10 +406,10 @@ Igranje ostaje neograničeno i besplatno; nijedan modul, težina ni zagonetka se
 ne zaključava. Podela je ista kao u BlindfoldTrainer-u, pa tri aplikacije
 govore istim jezikom: **alat je besplatan, plaća se uvid u sopstveni rad.**
 
-Baza rezultata, dnevnik grešaka i istorija napretka su **urađeni 19.8.2026**
-(vidi Urađeno). Ostaje **trening po meri**, i uz njega zaseban posao: gde se i
-kada premium uopšte ponudi — danas se pominje samo jednom rečenicom u
-Podešavanjima.
+Sve tri stvari iz novog premiuma su **urađene 19.8.2026** (vidi Urađeno).
+Ostaje jedan zaseban posao: **gde se i kada premium uopšte ponudi** — danas se
+pominje samo jednom rečenicom u Podešavanjima, a tri nove funkcije nude
+zaključan ekran bez ijedne reči o ceni.
 
 **Kupaca nema — provereno 19.8.2026.** Upravljanje porudžbinama pokazuje
 **jednu jedinu** porudžbinu `premium_upgrade`-a, od 24.7.2025, autorovu
@@ -414,24 +440,27 @@ pokretanju. Vredi ga uvesti tek ako novi model donese serversku stranu.
 
 ### Kako se ovo testira pre objave
 
-Ažuriranje ide na **internal testing** traku ka testerima, pa tek onda u
-produkciju. Dve stvari se lako pomešaju, a nisu isto:
+**Testeri se ne angažuju** (odluka 19.8.2026) — proveru radi autor sam. To ne
+menja *kako* se testira naplata, samo ko to radi: license testing i dalje treba,
+jer je jedini način da se kupovina prođe kroz pravi tok bez naplate.
+
+Dve stvari se lako pomešaju, a nisu isto:
 
 | | čemu služi |
 |---|---|
-| **internal testing traka** | testeri uopšte dobiju build, preko Play-a i sa produkcijskim potpisom |
+| **internal testing traka** | build stiže preko Play-a i sa produkcijskim potpisom — bez toga se naplata ne ponaša kao u produkciji |
 | **License testing** (Play Console → Setup) | ti isti nalozi kupuju `premium_upgrade` kroz **pravi** tok, bez naplate |
 
-**Testeri ne treba da budu premium od starta.** Ako im se premium uključi
-zastavicom, jedina stvar koja zaista može da pukne — sam tok kupovine — ostaje
-neproverena, a premium funkcije se testiraju u stanju u kom nijedan stvarni
-korisnik nikada nije. Umesto toga se upišu kao license testeri i kupe proizvod
-za nula dinara.
+**Provera se ne sme raditi na buildu koji premium pali zastavicom.** Tada
+jedina stvar koja zaista može da pukne — sam tok kupovine — ostaje neproverena, a
+premium funkcije se gledaju u stanju u kom nijedan stvarni korisnik nikada nije.
 
-Flavor `internal` (`IS_TEST_BUILD = true`, premium uključen bez kupovine) ostaje
-**samo za autorov uređaj preko `adb install`**. Ne sme na Play traku: Play
-Billing traži da je aplikacija instalirana sa Play-a i potpisana istim ključem,
-pa sideload sa debug ključem ionako ne ponaša se kao produkcija.
+Flavor `internal` (`IS_TEST_BUILD = true`) pali premium **i otključava sve module
+bez obzira na rang**, i ostaje **samo za autorov uređaj preko `adb install`**. Ne
+sme na Play traku: Play Billing traži da je aplikacija instalirana sa Play-a i
+potpisana istim ključem, pa sideload sa debug ključem ionako ne ponaša se kao
+produkcija. Za proveru naplate ide `googlePlay` build sa trake, uz nalog upisan
+u License testing.
 
 Spisak koji mora da prođe:
 

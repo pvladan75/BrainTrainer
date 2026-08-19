@@ -166,6 +166,7 @@ fun ChessScreenContent(
                         sessionSize = state.sessionSize,
                         currentSessionProblemIndex = state.currentIndexInSession,
                         elapsedTime = state.elapsedSeconds,
+                        showTime = !state.hideTimer,
                         optimalMoves = state.optimalMoves,
                         playerMoveCount = state.playerMoveCount,
                         isLandscape = true,
@@ -197,6 +198,7 @@ fun ChessScreenContent(
                         sessionSize = state.sessionSize,
                         currentSessionProblemIndex = state.currentIndexInSession,
                         elapsedTime = state.elapsedSeconds,
+                        showTime = !state.hideTimer,
                         optimalMoves = state.optimalMoves,
                         playerMoveCount = state.playerMoveCount,
                         isLandscape = false

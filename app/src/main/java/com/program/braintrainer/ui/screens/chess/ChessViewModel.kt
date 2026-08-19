@@ -62,6 +62,13 @@ class ChessViewModel(
     private val attemptRepository: AttemptRepository,
     /** Prazno za običnu sesiju; popunjeno kad se vežbaju baš određene zagonetke. */
     private val puzzleIds: List<String> = emptyList(),
+    /** Koliko zagonetki ima sesija; menja se samo iz treninga po meri. */
+    private val sessionSize: Int = PUZZLES_PER_SESSION,
+    /**
+     * Sakriva sat sa ekrana. Vreme se i dalje meri i i dalje ulazi u bodovanje —
+     * skriven sat sklanja pritisak, ne bodove.
+     */
+    private val hideTimer: Boolean = false,
     private val savedStateHandle: SavedStateHandle = SavedStateHandle(),
     private val scoringParams: ScoringParams = ScoringParams()
 ) : ViewModel() {
@@ -101,6 +108,8 @@ class ChessViewModel(
                 _events.emit(ChessUiEvent.AchievementUnlocked(achievement.id))
             }
         }
+
+        _uiState.update { it.copy(hideTimer = hideTimer) }
 
         val snapshot = savedStateHandle.get<String>(KEY_SNAPSHOT)?.let(::decodeSnapshot)
         if (snapshot != null) restoreSession(snapshot) else loadSession()
@@ -211,13 +220,9 @@ class ChessViewModel(
         viewModelScope.launch {
             session = withContext(Dispatchers.IO) {
                 if (puzzleIds.isEmpty()) {
-                    problemLoader.loadRandomProblems(module, difficulty, PUZZLES_PER_SESSION)
+                    problemLoader.loadRandomProblems(module, difficulty, sessionSize)
                 } else {
-                    problemLoader.loadProblemsByIds(
-                        module,
-                        difficulty,
-                        puzzleIds.take(PUZZLES_PER_SESSION)
-                    )
+                    problemLoader.loadProblemsByIds(module, difficulty, puzzleIds.take(sessionSize))
                 }
             }
             currentIndex = 0

@@ -16,7 +16,9 @@ class ChessViewModelFactory(
     private val module: Module,
     private val difficulty: Difficulty,
     /** Prazno za običnu sesiju; popunjeno za revanš nad određenim zagonetkama. */
-    private val puzzleIds: List<String> = emptyList()
+    private val puzzleIds: List<String> = emptyList(),
+    private val sessionSize: Int = DEFAULT_SESSION_SIZE,
+    private val hideTimer: Boolean = false
 ) : ViewModelProvider.Factory {
 
     private val app = context.brainTrainerApp
@@ -33,10 +35,17 @@ class ChessViewModelFactory(
                 achievementManager = app.achievementManager,
                 attemptRepository = app.attemptRepository,
                 puzzleIds = puzzleIds,
+                sessionSize = sessionSize,
+                hideTimer = hideTimer,
                 // Nosi snapshot sesije preko ubijanja procesa.
                 savedStateHandle = extras.createSavedStateHandle()
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
+    }
+
+    companion object {
+        /** Isto koliko i `ChessViewModel.PUZZLES_PER_SESSION`, koji je privatan. */
+        const val DEFAULT_SESSION_SIZE = 10
     }
 }

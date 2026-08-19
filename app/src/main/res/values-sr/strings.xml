@@ -170,4 +170,15 @@
     <string name="duration_minutes">%1$dm %2$02ds</string>
     <string name="duration_hours">%1$dh %2$02dm</string>
     <string name="profile_open_history">Istorija napretka</string>
+
+    <string name="training_title">Trening po meri</string>
+    <string name="training_locked_description">Trening po meri bira modul, težinu, koliko zagonetki ima sesija i da li se vidi sat. Deo je Premiuma, zajedno sa istorijom i dnevnikom grešaka.</string>
+    <string name="training_section_module">Modul</string>
+    <string name="training_section_difficulty">Težina</string>
+    <string name="training_section_length">Dužina sesije</string>
+    <string name="training_length_puzzles">%1$d zagonetki</string>
+    <string name="training_hide_timer">Sakrij sat</string>
+    <string name="training_hide_timer_note">Vreme se i dalje meri i i dalje ulazi u bodove — samo sat nije pred očima.</string>
+    <string name="training_start">Počni</string>
+    <string name="main_custom_training">Trening po meri</string>
 </resources>
